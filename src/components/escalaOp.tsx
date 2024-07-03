@@ -180,28 +180,28 @@ const EscalaOp = () => {
                     )}
                     <td className="p-2 borde-collapse border border-black ">
                       <textarea
-                        rows="1"
+                        rows={1}
                         defaultValue={linha.culto}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
                     <td className="p-2 borde-collapse border border-black ">
                       <textarea
-                        rows="1"
+                        rows={1}
                         defaultValue={linha.hinos}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
                     <td className="p-2 borde-collapse border border-black ">
                       <textarea
-                        rows="1"
+                        rows={1}
                         defaultValue={linha.op}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
                     <td className="p-2 borde-collapse border border-black ">
                       <textarea
-                        rows="1"
+                        rows={1}
                         defaultValue={linha.oppalava}
                         className="text-center text-black bg-transparent "
                       />

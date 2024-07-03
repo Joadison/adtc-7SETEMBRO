@@ -218,7 +218,7 @@ const EscalaWork = () => {
                       )}
                       <td className="p-2 borde-collapse border border-black ">
                         <textarea
-                          rows="1"
+                          rows={1}
                           defaultValue={linha.trabalho}
                           className="text-center text-black bg-transparent "
                         />
