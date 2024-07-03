@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import html2canvas from "html2canvas";
 import Image from "next/image";
-import adtcImage from "../../public/adtc.png";
 import { Input } from "./ui/input";
 
 interface LinhaTabela {
@@ -90,7 +89,7 @@ const EscalaWork = () => {
       "Dezembro",
     ];
 
-    let novaTabela = [];
+    let novaTabela: DiaTabela[] = [];
 
     for (let i = 0; i < 7; i++) {
       const data = new Date(dataSelecionada);
@@ -100,22 +99,22 @@ const EscalaWork = () => {
       const dia = data.getDate();
       const mes = meses[data.getMonth()];
       const ano = data.getFullYear();
-
-      let linhas = [];
+     
+      let linhas: LinhaTabela[] = [];
 
       if (diaSemana === "Terça") {
         linhas = [
-          { trabalho: "Círculo de Oração", horario: "18hs" },
-          { trabalho: "Ensaio de senhoras", horario: "20hs" },
-          { trabalho: "Ensaio de jovens", horario: "20hs" },
+          { trabalho: "Círculo de Oração", horario: "18hs", direcao: "", recepcao: "", porteiro: "" },
+          { trabalho: "Ensaio de senhoras", horario: "20hs", direcao: "", recepcao: "", porteiro: "" },
+          { trabalho: "Ensaio de jovens", horario: "20hs", direcao: "", recepcao: "", porteiro: "" },
         ];
       } else if (diaSemana === "Domingo") {
         linhas = [
-          { trabalho: "EBD", horario: "8hs" },
-          { trabalho: "Culto", horario: "18hs" },
+          { trabalho: "EBD", horario: "8hs", direcao: "", recepcao: "", porteiro: "" },
+          { trabalho: "Culto", horario: "18hs", direcao: "", recepcao: "", porteiro: "" },
         ];
       } else {
-        linhas = [{ trabalho: "LIVRE", horario: "LIVRE" }];
+        linhas = [{ trabalho: "LIVRE", horario: "LIVRE", direcao: "", recepcao: "", porteiro: "" }];
       }
 
       novaTabela.push({
