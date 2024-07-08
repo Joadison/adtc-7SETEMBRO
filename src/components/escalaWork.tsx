@@ -174,35 +174,35 @@ const EscalaWork = () => {
           <h1 className="font-semibold text-5xl relative z-10">
             ESCALA SEMANAL DE TRABALHOS DA IGREJA
           </h1>
-          <table className="mx-16 my-6 w-full border-collapse border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
-            <thead className="borde-collapse border border-black ">
-              <tr className=" bg-orange-500 border-collapse border border-black">
-                <th className="py-4 borde-collapse border border-black px-10">
+          <table className="mx-16 my-6 w-full  border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
+            <thead className=" border border-black ">
+              <tr className=" bg-orange-500  border border-black text-center h-auto">
+                <th className="py-[1rem]  border border-black h-auto">
                   Data
                 </th>
-                <th className="py-4 borde-collapse border border-black">
+                <th className="py-[1rem]  border border-black h-auto">
                   Trabalho
                 </th>
-                <th className="py-4 borde-collapse border border-black px-2">
+                <th className="py-[1rem]  border border-black w-40 h-auto">
                   Horário
                 </th>
-                <th className="py-4 borde-collapse border border-black">
+                <th className="py-[1rem]  border border-black h-auto">
                   Direção
                 </th>
-                <th className="py-4 borde-collapse border border-black">
+                <th className="py-[1rem]  border border-black h-auto">
                   Recepção
                 </th>
-                <th className="py-4 borde-collapse border border-black">
+                <th className="py-[1rem]  border border-black h-auto">
                   Porteiro
                 </th>
                 {mostrarAcoes && (
-                  <th className="py-4 border-collapse border border-black">
+                  <th className="py-[1rem]  border border-black h-auto">
                     Ações
                   </th>
                 )}
               </tr>
             </thead>
-            <tbody className="p-2 py-4 ">
+            <tbody className="p-2 py-4">
               {tabela.map((dia, index) => (
                 <React.Fragment key={index}>
                   {dia.linhas.map((linha, linhaIndex) => (
@@ -210,30 +210,30 @@ const EscalaWork = () => {
                       {linhaIndex === 0 && (
                         <td
                           rowSpan={dia.linhas.length}
-                          className="py-3 text-center font-semibold borde-collapse border border-black"
+                          className="p-4 text-center font-semibold  border border-black"
                         >
                           {dia.diaSemana} <br /> {dia.data}
                         </td>
                       )}
-                      <td className="p-2 borde-collapse border border-black ">
+                      <td className="p-4  border border-black ">
                         <textarea
                           rows={1}
                           defaultValue={linha.trabalho}
-                          className="text-center text-black bg-transparent "
+                          className="text-center text-black bg-transparent w-full"
                         />
                       </td>
-                      <td className="p-2 borde-collapse border border-black ">
+                      <td className="p-4  border border-black text-center">
                         <Input
                           type="text"
                           defaultValue={linha.horario}
                           required
-                          className="text-center appearance-none border-none outline-none w-24 bg-transparent text-3xl"
+                          className="text-center appearance-none border-none outline-none bg-transparent text-3xl w-full"
                         />
                       </td>
-                      <td className="p-2 borde-collapse border border-black ">
+                      <td className="p-4 mt-2 border border-black ">
                         <select
                           required
-                          className="text-center text-black  bg-transparent "
+                          className="text-center text-black bg-transparent w-full"
                         >
                           <option>LIVRE</option>
                           <option>Pr. Eloi</option>
@@ -244,13 +244,16 @@ const EscalaWork = () => {
                           <option>Aux. Viana</option>
                           <option>Aux. Joadison</option>
                           <option>Aux. Vitor</option>
+                          <option>Ir. Ruth</option>
+                          <option>Ir. Liduida</option>
+                          <option>Ir. Mônica Lima</option>
                           <option>Ir. Liduida e Ir. Mônica F.</option>
                           <option>Ir. Mônica F. e Ir. Ruth</option>
                           <option>Ir. Monique e Ir. Monalisa</option>
                         </select>
                       </td>
-                      <td className="p-2 borde-collapse border border-black">
-                        <select className="text-center text-black bg-transparent ">
+                      <td className="p-4 mt-2 border border-black">
+                        <select className="text-center text-black bg-transparent w-full">
                           <option>LIVRE</option>
                           <option>Ir. Natalia</option>
                           <option>Ir. Victoria</option>
@@ -259,20 +262,20 @@ const EscalaWork = () => {
                           <option>Ir. Iris</option>
                         </select>
                       </td>
-                      <td className="p-2 borde-collapse border border-black">
-                        <select className="text-center text-black bg-transparent ">
+                      <td className="p-4 mt-2 border border-black">
+                        <select className="text-center text-black bg-transparent w-full">
                           <option>LIVRE</option>
                           <option>Dia. Cleiton</option>
                           <option>Dia. Gleidystone</option>
+                          <option>Dia. Alípio</option>
                           <option>Aux. Wagner</option>
                           <option>Aux. Viana</option>
                           <option>Aux. Joadison</option>
                           <option>Aux. Vitor</option>
-                          <option>Aux. Alípio</option>
                         </select>
                       </td>
                       {mostrarAcoes && ( // Renderiza botões de ação apenas se mostrarAcoes for true
-                        <td className="p-2 border-collapse border border-black">
+                        <td className="p-4 mt-2 border border-black">
                           {linhaIndex === 0 ? (
                             <button
                               onClick={() => adicionarLinha(index)}

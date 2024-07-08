@@ -141,21 +141,21 @@ const EscalaOp = () => {
           ESCALA SEMANAL DE TRABALHOS DA IGREJA
         </h1>
         <table className="mx-16 my-6 w-full border-collapse border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
-          <thead className="borde-collapse border border-black ">
+          <thead className="border-collapse border border-black ">
             <tr className=" bg-orange-500 border-collapse border border-black">
-              <th className="py-4 borde-collapse border border-black px-10">
+              <th className="py-4 border-collapse border border-black px-10">
                 Data
               </th>
-              <th className="py-4 borde-collapse border border-black">
+              <th className="py-4 border-collapse border border-black">
                 Culto
               </th>
-              <th className="py-4 borde-collapse border border-black px-2">
+              <th className="py-4 border-collapse border border-black px-2">
                 Hinos
               </th>
-              <th className="py-4 borde-collapse border border-black">
+              <th className="py-4 border-collapse border border-black">
                 Oportunidades Louvor
               </th>
-              <th className="py-4 borde-collapse border border-black">
+              <th className="py-4 border-collapse border border-black">
                 Oportunidades Saudação
               </th>
               {mostrarAcoes && (
@@ -173,33 +173,33 @@ const EscalaOp = () => {
                     {linhaIndex === 0 && (
                       <td
                         rowSpan={dia.linhas.length}
-                        className="py-3 text-center font-semibold borde-collapse border border-black"
+                        className="py-3 text-center font-semibold border-collapse border border-black"
                       >
                         {dia.diaSemana} <br /> {dia.data}
                       </td>
                     )}
-                    <td className="p-2 borde-collapse border border-black ">
+                    <td className="p-2 border-collapse border border-black ">
                       <textarea
                         rows={1}
                         defaultValue={linha.culto}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
-                    <td className="p-2 borde-collapse border border-black ">
+                    <td className="p-2 border-collapse border border-black ">
                       <textarea
                         rows={1}
                         defaultValue={linha.hinos}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
-                    <td className="p-2 borde-collapse border border-black ">
+                    <td className="p-2 border-collapse border border-black ">
                       <textarea
                         rows={1}
                         defaultValue={linha.op}
                         className="text-center text-black bg-transparent "
                       />
                     </td>
-                    <td className="p-2 borde-collapse border border-black ">
+                    <td className="p-2 border-collapse border border-black ">
                       <textarea
                         rows={1}
                         defaultValue={linha.oppalava}
