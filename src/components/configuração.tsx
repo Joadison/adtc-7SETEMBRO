@@ -14,26 +14,25 @@ const Config = () => {
 
   return (
     <>
-      <div className="flex justify-center items-start text-[#fff] pl-10 bg-[#ff7f00]">
-        <Button variant={"ghost"} onClick={() => handleNavigation('EscalaWork')}>
+      <div className="flex flex-row justify-center items-center text-white p-4 bg-[#ff7f00] ">
+        <Button variant="ghost" onClick={() => handleNavigation("EscalaWork")}>
           Escalas de Trabalhos
         </Button>
-        <Button variant={"ghost"} onClick={() => handleNavigation('EscalaOp')}>
+        <Button variant="ghost" onClick={() => handleNavigation("EscalaOp")}>
           Escala de Oportunidade
         </Button>
-        <Button variant={"ghost"} onClick={() => handleNavigation('Story')}>
+        {/* <Button variant="ghost" onClick={() => handleNavigation('Story')}>
           Criação de Story
-        </Button>
+        </Button> */}
       </div>
 
-      <div>
-        {activeComponent === 'EscalaWork' && <EscalaWork />}
-        {activeComponent === 'EscalaOp' && <EscalaOp />}
+      <div className="flex justify-center items-center">
+        {activeComponent === "EscalaWork" && <EscalaWork />}
+        {activeComponent === "EscalaOp" && <EscalaOp />}
         {/* {activeComponent === 'Story' && <Story />} */}
       </div>
     </>
   );
 };
-
 
 export default Config;

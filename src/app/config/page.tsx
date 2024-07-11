@@ -4,12 +4,12 @@ import Header from "@/components/header";
 
 export default function Home() {
   return (
-    <div className="w-full">
+    <div className="flex flex-col">
       <Header />
-      <div className="relative w-[1903px] h-[803px] mx-auto">
-        <Config/>
+      <div className="flex-1 relative">
+        <Config />
       </div>
-      {/* <Footer/> */}
+      <Footer />
     </div>
   );
 }

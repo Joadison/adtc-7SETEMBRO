@@ -148,18 +148,19 @@ const EscalaWork = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 m-4 font-oswald">
+    <div className="flex flex-col justify-center items-center gap-4 m-2 font-oswald">
       <input
         type="date"
         value={date}
         onChange={handleDateChange}
         className="bg-[#f18933] border-none text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
       />
-      <div ref={captureRef}>
-        <div className="relative z-10 flex flex-col gap-4 m-6 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg p-4">
+      <div className="sm:w-[39rem] md:w-[48rem] lg:w-[61rem] xl:w-[115rem] w-full h-auto overflow-x-auto">
+      <div ref={captureRef} className="w-[115rem] h-full flex flex-col justify-center items-center p-4">  
+        <div className="relative z-0 flex flex-col my-6 mx-4 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg">
           <Image
             src={
-              "https://utfs.io/f/e04d67ae-b098-4ff3-95fb-829bf46f171c-1s2qa.png"
+              "https://utfs.io/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
             }
             alt="7Setembro"
             width={150}
@@ -169,14 +170,14 @@ const EscalaWork = () => {
               width: "40%",
               height: "auto",
             }}
-            className="mb-8 relative z-10 mx-auto"
+            className="mb-8 mt-4 relative z-10 mx-auto"
           />
           <h1 className="font-semibold text-5xl relative z-10">
             ESCALA SEMANAL DE TRABALHOS DA IGREJA
           </h1>
-          <table className="mx-16 my-6 w-full  border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
-            <thead className=" border border-black ">
-              <tr className=" bg-orange-500  border border-black text-center h-auto">
+          <table className="mx-16 my-6 border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
+            <thead className="border border-black ">
+              <tr className=" w-auto bg-orange-500  border border-black text-center h-auto">
                 <th className="py-[1rem]  border border-black h-auto">
                   Data
                 </th>
@@ -222,7 +223,7 @@ const EscalaWork = () => {
                           className="text-center text-black bg-transparent w-full"
                         />
                       </td>
-                      <td className="p-4  border border-black text-center">
+                      <td className="p-4 border border-black text-center">
                         <Input
                           type="text"
                           defaultValue={linha.horario}
@@ -315,6 +316,7 @@ const EscalaWork = () => {
           />
         </div>
         </div>
+      </div>
       </div>
       <Button
         onClick={handleCaptureClick}

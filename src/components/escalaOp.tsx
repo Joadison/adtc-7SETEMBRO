@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import html2canvas from "html2canvas";
 import Image from "next/image";
-import adtcImage from "../../public/adtc.png";
 
 interface LinhaTabela {
     data?: string;
@@ -112,20 +111,19 @@ const EscalaOp = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 m-4 font-oswald">
+    <div className="flex flex-col justify-center items-center gap-4 m-2 font-oswald">
       <input
         type="date"
         value={date}
         onChange={handleDateChange}
         className="bg-[#f18933] border-none text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
       />
-      <div
-        ref={captureRef}
-        className="relative z-10 flex flex-col gap-4 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg p-4"
-      >
+      <div className="sm:w-[39rem] md:w-[48rem] lg:w-[61rem] xl:w-[79rem] 2xl:w-full h-auto overflow-x-auto">
+      <div ref={captureRef} className="w-[115rem] h-full flex flex-col justify-center items-center p-4">  
+        <div className="relative z-0 flex flex-col my-6 mx-4 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg">
         <Image
             src={
-              "https://utfs.io/f/e04d67ae-b098-4ff3-95fb-829bf46f171c-1s2qa.png"
+              "https://utfs.io/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
             }
             alt="7Setembro"
             width={150}
@@ -135,12 +133,12 @@ const EscalaOp = () => {
               width: "40%",
               height: "auto",
             }}
-            className="mb-8 relative z-10 mx-auto"
+            className="mb-8 mt-4 relative z-10 mx-auto"
           />
         <h1 className="font-semibold text-5xl relative z-10">
           ESCALA SEMANAL DE TRABALHOS DA IGREJA
         </h1>
-        <table className="mx-16 my-6 w-full border-collapse border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
+        <table className="mx-16 my-6 border-collapse border border-black text-3xl relative z-10 bg-white/70 backdrop-blur-sm">
           <thead className="border-collapse border border-black ">
             <tr className=" bg-orange-500 border-collapse border border-black">
               <th className="py-4 border-collapse border border-black px-10">
@@ -237,6 +235,8 @@ const EscalaOp = () => {
             className="mt-[19rem] ml-[30rem]"
           />
         </div>
+      </div>
+      </div>
       </div>
       <Button
         onClick={handleCaptureClick}
