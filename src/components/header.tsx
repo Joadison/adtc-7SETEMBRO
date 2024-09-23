@@ -22,13 +22,13 @@ const Header = () => {
   return (
     <header className="flex justify-between items-center p-4 md:p-6 lg:p-10 bg-[#ed6b0e] border-b-4">
        <div
-        className="w-28 h-12 md:w-36 md:h-16 cursor-pointer"
+        className="w-56 h-16 cursor-pointer"
         onClick={() => router.push("/")}
       >
         <Image
           src="https://utfs.io/f/4e99fe31-7f29-4994-80fe-ebd9fd09130e-leijnu.png"
           alt="7Setembro"
-          width={800}
+          width={1000}
           height={20}
           className="object-cover"
         />
@@ -45,14 +45,14 @@ const Header = () => {
         <Button
           type="button"
           variant="ghost"
-          /* onClick={() => navigateTo("/")} */
+          onClick={() => navigateTo("/sobre-nos")}
         >
           Sobre nós
         </Button>
         <Button
           type="button"
           variant="ghost"
-          /* onClick={() => navigateTo("/ministerios")} */
+          onClick={() => navigateTo("/ministerios")}
         >
           Ministérios
         </Button>
@@ -96,10 +96,11 @@ const Header = () => {
           >
             Em que cremos?
           </Button>
+
           <Button
             type="button"
             variant="ghost"
-            /* onClick={() => navigateTo("/")} */
+            onClick={() => navigateTo("/sobre-nos")}
             className="my-2 text-center"
           >
             Sobre nós
@@ -107,7 +108,7 @@ const Header = () => {
           <Button
             type="button"
             variant="ghost"
-            /* onClick={() => navigateTo("/ministerios")} */
+            onClick={() => navigateTo("/ministerios")} 
             className="my-2 text-center"
           >
             Ministérios

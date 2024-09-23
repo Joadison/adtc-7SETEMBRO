@@ -238,13 +238,14 @@ const EscalaWork = () => {
                         >
                           <option>LIVRE</option>
                           <option>Pr. Eloi</option>
-                          <option>Diá. Cleiton</option>
-                          <option>Diá. Gleidystone</option>
-                          <option>Diá. Alípio</option>
+                          <option>Pb. Gleidystone</option>
+                          <option>Dc. Cleiton</option>
+                          <option>Dc. Alípio</option>
                           <option>Aux. Wagner</option>
                           <option>Aux. Viana</option>
                           <option>Aux. Joadison</option>
                           <option>Aux. Vitor</option>
+                          <option>Aux. Davi</option>
                           <option>Ir. Ruth</option>
                           <option>Ir. Liduida</option>
                           <option>Ir. Mônica Lima</option>
@@ -266,13 +267,14 @@ const EscalaWork = () => {
                       <td className="p-4 mt-2 border border-black">
                         <select className="text-center text-black bg-transparent w-full">
                           <option>LIVRE</option>
-                          <option>Dia. Cleiton</option>
-                          <option>Dia. Gleidystone</option>
-                          <option>Dia. Alípio</option>
+                          <option>Pb. Gleidystone</option>
+                          <option>Dc. Cleiton</option>
+                          <option>Dc. Alípio</option>
                           <option>Aux. Wagner</option>
                           <option>Aux. Viana</option>
                           <option>Aux. Joadison</option>
                           <option>Aux. Vitor</option>
+                          <option>Aux. Davi</option>
                         </select>
                       </td>
                       {mostrarAcoes && ( // Renderiza botões de ação apenas se mostrarAcoes for true
