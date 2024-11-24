@@ -1,15 +1,13 @@
 import Config from "@/components/configuração";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 
-export default function Home() {
+export const metadata = {
+  title: "Configuração | ADTC 7 de Setembro",
+};
+
+export default function ConfigPage() {
   return (
-    <div className="flex flex-col">
-      <Header />
-      <div className="flex-1 relative">
-        <Config />
-      </div>
-      <Footer />
+    <div className="absolute inset-0 z-50 flex flex-col w-screen h-screen">
+      <Config />
     </div>
   );
 }

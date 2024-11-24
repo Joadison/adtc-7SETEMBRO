@@ -57,13 +57,13 @@ const Header = () => {
         >
           Sobre nós
         </Button>
-        <Button
+        {/* <Button
           type="button"
           variant="ghost"
           onClick={() => navigateTo("/ministerios")}
         >
           Ministérios
-        </Button>
+        </Button> */}
         <Button
           type="button"
           variant="ghost"
@@ -114,14 +114,14 @@ const Header = () => {
           >
             Sobre nós
           </Button>
-          <Button
+          {/* <Button
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/ministerios")}
             className="my-2 text-center"
           >
             Ministérios
-          </Button>
+          </Button> */}
           <Button
             type="button"
             variant="ghost"

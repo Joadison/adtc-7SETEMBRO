@@ -154,7 +154,7 @@ const EscalaWork = () => {
         onChange={handleDateChange}
         className="bg-[#f18933] border-none text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
       />
-      <div className="sm:w-[39rem] md:w-[48rem] lg:w-[61rem] xl:w-[115rem] w-full h-auto overflow-x-auto">
+      <div className="w-full h-full overflow-auto">
       <div ref={captureRef} className="w-[115rem] h-full flex flex-col justify-center items-center p-4">  
         <div className="relative z-0 flex flex-col my-6 mx-4 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg">
           <Image

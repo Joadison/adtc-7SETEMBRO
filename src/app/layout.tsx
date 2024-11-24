@@ -14,16 +14,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt-br">
-      <body className={`flex flex-col h-screen overflow-hidden ${inter.className}`}>
+      <body
+        className={`${inter.className}`}
+      >
         <ThemeProvider>
-          <Header />
-          <main className="flex-1 overflow-auto">{children}</main>
-          <Footer />
+          <>{children}</>
         </ThemeProvider>
       </body>
     </html>
