@@ -264,7 +264,7 @@ const SobreNos = () => {
       
       <Button
         onClick={() => onOpenChangeHistoria()}
-        className="flex justify-center bg-black p-6 rounded-lg relative"
+        className="flex justify-center mt-4 p-6 rounded-lg relative"
       >
         <motion.p
       initial={{ opacity: 0, y: 0 }}
@@ -282,7 +282,7 @@ const SobreNos = () => {
 
       <Button
         onClick={() => onOpenChangeIgreja()}
-        className="flex justify-center bg-black p-6 rounded-lg relative"
+        className="flex justify-center mt-4 p-6 rounded-lg relative"
       >
         <motion.p
       initial={{ opacity: 0, y: 0 }}
@@ -298,7 +298,7 @@ const SobreNos = () => {
 
       <Button
         onClick={() => onOpenChangeFe()}
-        className="flex justify-center bg-[#0F2D43] p-6 rounded-lg relative"
+        className="flex justify-center mt-4 p-6 rounded-lg relative"
       >
         <motion.p
       initial={{ opacity: 0, y: 0 }}
@@ -315,7 +315,7 @@ const SobreNos = () => {
 
       <Button
         onClick={() => onOpenChangeNossa()}
-        className="flex justify-center bg-[#0F2D43] p-6 rounded-lg relative"
+        className="flex justify-center mt-4 p-6 rounded-lg relative"
       >
         <motion.p
       initial={{ opacity: 0, y: 0 }}

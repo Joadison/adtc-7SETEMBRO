@@ -27,7 +27,7 @@ const Footer = () => {
 
       <div className="flex justify-center my-2">
         <Button
-          className={`${colors.button_inst} flex items-center space-x-2`}
+          className="flex items-center space-x-2"
           onClick={() => { window.location.href = 'https://www.instagram.com/adtc.7setembro1/'; }}
         >
           <span>Siga a nossa Rede Social</span>

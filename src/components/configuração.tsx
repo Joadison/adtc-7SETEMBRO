@@ -26,7 +26,7 @@ const Config = () => {
         </Button> */}
       </div>
 
-      <div className="flex justify-center items-center">
+      <div className="relative overflow-auto">
         {activeComponent === "EscalaWork" && <EscalaWork />}
         {activeComponent === "EscalaOp" && <EscalaOp />}
         {/* {activeComponent === 'Story' && <Story />} */}

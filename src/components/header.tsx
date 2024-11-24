@@ -71,13 +71,13 @@ const Header = () => {
         >
           Culto ao Vivo
         </Button>
-        <Button
+        {/* <Button
           type="button"
           variant="ghost"
           onClick={() => navigateTo("/config")}
         >
           Configuração
-        </Button>
+        </Button> */}
       </div>
 
       <div className="md:hidden">
@@ -96,12 +96,12 @@ const Header = () => {
           colors.background_mobiel
         } z-50 overflow-hidden ${isMenuOpen ? "flex" : "hidden"} md:hidden`}
       >
-        <div className="flex flex-col items-center justify-center h-full w-full">
+        <div className="flex flex-col items-center justify-start w-full">
           <Button
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/em-que-cremos")}
-            className="my-2 text-center"
+            className="my-1 text-center p-10 text-2xl" 
           >
             Em que cremos?
           </Button>
@@ -110,7 +110,7 @@ const Header = () => {
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/sobre-nos")}
-            className="my-2 text-center"
+            className="my-1 text-center p-10 text-2xl"
           >
             Sobre nós
           </Button>
@@ -126,18 +126,18 @@ const Header = () => {
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/cultos")}
-            className="my-2 text-center"
+            className="my-1 text-center p-10 text-2xl"
           >
             Culto ao Vivo
           </Button>
-          <Button
+          {/* <Button
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/config")}
             className="my-2 text-center"
           >
             Configuração
-          </Button>
+          </Button> */}
         </div>
       </div>
     </header>

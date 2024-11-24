@@ -6,8 +6,6 @@ export const metadata = {
 
 export default function ConfigPage() {
   return (
-    <div className="absolute inset-0 z-50 flex flex-col w-screen h-screen">
-      <Config />
-    </div>
+   <Config />
   );
 }
