@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme/theme-context";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet"/>
-      </head>
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-br">
+      <body className={`flex flex-col h-screen overflow-hidden ${inter.className}`}>
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1 overflow-auto">{children}</main>
+          <Footer />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

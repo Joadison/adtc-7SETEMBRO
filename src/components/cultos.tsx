@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "./theme/theme-context";
 
 interface Video {
   id: {
@@ -20,6 +21,7 @@ interface Video {
 }
 
 const Cultos = () => {
+  const { colors } = useTheme();
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLive, setIsLive] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,7 @@ const Cultos = () => {
         setLoading(false);
       } catch (error) {
         console.error("Erro ao buscar vídeos do YouTube:", error);
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -66,43 +68,33 @@ const Cultos = () => {
   }, []);
 
   return (
-    <div className="overflow-y-auto max-h-full">
-      {loading && ( // Mostra o componente de loading enquanto loading é true
-        <div className="flex justify-center items-center h-screen">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="bg-gray-900 text-white p-4 rounded-lg"
-          >
-            Carregando...
-          </motion.div>
+    <div className="relative w-full h-full">
+      <div className={`overflow-y-auto max-h-full ${colors.fundo} ${colors.text}`}>
+        {isLive && (
+          <div className="bg-red-600 text-white text-center p-2 mb-4">LIVE</div>
+        )}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {videos.map((video) => (
+            <motion.div
+              key={video?.id.videoId}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="p-4"
+            >
+              <iframe
+                width="100%"
+                height="200"
+                src={`https://www.youtube.com/embed/${video?.id.videoId}`}
+                title={video?.snippet.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+              <p className="mt-2 text-sm font-medium">{video?.snippet.title}</p>
+            </motion.div>
+          ))}
         </div>
-      )}
-      {isLive && (
-        <div className="bg-red-600 text-white text-center p-2 mb-4">LIVE</div>
-      )}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {videos.map((video) => (
-          <motion.div
-            key={video?.id.videoId}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="p-4"
-          >
-            <iframe
-              width="100%"
-              height="200"
-              src={`https://www.youtube.com/embed/${video?.id.videoId}`}
-              title={video?.snippet.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-            <p className="mt-2 text-sm font-medium">{video?.snippet.title}</p>
-          </motion.div>
-        ))}
       </div>
     </div>
   );

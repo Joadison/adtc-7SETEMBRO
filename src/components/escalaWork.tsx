@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Button } from "./ui/button";
 import html2canvas from "html2canvas";
 import Image from "next/image";
 import { Input } from "./ui/input";
@@ -320,12 +319,12 @@ const EscalaWork = () => {
         </div>
       </div>
       </div>
-      <Button
+      <button
         onClick={handleCaptureClick}
-        className="bg-[#f18933] text-white py-2 px-4 rounded hover:bg-[#ff7f00] focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
+        className="bg-[#f18933] border-none text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
       >
         Capturar e Baixar
-      </Button>
+      </button>
     </div>
   );
 };

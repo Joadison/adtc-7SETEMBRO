@@ -1,14 +1,17 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useTheme } from "./theme/theme-context";
+import AudioPlayer from "./AudioPlayer";
 
 const Header = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { colors } = useTheme();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -20,8 +23,13 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-between items-center p-4 md:p-6 lg:p-10 bg-[#ed6b0e] border-b-4">
-       <div
+    <>
+    {/* <AudioPlayer/> */}
+    <header
+      className={`flex justify-between items-center px-4 pt-4 pb-8 md:px-6 md:pb-6 lg:px-10  ${colors.background} border-b-4`}
+    >
+      
+      <div
         className="w-56 h-16 cursor-pointer"
         onClick={() => router.push("/")}
       >
@@ -34,7 +42,7 @@ const Header = () => {
         />
       </div>
 
-      <div className="hidden md:flex flex-wrap justify-center text-[#fff] text-sm md:text-md">
+      <div className="hidden md:flex flex-wrap justify-center text-sm md:text-md">
         <Button
           type="button"
           variant="ghost"
@@ -66,13 +74,6 @@ const Header = () => {
         <Button
           type="button"
           variant="ghost"
-          onClick={() => navigateTo("/radio")}
-        >
-          Rádio Templo Central
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
           onClick={() => navigateTo("/config")}
         >
           Configuração
@@ -81,13 +82,21 @@ const Header = () => {
 
       <div className="md:hidden">
         <button onClick={toggleMenu}>
-          {isMenuOpen ? <X className="h-8 w-8 text-white" /> : <Menu className="h-8 w-8 text-white" />}
+          {isMenuOpen ? (
+            <X className="h-8 w-8 text-white" />
+          ) : (
+            <Menu className="h-8 w-8 text-white" />
+          )}
         </button>
       </div>
 
       {/* Menu Mobile */}
-      <div className={`fixed top-20 right-0 w-[10rem] bg-[#ed6b0e] z-50 overflow-hidden ${isMenuOpen ? "flex" : "hidden"} md:hidden`}>
-        <div className="flex flex-col items-center justify-center h-full  text-[#fff]">
+      <div
+        className={`fixed top-[7rem] left-0 w-full h-full ${
+          colors.background_mobiel
+        } z-50 overflow-hidden ${isMenuOpen ? "flex" : "hidden"} md:hidden`}
+      >
+        <div className="flex flex-col items-center justify-center h-full w-full">
           <Button
             type="button"
             variant="ghost"
@@ -108,7 +117,7 @@ const Header = () => {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => navigateTo("/ministerios")} 
+            onClick={() => navigateTo("/ministerios")}
             className="my-2 text-center"
           >
             Ministérios
@@ -124,14 +133,6 @@ const Header = () => {
           <Button
             type="button"
             variant="ghost"
-            onClick={() => navigateTo("/radio")}
-            className="my-2 text-center"
-          >
-            Rádio Templo Central
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
             onClick={() => navigateTo("/config")}
             className="my-2 text-center"
           >
@@ -140,6 +141,7 @@ const Header = () => {
         </div>
       </div>
     </header>
+    </>
   );
 };
 
