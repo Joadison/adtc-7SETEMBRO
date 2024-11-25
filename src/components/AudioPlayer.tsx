@@ -6,7 +6,7 @@ import { useTheme } from "./theme/theme-context";
 
 const AudioPlayer = () => {
   const { colors } = useTheme();
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -40,13 +40,13 @@ const AudioPlayer = () => {
 
   return (
     <div
-      className={`w-full px-12 py-2 m-0  ${colors.background} flex items-center justify-between border-b-4 shadow-lg`}
+      className={`fixed left-0 top-1/4 transform -translate-y-1/2 w-16 h-auto bg-gray-900 rounded-r-lg shadow-lg flex flex-col items-center space-y-4 py-4 ${colors.background}`}
     >
       {/* Player de Áudio */}
       <audio
         ref={audioRef}
         src="https://r16.ciclano.io:15045/stream"
-        autoPlay
+        autoPlay={false}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         className="hidden" // Oculta os controles padrão
@@ -55,31 +55,31 @@ const AudioPlayer = () => {
       {/* Botão Play/Pause */}
       <button
         onClick={togglePlayPause}
-        className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md"
+        className="p-3 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md"
       >
         {isPlaying ? (
-          <Pause className="h-2 w-2" />
+          <Pause className="h-6 w-6" />
         ) : (
-          <Play className="h-2 w-2" />
+          <Play className="h-6 w-6" />
         )}
       </button>
 
       {/* Título ou Informações do Áudio */}
-      <div className="flex-grow mx-4 text-center text-white font-semibold text-sm">
-        Rádio Templo Central - Ao Vivo
+      <div className="text-center text-white font-semibold text-xs px-2">
+        Rádio Ao Vivo
       </div>
 
       {/* Controle de Volume */}
-      <div className="flex items-center space-x-2 relative group px-20">
+      <div className="flex flex-col items-center space-y-2 group">
         {/* Botão Mute */}
         <button
           onClick={toggleMute}
           className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md"
         >
           {isMuted ? (
-            <VolumeX className="h-2 w-2" />
+            <VolumeX className="h-5 w-5" />
           ) : (
-            <Volume2 className="h-2 w-2" />
+            <Volume2 className="h-5 w-5" />
           )}
         </button>
 
@@ -91,7 +91,7 @@ const AudioPlayer = () => {
           step="0.01"
           value={isMuted ? 0 : volume}
           onChange={handleVolumeChange}
-          className="absolute left-24 w-28 h-1 bg-blue-300 rounded-xl cursor-pointer focus:outline-none transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+          className="w-20 h-1 bg-blue-300 rounded-xl cursor-pointer focus:outline-none transition-opacity duration-300 opacity-0 group-hover:opacity-100"
           disabled={isMuted} // Desativa o controle se estiver no mudo
         />
       </div>

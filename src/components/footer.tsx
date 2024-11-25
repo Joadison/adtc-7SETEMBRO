@@ -3,6 +3,7 @@
 import { Instagram } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from './theme/theme-context';
+import AudioPlayer from './AudioPlayer';
 
 const Footer = () => {
   const { colors } = useTheme();

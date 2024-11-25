@@ -24,11 +24,9 @@ const Header = () => {
 
   return (
     <>
-    {/* <AudioPlayer/> */}
     <header
       className={`flex justify-between items-center px-4 pt-4 pb-8 md:px-6 md:pb-6 lg:px-10  ${colors.background} border-b-4`}
     >
-      
       <div
         className="w-56 h-16 cursor-pointer"
         onClick={() => router.push("/")}
@@ -57,13 +55,13 @@ const Header = () => {
         >
           Sobre nós
         </Button>
-        {/* <Button
+        <Button
           type="button"
           variant="ghost"
           onClick={() => navigateTo("/ministerios")}
         >
           Ministérios
-        </Button> */}
+        </Button>
         <Button
           type="button"
           variant="ghost"
@@ -114,14 +112,14 @@ const Header = () => {
           >
             Sobre nós
           </Button>
-          {/* <Button
+          <Button
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/ministerios")}
             className="my-2 text-center"
           >
             Ministérios
-          </Button> */}
+          </Button>
           <Button
             type="button"
             variant="ghost"

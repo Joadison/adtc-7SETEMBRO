@@ -1,4 +1,5 @@
 import Config from "@/components/configuração";
+import ConfigLayout from "../../layouts/ConfigLayout";
 
 export const metadata = {
   title: "Configuração | ADTC 7 de Setembro",
@@ -6,6 +7,8 @@ export const metadata = {
 
 export default function ConfigPage() {
   return (
-   <Config />
+    <ConfigLayout>
+      <Config />
+    </ConfigLayout>
   );
 }
