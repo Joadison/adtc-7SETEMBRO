@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "./theme/theme-context";
-import AudioPlayer from "./AudioPlayer";
+import AudioPlayer from "./audio/AudioPlayer";
 
 const Header = () => {
   const router = useRouter();
@@ -24,6 +24,7 @@ const Header = () => {
 
   return (
     <>
+    <AudioPlayer/>
     <header
       className={`flex justify-between items-center px-4 pt-4 pb-8 md:px-6 md:pb-6 lg:px-10  ${colors.background} border-b-4`}
     >
@@ -116,7 +117,7 @@ const Header = () => {
             type="button"
             variant="ghost"
             onClick={() => navigateTo("/ministerios")}
-            className="my-2 text-center"
+            className="my-1 text-center p-10 text-2xl"
           >
             Ministérios
           </Button>
