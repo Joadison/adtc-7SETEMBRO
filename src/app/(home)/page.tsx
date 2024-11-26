@@ -8,11 +8,11 @@ export default function Home() {
       <div className="relative w-full h-full">
         <Image
           src={
-            "https://utfs.io/f/R1WGWTYNvh5qYttZvxjKDHk4Q9urxZe0lMjhqR136S2GpdIi"
+            "https://utfs.io/f/R1WGWTYNvh5qCYMA8pYH4EyDWJlihTzvtuRmKVpLg3jsBIa1"
           }
           alt="7Setembro"
           layout="fill"
-          quality={5}
+          quality={10}
           objectFit="cover"
           objectPosition="20% 52%"
           unoptimized
