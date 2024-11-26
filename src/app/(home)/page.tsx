@@ -8,7 +8,7 @@ export default function Home() {
       <div className="relative w-full h-full">
         <Image
           src={
-            "https://utfs.io/f/R1WGWTYNvh5qwMto4pfFRC86z4nvx7NU9MfBo2qJwuyjepWc"
+            "https://utfs.io/f/R1WGWTYNvh5qYttZvxjKDHk4Q9urxZe0lMjhqR136S2GpdIi"
           }
           alt="7Setembro"
           layout="fill"
