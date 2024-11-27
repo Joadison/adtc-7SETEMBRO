@@ -11,12 +11,10 @@ export default function Home() {
             "https://utfs.io/f/R1WGWTYNvh5qCYMA8pYH4EyDWJlihTzvtuRmKVpLg3jsBIa1"
           }
           alt="7Setembro"
-          layout="fill"
+          fill
           quality={10}
-          objectFit="cover"
-          objectPosition="20% 52%"
           unoptimized
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute object-cover object-right inset-0 w-full h-full"
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center md:items-start text-white px-4 md:px-10 lg:px-20 bg-white/20 backdrop-blur-sm shadow-lg">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-2xl">
