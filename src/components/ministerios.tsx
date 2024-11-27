@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useTheme } from "./theme/theme-context";
+import { motion } from 'framer-motion';
 
 const Ministerios = () => {
   const { colors } = useTheme();
@@ -63,32 +64,37 @@ const Ministerios = () => {
 
   return (
     <div
-      className={`flex flex-col justify-center p-9 mx-auto ${colors.fundo} ${colors.text}`}
+      className={`flex-1 overflow-auto mx-auto px-[6rem] py-4 justify-center ${colors.fundo} ${colors.text}`}
     >
       <h1 className="text-4xl font-bold text-center mb-8">Ministérios</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sections.map((section, index) => (
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{delay: index * 0.2, duration: 0.6, ease: "easeOut"}}
             key={index}
-            className={`${section.bg} p-6 rounded-lg shadow-lg hover:scale-105 transition-transform`}
+            className={`${section.bg} p-2 rounded-lg shadow-lg hover:scale-105 transition-transform`}
           >
             <div className="flex justify-between">
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 {section.title}
               </h2>
+        
               {section.img && (
-                <div className="relative w-[16rem] h-[3rem] mb-4">
+                <div className="relative justify-items-end w-[16rem] h-[3rem] mb-4">
                   <Image
                     src={section.img}
                     alt={section.title}
-                    layout="fill"
-                    className="rounded-lg"
+                    width={150}
+                    height={5}
+                    className="object-cover rounded-lg"
                   />
                 </div>
               )}
             </div>
             <p className="text-gray-700">{section.description}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

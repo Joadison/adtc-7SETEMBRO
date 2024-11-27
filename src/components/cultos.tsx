@@ -79,7 +79,7 @@ const Cultos = () => {
               key={video?.id.videoId}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.6 }}
               className="p-4"
             >
               <iframe

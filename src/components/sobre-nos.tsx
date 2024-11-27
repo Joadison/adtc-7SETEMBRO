@@ -1,48 +1,13 @@
 "use client";
 
-import React from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  useDisclosure,
-} from "@nextui-org/modal";
+import React, { useState } from "react";
 import { useTheme } from "./theme/theme-context";
 import { Button } from "./ui/button";
-import { motion } from 'framer-motion';
-
-interface InfoModalProps {
-  title: string;
-  content: React.ReactNode;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-const InfoModal = ({
-  title,
-  content,
-  isOpen,
-  onOpenChange,
-}: InfoModalProps) => (
-  <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
-    <ModalContent className="bg-white p-5 border-2 border-gray-300 rounded-lg shadow-sm">
-      <ModalHeader className="flex flex-col gap-1 bg-white p-5">
-        {title}
-      </ModalHeader>
-      <ModalBody className="bg-white max-h-[40vh] px-2 overflow-y-scroll">{content}</ModalBody>
-    </ModalContent>
-  </Modal>
-);
+import { motion } from "framer-motion";
 
 const SobreNos = () => {
   const { colors } = useTheme();
-  const { isOpen: isOpenHistoria, onOpenChange: onOpenChangeHistoria } =
-    useDisclosure();
-  const { isOpen: isOpenIgreja, onOpenChange: onOpenChangeIgreja } =
-    useDisclosure();
-  const { isOpen: isOpenFe, onOpenChange: onOpenChangeFe } = useDisclosure();
-  const { isOpen: isOpenNossa, onOpenChange: onOpenChangeNossa } =
-    useDisclosure();
+  const [selectedContent, setSelectedContent] = useState<string | null>(null);
 
   const historiaContent = (
     <>
@@ -257,77 +222,83 @@ const SobreNos = () => {
     </>
   );
 
+  const renderContent = () => {
+    switch (selectedContent) {
+      case "historia":
+        return historiaContent;
+      case "igreja":
+        return igrejaContent;
+      case "fe":
+        return feContent;
+      case "nossa":
+        return nossaContent;
+    }
+  };
+
   return (
     <div
-      className={`relative w-full h-full ${colors.fundo} ${colors.text} grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}
+      className={`flex-1 w-full overflow-auto mx-auto px-[4rem] md:px-[6rem] ${colors.fundo} ${colors.text}`}
     >
-      
-      <Button
-        onClick={() => onOpenChangeHistoria()}
-        className="flex justify-center mt-4 p-6 rounded-lg relative"
+      <div
+        className={`relative grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}
       >
-        <motion.p
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0 }}
-      >Nossa História</motion.p>
-        
-      </Button>
-      <InfoModal
-        title="Nossa História"
-        content={historiaContent}
-        isOpen={isOpenHistoria}
-        onOpenChange={onOpenChangeHistoria}
-      />
+        <Button
+          onClick={() => setSelectedContent("historia")}
+          className="flex justify-center mt-4 p-6 rounded-lg relative"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0 }}
+          >
+            Nossa História
+          </motion.p>
+        </Button>
 
-      <Button
-        onClick={() => onOpenChangeIgreja()}
-        className="flex justify-center mt-4 p-6 rounded-lg relative"
-      >
-        <motion.p
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}>Que igreja é a Nossa Igreja?</motion.p>
-      </Button>
-      <InfoModal
-        title="Que igreja é a Nossa Igreja?"
-        content={igrejaContent}
-        isOpen={isOpenIgreja}
-        onOpenChange={onOpenChangeIgreja}
-      />
+        <Button
+          onClick={() => setSelectedContent("igreja")}
+          className="flex justify-center mt-4 p-6 rounded-lg relative"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Que igreja é a Nossa Igreja?
+          </motion.p>
+        </Button>
 
-      <Button
-        onClick={() => onOpenChangeFe()}
-        className="flex justify-center mt-4 p-6 rounded-lg relative"
-      >
-        <motion.p
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}>Nossa Fé</motion.p>
-        
-      </Button>
-      <InfoModal
-        title="Nossa Fé"
-        content={feContent}
-        isOpen={isOpenFe}
-        onOpenChange={onOpenChangeFe}
-      />
+        <Button
+          onClick={() => setSelectedContent("fe")}
+          className="flex justify-center mt-4 p-6 rounded-lg relative"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Nossa Fé
+          </motion.p>
+        </Button>
 
-      <Button
-        onClick={() => onOpenChangeNossa()}
-        className="flex justify-center mt-4 p-6 rounded-lg relative"
-      >
-        <motion.p
-      initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{  duration: 0.5, delay: 0.6 }}>Nossa visão, missão e valores</motion.p>
-      </Button>
-      <InfoModal
-        title="Nossa visão, missão e valores"
-        content={nossaContent}
-        isOpen={isOpenNossa}
-        onOpenChange={onOpenChangeNossa}
-      />
+        <Button
+          onClick={() => setSelectedContent("nossa")}
+          className="flex justify-center mt-4 p-6 rounded-lg relative"
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            Nossa visão, missão e valores
+          </motion.p>
+        </Button>
+      </div>
+      {selectedContent && (
+        <div className="mt-2 p-4 bg-white text-black rounded-lg mb-4">
+          {renderContent()}
+        </div>
+      )}
     </div>
   );
 };

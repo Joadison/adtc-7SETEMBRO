@@ -3,21 +3,23 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "./theme/theme-context";
+import Image from 'next/image';
 
 const Fe = () => {
   const { colors } = useTheme();
   return (
-    <div className={`flex flex-col justify-center p-12 mx-auto ${colors.fundo} ${colors.text}`}>
-      <div className="max-w-3xl mx-auto px-4 items-center">
+    <div className={`flex-1 overflow-auto mx-auto p-2 ${colors.fundo} ${colors.text}`}>
       <motion.h1
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl font-bold text-center mb-8"
+        className="flex flex-col text-4xl font-semibold text-center justify-center items-center mb-[4rem]"
       >
+        <Image src={"https://utfs.io/f/b05fb922-f9a8-47ef-8834-dbed170256c5-1d.png"} width={100} height={100} alt="teste" className="mb-1"/>
         Em que cremos?
       </motion.h1>
 
+    <div  className="grid grid-cols-1 mx-20 gap-10 lg:mx-[10rem] lg:grid-cols-3 justify-center">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
