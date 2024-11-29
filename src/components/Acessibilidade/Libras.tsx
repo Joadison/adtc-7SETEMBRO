@@ -63,14 +63,7 @@ function VLibras({ forceOnload }: Props): JSX.Element {
 
       script.onload = () => {
         // @ts-ignore
-        new window.VLibras.Widget(widgetUrl, {
-            s:"",
-          rootPath: "/app",
-          personalization: "https://vlibras.gov.br/config/configs.json",
-          opacity: 0.75,
-          position: "L",
-          avatar: "hosana",
-        });
+        new window.VLibras.Widget(widgetUrl);
         if (forceOnload) {
           // @ts-ignore
           window.onload();
