@@ -1,3 +1,4 @@
+import VLibras from "@/components/Acessibilidade/Libras";
 import { AudioProvider } from "@/components/audio/audio-context";
 import AudioPlayer from "@/components/audio/AudioPlayer";
 import Footer from "@/components/footer";
@@ -13,8 +14,8 @@ export default function DefaultLayout({
       <AudioProvider>
         <Header />
         <>{children}</>
+        <VLibras forceOnload={true} />
         <Footer />
-
         <AudioPlayer />
       </AudioProvider>
     </div>
