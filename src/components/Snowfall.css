@@ -1,0 +1,71 @@
+#snow-container {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  z-index: 999;
+}
+
+.snow {
+  position: absolute;
+  top: -10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--flake-size, 10px);
+  height: var(--flake-size, 10px);
+  animation: fall linear infinite, sway ease-in-out infinite;
+  animation-duration: var(--fall-duration, 15s); 
+  animation-delay: var(--fall-delay, 0s);
+  transform: rotate(var(--flake-rotation, 0deg));
+}
+
+.snow-icon {
+  font-size: var(--flake-size, 8px);
+  color: white;
+  display: inline-block;
+  transform: rotate(var(--flake-rotation, 0deg));
+}
+
+@keyframes fall {
+  0% {
+    top: -10px;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    opacity: 0.5;
+  }
+}
+
+@keyframes sway {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(30px);
+  }
+  100% {
+    transform: translateX(-30px);
+  }
+}
+
+@keyframes rotate-left {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.snow {
+  animation: fall linear infinite, sway ease-in-out infinite, rotate-left linear infinite;
+  animation-duration: var(--fall-duration, 15s), 5s, 10s; 
+}

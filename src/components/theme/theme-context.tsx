@@ -4,11 +4,11 @@ import React, { createContext, useContext, useState } from "react";
 
 const themes = {
   light: {
-    background: "bg-[#204F79]",
+    background: "bg-[#126930]",
     text: "text-white",
-    background_mobiel: "bg-[#0B2945]",
-    button: "text-white hover:bg-[#325484] px-4 py-2 mx-2 rounded-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
-    fundo: "bg-[#0F2D43]",
+    background_mobiel: "bg-[#25924b]",
+    button: "text-white hover:bg-[#25924b] px-4 py-2 mx-2 rounded-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2",
+    fundo: "bg-[#093418]",
   },
   dark: {
     background: "bg-gray-900",
