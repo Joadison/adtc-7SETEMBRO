@@ -3,7 +3,6 @@
 import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import Image from "next/image";
-import { DayPicker } from "react-day-picker";
 import { Input } from "./ui/input";
 
 interface LinhaTabela {
