@@ -244,7 +244,7 @@ const SobreNos = () => {
       >
         <Button
           onClick={() => setSelectedContent("historia")}
-          className="flex justify-center mt-4 p-6 rounded-lg relative"
+          className="flex justify-center mt-4 p-6 rounded-lg relative bg-[#fa9066]"
         >
           <motion.p
             initial={{ opacity: 0, y: 0 }}
@@ -257,7 +257,7 @@ const SobreNos = () => {
 
         <Button
           onClick={() => setSelectedContent("igreja")}
-          className="flex justify-center mt-4 p-6 rounded-lg relative"
+          className="flex justify-center mt-4 p-6 rounded-lg relative bg-[#fa9066]"
         >
           <motion.p
             initial={{ opacity: 0, y: 0 }}
@@ -270,7 +270,7 @@ const SobreNos = () => {
 
         <Button
           onClick={() => setSelectedContent("fe")}
-          className="flex justify-center mt-4 p-6 rounded-lg relative"
+          className="flex justify-center mt-4 p-6 rounded-lg relative bg-[#fa9066]"
         >
           <motion.p
             initial={{ opacity: 0, y: 0 }}
@@ -283,7 +283,7 @@ const SobreNos = () => {
 
         <Button
           onClick={() => setSelectedContent("nossa")}
-          className="flex justify-center mt-4 p-6 rounded-lg relative"
+          className="flex justify-center mt-4 p-6 rounded-lg relative bg-[#fa9066]"
         >
           <motion.p
             initial={{ opacity: 0, y: 0 }}

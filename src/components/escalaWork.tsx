@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import Image from "next/image";
+import { DayPicker } from "react-day-picker";
 import { Input } from "./ui/input";
 
 interface LinhaTabela {
@@ -54,10 +55,20 @@ const EscalaWork = () => {
     }, 5000);
   };
 
-  const handleDateChange = (e: any) => {
+  const isMonday = (dateString: string) => {
+    const date = new Date(dateString);
+    console.log(date.getDay())
+    return date.getDay() === 0;
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
-    setDate(selectedDate);
-    gerarTabela(selectedDate);
+    if (isMonday(selectedDate)) {
+      setDate(selectedDate);
+      gerarTabela(selectedDate);
+    } else {
+      alert("Por favor, selecione uma segunda-feira.");
+    }
   };
 
   const gerarTabela = (inputData: any) => {
@@ -101,16 +112,26 @@ const EscalaWork = () => {
      
       let linhas: LinhaTabela[] = [];
 
-      if (diaSemana === "Terça") {
+      if (diaSemana === "Segunda") {
         linhas = [
-          { trabalho: "Círculo de Oração", horario: "18hs", direcao: "", recepcao: "", porteiro: "" },
-          { trabalho: "Ensaio de senhoras", horario: "20hs", direcao: "", recepcao: "", porteiro: "" },
-          { trabalho: "Ensaio de jovens", horario: "20hs", direcao: "", recepcao: "", porteiro: "" },
+          { trabalho: "Círculo de Oração", horario: "19hs", direcao: "Ir. Liduida e Ir. Mônica F.", recepcao: "", porteiro: "" },
+        ];
+      } else if (diaSemana === "Terça") {
+        linhas = [
+          { trabalho: "Ensaio ", horario: "19hs", direcao: "", recepcao: "", porteiro: "" },
+        ];
+      } else if (diaSemana === "Quarta") {
+        linhas = [
+          { trabalho: "Consagração", horario: "7hs", direcao: "Ir. Liduida e Ir. Mônica F.", recepcao: "", porteiro: "" },
+        ];
+      } else if (diaSemana === "Quinta") {
+        linhas = [
+          { trabalho: "Culto de Doutrina", horario: "19hs", direcao: "Pr. Eloi", recepcao: "", porteiro: "" },
         ];
       } else if (diaSemana === "Domingo") {
         linhas = [
-          { trabalho: "EBD", horario: "8hs", direcao: "", recepcao: "", porteiro: "" },
-          { trabalho: "Culto", horario: "18hs", direcao: "", recepcao: "", porteiro: "" },
+          { trabalho: "EBD", horario: "8hs", direcao: "Aux. Wagner", recepcao: "", porteiro: "" },
+          { trabalho: "Culto de", horario: "18hs", direcao: "Pr. Eloi", recepcao: "", porteiro: "" },
         ];
       } else {
         linhas = [{ trabalho: "LIVRE", horario: "LIVRE", direcao: "", recepcao: "", porteiro: "" }];
@@ -153,7 +174,7 @@ const EscalaWork = () => {
         value={date}
         onChange={handleDateChange}
         className="bg-[#f18933] border-none text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-[#ff7f00]"
-      />
+      />  
       <div className="w-full overflow-auto">
       <div ref={captureRef} className="w-[120rem] p-0 flex flex-col justify-center items-center">  
         <div className="relative z-0 flex flex-col my-6 mx-2 items-center text-center justify-center border-double border-8 border-orange-500 rounded-lg">
@@ -234,6 +255,7 @@ const EscalaWork = () => {
                         <select
                           required
                           className="text-center text-black bg-transparent w-full"
+                          value={linha.direcao || "LIVRE"} 
                         >
                           <option>LIVRE</option>
                           <option>Pr. Eloi</option>

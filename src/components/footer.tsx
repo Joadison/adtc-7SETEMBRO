@@ -23,12 +23,12 @@ const Footer = () => {
       </div> */}
 
       <div className="space-y-1 md:space-y-2">
-        <h2 className="text-sm md:text-base lg:text-lg">
+        <h2 className="text-sm md:text-base lg:text-lg text-white">
           Rua Santa Rita, 857 - Siqueira, Fortaleza - CE, 60544-428
           {/* | contato@adtemplocentral.com | Tel: (85) 4008 5200 */}
         </h2>
 
-        <h2 className="text-sm md:text-base lg:text-lg">
+        <h2 className="text-sm md:text-base lg:text-lg  text-white">
         Cultos - Domingo: 18:00h às 20:00h | Cultos de Doutrinas - Quinta-Feira: 19:00h às 21:00h |​ Escola Bíblica - Domingo: 08:00h às 10:00h
         </h2>
       </div>
