@@ -70,18 +70,17 @@ const EscalaWork = () => {
     }
   };
 
-  const gerarTabela = (inputData: any) => {
-    const parts = inputData.split("-");
-    const dataSelecionada = new Date(parts[0], parts[1] - 1, parts[2]);
+  const gerarTabela = (inputData: string) => {
+    const dataSelecionada = new Date(inputData);
 
     const diasSemana = [
-      "Domingo",
       "Segunda",
       "Terça",
       "Quarta",
       "Quinta",
       "Sexta",
       "Sábado",
+      "Domingo",
     ];
     const meses = [
       "Janeiro",
@@ -98,21 +97,26 @@ const EscalaWork = () => {
       "Dezembro",
     ];
 
-    let novaTabela: DiaTabela[] = [];
-
-    for (let i = 0; i < 7; i++) {
+    const novaTabela: DiaTabela[] = Array.from({ length: 7 }, (_, i) => {
       const data = new Date(dataSelecionada);
       data.setDate(dataSelecionada.getDate() + i);
 
-      const diaSemana = diasSemana[data.getDay()];
-      const dia = data.getDate();
-      const mes = meses[data.getMonth()];
-      const ano = data.getFullYear();
+      return {
+        diaSemana: diasSemana[data.getDay()],
+        data: `${data.getDate()} de ${
+          meses[data.getMonth()]
+        } de ${data.getFullYear()}`,
+        linhas: obterLinhas(diasSemana[data.getDay()]),
+      };
+    });
 
-      let linhas: LinhaTabela[] = [];
+    setTabela(novaTabela);
+  };
 
-      if (diaSemana === "Segunda") {
-        linhas = [
+  const obterLinhas = (diaSemana: string): LinhaTabela[] => {
+    switch (diaSemana) {
+      case "Segunda":
+        return [
           {
             trabalho: "Círculo de Oração",
             horario: "19hs",
@@ -121,18 +125,18 @@ const EscalaWork = () => {
             porteiro: "",
           },
         ];
-      } else if (diaSemana === "Terça") {
-        linhas = [
+      case "Terça":
+        return [
           {
-            trabalho: "Ensaio ",
+            trabalho: "Ensaio",
             horario: "19hs",
             direcao: "",
             recepcao: "",
             porteiro: "",
           },
         ];
-      } else if (diaSemana === "Quarta") {
-        linhas = [
+      case "Quarta":
+        return [
           {
             trabalho: "Consagração",
             horario: "7hs",
@@ -141,8 +145,8 @@ const EscalaWork = () => {
             porteiro: "",
           },
         ];
-      } else if (diaSemana === "Quinta") {
-        linhas = [
+      case "Quinta":
+        return [
           {
             trabalho: "Culto de Doutrina",
             horario: "19hs",
@@ -151,8 +155,8 @@ const EscalaWork = () => {
             porteiro: "",
           },
         ];
-      } else if (diaSemana === "Sexta") {
-        linhas = [
+      case "Sexta":
+        return [
           {
             trabalho: "DESCANSO",
             horario: "LIVRE",
@@ -161,8 +165,8 @@ const EscalaWork = () => {
             porteiro: "LIVRE",
           },
         ];
-      } else if (diaSemana === "Domingo") {
-        linhas = [
+      case "Domingo":
+        return [
           {
             trabalho: "EBD",
             horario: "8hs",
@@ -171,15 +175,15 @@ const EscalaWork = () => {
             porteiro: "",
           },
           {
-            trabalho: "Culto de",
+            trabalho: "Culto",
             horario: "18hs",
             direcao: "Pr. Eloi",
             recepcao: "",
             porteiro: "",
           },
         ];
-      } else {
-        linhas = [
+      default:
+        return [
           {
             trabalho: "LIVRE",
             horario: "LIVRE",
@@ -188,36 +192,42 @@ const EscalaWork = () => {
             porteiro: "",
           },
         ];
-      }
-
-      novaTabela.push({
-        diaSemana,
-        data: `${dia} de ${mes} de ${ano}`,
-        linhas,
-      });
     }
-
-    setTabela(novaTabela);
   };
 
   const adicionarLinha = (index: number) => {
-    const novaLinha: LinhaTabela = {
-      trabalho: "LIVRE",
-      horario: "LIVRE",
-      direcao: "",
-      recepcao: "",
-      porteiro: "",
-      acao: "",
-    };
-    const novaTabela = [...tabela];
-    novaTabela[index].linhas.push(novaLinha);
-    setTabela(novaTabela);
+    setTabela((prevTabela) =>
+      prevTabela.map((dia, i) =>
+        i === index
+          ? {
+              ...dia,
+              linhas: [
+                ...dia.linhas,
+                {
+                  trabalho: "LIVRE",
+                  horario: "LIVRE",
+                  direcao: "",
+                  recepcao: "",
+                  porteiro: "",
+                },
+              ],
+            }
+          : dia
+      )
+    );
   };
 
-  const deletarLinha = (diaIndex: any, linhaIndex: any) => {
-    const novaTabela = [...tabela];
-    novaTabela[diaIndex].linhas.splice(linhaIndex, 1);
-    setTabela(novaTabela);
+  const deletarLinha = (diaIndex: number, linhaIndex: number) => {
+    setTabela((prevTabela) =>
+      prevTabela.map((dia, i) =>
+        i === diaIndex
+          ? {
+              ...dia,
+              linhas: dia.linhas.filter((_, index) => index !== linhaIndex),
+            }
+          : dia
+      )
+    );
   };
 
   return (
@@ -311,7 +321,7 @@ const EscalaWork = () => {
                           <select
                             required
                             className="text-center text-black bg-transparent w-full"
-                            value={linha.direcao || "LIVRE"}
+                            defaultValue={linha.direcao || 'LIVRE'}
                           >
                             <option>LIVRE</option>
                             <option>Pr. Eloi</option>
