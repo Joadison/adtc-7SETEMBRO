@@ -10,11 +10,11 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col w-screen h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen">
       <AudioProvider>
         <Header />
         <>{children}</>
-        <VLibras forceOnload={true} />
+        <VLibras forceOnload={true} /> 
         <Footer />
         <AudioPlayer />
       </AudioProvider>

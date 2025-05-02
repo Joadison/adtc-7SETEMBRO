@@ -1,147 +1,133 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { useTheme } from "./theme/theme-context";
-import AudioPlayer from "./audio/AudioPlayer";
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Menu, X } from "lucide-react"
+/* import AudioPlayer from "./audio/AudioPlayer" */
+import { Button } from "./ui/button"
+import Link from "next/link"
 
 const Header = () => {
-  const router = useRouter();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { colors } = useTheme();
-
+  const router = useRouter()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   const navigateTo = (route: string) => {
-    router.push(route);
-    setIsMenuOpen(false);
-  };
+    router.push(route)
+    setIsMenuOpen(false)
+  }
 
   return (
     <>
-    <AudioPlayer/>
-    <header
-      className={`flex justify-between items-center px-4 pt-4 pb-8 md:px-6 md:pb-6 lg:px-10  ${colors.background} border-b-4`}
-    >
+      {/* <AudioPlayer /> */}
+      <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+        <div className="container flex h-20 items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-auto h-12 cursor-pointer">
+              <Image
+                src="https://iiisjlgwrr.ufs.sh/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
+                alt="7Setembro"
+                width={200}
+                height={48}
+                className="object-contain h-full"
+              />
+            </div>
+          </Link>
+
+          <nav className="hidden md:flex gap-4">
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors"
+              onClick={() => navigateTo("/em-que-cremos")}
+            >
+              Em que cremos?
+            </Button>
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors"
+              onClick={() => navigateTo("/sobre-nos")}
+            >
+              Sobre nós
+            </Button>
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors"
+              onClick={() => navigateTo("/ministerios")}
+            >
+              Ministérios
+            </Button>
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors"
+              onClick={() => navigateTo("/cultos")}
+            >
+              Culto ao Vivo
+            </Button>
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <Button
+              className="hidden md:flex bg-orange-600 hover:bg-orange-700 text-white"
+              onClick={() => navigateTo("/contato")}
+            >
+              Fale Conosco
+            </Button>
+            <Button variant="outline" size="icon" className="md:hidden" onClick={toggleMenu}>
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={toggleMenu} />}
+
+      {/* Mobile Menu */}
       <div
-        className="w-56 h-16 cursor-pointer"
-        onClick={() => router.push("/")}
+        className={`fixed top-20 left-0 right-0 bottom-0 z-50 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-        <Image
-          src="https://utfs.io/f/4e99fe31-7f29-4994-80fe-ebd9fd09130e-leijnu.png"
-          alt="7Setembro"
-          width={1000}
-          height={20}
-          className="object-cover"
-        />
-      </div>
-
-      <div className="hidden md:flex flex-wrap justify-center text-sm md:text-md">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => navigateTo("/em-que-cremos")}
-        >
-          Em que cremos?
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => navigateTo("/sobre-nos")}
-        >
-          Sobre nós
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => navigateTo("/ministerios")}
-        >
-          Ministérios
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => navigateTo("/cultos")}
-        >
-          Culto ao Vivo
-        </Button>
-        {/* <Button
-          type="button"
-          variant="ghost"
-          onClick={() => navigateTo("/config")}
-        >
-          Configuração
-        </Button> */}
-      </div>
-
-      <div className="md:hidden">
-        <button onClick={toggleMenu}>
-          {isMenuOpen ? (
-            <X className="h-8 w-8 text-white" />
-          ) : (
-            <Menu className="h-8 w-8 text-white" />
-          )}
-        </button>
-      </div>
-
-      {/* Menu Mobile */}
-      <div
-        className={`fixed top-[7rem] left-0 w-full h-full ${
-          colors.background_mobiel
-        } z-50 overflow-hidden ${isMenuOpen ? "flex" : "hidden"} md:hidden`}
-      >
-        <div className="flex flex-col items-center justify-start w-full">
+        <div className="flex flex-col p-6 space-y-4 h-full overflow-y-auto">
           <Button
-            type="button"
-            variant="ghost"
+            variant="default"
+            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
             onClick={() => navigateTo("/em-que-cremos")}
-            className="my-1 text-center p-10 text-2xl" 
           >
             Em que cremos?
           </Button>
-
           <Button
-            type="button"
-            variant="ghost"
+            variant="default"
+            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
             onClick={() => navigateTo("/sobre-nos")}
-            className="my-1 text-center p-10 text-2xl"
           >
             Sobre nós
           </Button>
           <Button
-            type="button"
-            variant="ghost"
+            variant="default"
+            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
             onClick={() => navigateTo("/ministerios")}
-            className="my-1 text-center p-10 text-2xl"
           >
             Ministérios
           </Button>
           <Button
-            type="button"
-            variant="ghost"
+            variant="default"
+            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
             onClick={() => navigateTo("/cultos")}
-            className="my-1 text-center p-10 text-2xl"
           >
             Culto ao Vivo
           </Button>
-          {/* <Button
-            type="button"
-            variant="ghost"
-            onClick={() => navigateTo("/config")}
-            className="my-2 text-center"
-          >
-            Configuração
-          </Button> */}
+          <Button className="bg-orange-600 hover:bg-orange-700 text-white mt-4" onClick={() => navigateTo("/contato")}>
+            Fale Conosco
+          </Button>
         </div>
       </div>
-    </header>
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
+

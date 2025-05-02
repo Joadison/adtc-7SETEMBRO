@@ -1,48 +1,178 @@
-'use client'
+"use client";
 
-import { Instagram } from 'lucide-react';
-import { Button } from './ui/button';
-import { useTheme } from './theme/theme-context';
-import Image from 'next/image';
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { Instagram, MapPin, Phone, Mail, Calendar, Clock } from "lucide-react";
 
 const Footer = () => {
-  const { colors } = useTheme();
   return (
-    <div className={`flex flex-col justify-center items-center text-center p-2 md:p-4  ${colors.background} border-t-4 ${colors.text}`}>
-      <Image 
-      src={"https://utfs.io/f/R1WGWTYNvh5qddKtRjImcd8JZLAukXKopthTfwveqr04OaE9"}
-      alt='ADTCFOOTER'
-      width={120}
-      height={30}
-      className="object-cover object-center mb-4"
-      />
-      {/* <div className="p-8 md:p-12 lg:p-16 mb-4 md:mb-6 lg:mb-8 border-y-2 border-[#ed6b0e]">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">
-          “Fazer discípulos e conduzí-los a, amar, acolher e servir.”
-        </h1>
-      </div> */}
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8">
+          {/* Column 1 - Logo and Mission */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Image
+                src="https://utfs.io/f/R1WGWTYNvh5qddKtRjImcd8JZLAukXKopthTfwveqr04OaE9"
+                alt="AD Templo Central Logo"
+                width={80}
+                height={80}
+                className="h-16 w-16 object-contain brightness-0 invert"
+              />
+              <div className="flex flex-col">
+                <span className="text-sm font-bold">AD Templo Central</span>
+                <span className="text-xs text-gray-400">7 DE SETEMBRO</span>
+              </div>
+            </div>
 
-      <div className="space-y-1 md:space-y-2">
-        <h2 className="text-sm md:text-base lg:text-lg text-white">
-          Rua Santa Rita, 857 - Siqueira, Fortaleza - CE, 60544-428
-          {/* | contato@adtemplocentral.com | Tel: (85) 4008 5200 */}
-        </h2>
+            <div className="p-4 border-l-2 border-orange-600 mb-4 bg-gray-800/50 rounded">
+              <p className="italic text-gray-300">
+                "Fazer discípulos e conduzi-los a amar, acolher e servir."
+              </p>
+            </div>
 
-        <h2 className="text-sm md:text-base lg:text-lg  text-white">
-        Cultos - Domingo: 18:00h às 20:00h | Cultos de Doutrinas - Quinta-Feira: 19:00h às 21:00h |​ Escola Bíblica - Domingo: 08:00h às 10:00h
-        </h2>
+            <div className="flex gap-4">
+              <Link
+                href="https://www.instagram.com/adtc.7setembro1/"
+                className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram className="h-4 w-4" />
+                <span className="sr-only">Instagram</span>
+              </Link>
+              {/* <Link
+                href="https://facebook.com"
+                className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Facebook className="h-4 w-4" />
+                <span className="sr-only">Facebook</span>
+              </Link> */}
+              {/* <Link
+                href="https://youtube.com"
+                className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Youtube className="h-4 w-4" />
+                <span className="sr-only">Youtube</span>
+              </Link> */}
+            </div>
+          </div>
+
+          {/* Column 2 - Quick Links */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Links Rápidos</h3>
+            <ul className="space-y-2">
+              {[
+                { name: "Em que cremos?", path: "/em-que-cremos" },
+                { name: "Sobre nós", path: "/sobre-nos" },
+                { name: "Ministérios", path: "/ministerios" },
+                { name: "Culto ao Vivo", path: "/cultos" },
+                /* { name: "Eventos", path: "/eventos" }, */
+                { name: "Contato", path: "/contato" },
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.path}
+                    className="text-gray-400 hover:text-white hover:underline transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3 - Service Times */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Horários de Culto</h3>
+            <ul className="space-y-3 text-gray-400">
+              <li className="flex items-start">
+                <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
+                <div>
+                  <p className="font-medium text-white">Cultos - Domingo</p>
+                  <div className="flex items-center">
+                    <Clock className="h-3 w-3 mr-1 text-gray-500" />
+                    <p>18:00h às 20:00h</p>
+                  </div>
+                </div>
+              </li>
+              <li className="flex items-start">
+                <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
+                <div>
+                  <p className="font-medium text-white">
+                    Cultos de Doutrinas - Quinta-Feira
+                  </p>
+                  <div className="flex items-center">
+                    <Clock className="h-3 w-3 mr-1 text-gray-500" />
+                    <p>19:00h às 21:00h</p>
+                  </div>
+                </div>
+              </li>
+              <li className="flex items-start">
+                <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
+                <div>
+                  <p className="font-medium text-white">
+                    Escola Bíblica - Domingo
+                  </p>
+                  <div className="flex items-center">
+                    <Clock className="h-3 w-3 mr-1 text-gray-500" />
+                    <p>08:00h às 10:00h</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4 - Contact */}
+          <div>
+            <h3 className="text-lg font-bold mb-4">Contato</h3>
+            <ul className="space-y-3 text-gray-400">
+              <li className="flex items-start">
+                <MapPin className="h-4 w-4 mr-2 mt-1 text-orange-500" />
+                <span>
+                  Rua Santa Rita, 857 - Siqueira, Fortaleza - CE, 60544-428
+                </span>
+              </li>
+              {/* <li className="flex items-center">
+                <Phone className="h-4 w-4 mr-2 text-orange-500" />
+                <span>(85) 4008 5200</span>
+              </li> */}
+              <li className="flex items-center">
+                <Mail className="h-4 w-4 mr-2 text-orange-500" />
+                <span>adtemplocentral7setembro1@gmail.com</span>
+              </li>
+            </ul>
+
+            <div className="mt-6">
+              <Button
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                onClick={() =>
+                  window.open(
+                    "https://www.instagram.com/adtc.7setembro1/",
+                    "_blank"
+                  )
+                }
+              >
+                <Instagram className="mr-2 h-4 w-4" />
+                Siga a nossa Rede Social
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <p>
+            © {new Date().getFullYear()} AD Templo Central - 7 de Setembro.
+            Todos os direitos reservados.
+          </p>
+        </div>
       </div>
-
-      <div className="flex justify-center my-1">
-        <Button
-          className="flex items-center space-x-2"
-          onClick={() => { window.location.href = 'https://www.instagram.com/adtc.7setembro1/'; }}
-        >
-          <span>Siga a nossa Rede Social</span>
-          <Instagram className="text-2xl cursor-pointer" />
-        </Button>
-      </div>
-    </div>
+    </footer>
   );
 };
 
