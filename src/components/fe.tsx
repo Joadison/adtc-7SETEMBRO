@@ -129,8 +129,8 @@ const Fe = () => {
               fill="currentColor"
             />
             <p className="text-lg md:text-2xl font-medium leading-relaxed italic text-center">
-              "Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.  
-              Não vem das obras, para que ninguém se glorie."
+              &quot;Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus.  
+              Não vem das obras, para que ninguém se glorie.&quot;
             </p>
             <footer className="mt-4 text-right font-semibold text-lg">— Efésios 2:8-9</footer>
             <Quote

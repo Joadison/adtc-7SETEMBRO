@@ -28,7 +28,7 @@ const Footer = () => {
 
             <div className="p-4 border-l-2 border-orange-600 mb-4 bg-gray-800/50 rounded">
               <p className="italic text-gray-300">
-                "Fazer discípulos e conduzi-los a amar, acolher e servir."
+              &quot;Fazer discípulos e conduzi-los a amar, acolher e servir.&quot;
               </p>
             </div>
 

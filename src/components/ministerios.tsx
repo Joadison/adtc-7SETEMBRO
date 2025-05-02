@@ -235,7 +235,7 @@ const Ministerios = () => {
 
                   <div className="mb-4">
                     <p className="text-gray-700 italic mb-1">
-                      "{ministry.description}"
+                    &quot;{ministry.description}&quot;
                     </p>
                     <p className="text-sm font-medium text-gray-600">
                       {ministry.reference}

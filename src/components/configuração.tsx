@@ -14,20 +14,20 @@ const Config = () => {
   return (
     <>
       <div className="flex flex-row justify-center items-center text-white p-4 bg-[#ff7f00] ">
-        {/*  <Button variant="ghost" onClick={() => handleNavigation("EscalaWork")}>
+        {/*  <Button variant="default" onClick={() => handleNavigation("EscalaWork")}>
           Escalas de Trabalhos
         </Button>
-          <Button variant="ghost" onClick={() => handleNavigation("EscalaOp")}>
+          <Button variant="default" onClick={() => handleNavigation("EscalaOp")}>
           Escala de Oportunidade
         </Button> 
-          <Button variant="ghost" onClick={() => handleNavigation('Story')}>
+          <Button variant="default" onClick={() => handleNavigation('Story')}>
           Criação de Story
         </Button> */}
       </div>
 
       <div className="relative overflow-auto">
-          <EscalaWork />
-      {/* {activeComponent === "EscalaWork" && <EscalaWork />}
+        <EscalaWork />
+        {/* {activeComponent === "EscalaWork" && <EscalaWork />}
           {activeComponent === "EscalaOp" && <EscalaOp />} 
           {activeComponent === 'Story' && <Story />} */}
       </div>

@@ -411,7 +411,7 @@ const Cultos = () => {
             >
               <div className="absolute top-2 right-2 z-10">
                 <Button
-                  variant="ghost"
+                  variant="default"
                   size="icon"
                   className="rounded-full bg-black/20 hover:bg-black/40 text-white"
                   onClick={closeVideoModal}

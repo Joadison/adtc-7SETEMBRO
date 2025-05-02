@@ -67,7 +67,7 @@ const SobreNos = () => {
 
       <p className="indent-6 text-gray-700 leading-relaxed">
         A identidade da Nossa Igreja está diretamente ligada à nossa história. Somos uma igreja centenária – existimos
-        há mais de 100 anos. E, nossa história, é formada por "muitas histórias": histórias de homens e de mulheres de
+        há mais de 100 anos. E, nossa história, é formada por &quot;muitas histórias&quot;: histórias de homens e de mulheres de
         Deus, das diversas gerações, em distintos lugares e realidades, que experimentaram o poder do Espírito Santo e
         realizaram a obra do Senhor no mundo. Temos uma história e ela conta a respeito de quem somos, o que cremos e o
         que fazemos.
@@ -187,8 +187,8 @@ const SobreNos = () => {
           o Espírito Santo e na atualidade dos dons espirituais na vida do crente.
         </p>
         <p className="text-gray-700 leading-relaxed mt-4">
-          Historicamente, as Assembleias de Deus têm sintetizado a fé pentecostal na seguinte declaração: "Jesus salva,
-          cura, batiza com o Espírito Santo e em breve voltará".
+          Historicamente, as Assembleias de Deus têm sintetizado a fé pentecostal na seguinte declaração: &quot;Jesus salva,
+          cura, batiza com o Espírito Santo e em breve voltará&quot;.
         </p>
       </div>
 
@@ -291,8 +291,8 @@ const SobreNos = () => {
             </div>
             <h3 className="text-xl font-bold mb-4 text-gray-900">Nossa Visão</h3>
             <p className="text-gray-700 leading-relaxed">
-              Nossa Igreja tem como visão ser "uma comunidade que seja fiel à proclamação e a vivência do Evangelho de
-              Cristo, relevante no contexto social, reconhecida como um lugar de Restauração, Misericórdia e Ensino".
+              Nossa Igreja tem como visão ser &quot;uma comunidade que seja fiel à proclamação e a vivência do Evangelho de
+              Cristo, relevante no contexto social, reconhecida como um lugar de Restauração, Misericórdia e Ensino&quot;.
             </p>
           </CardContent>
         </Card>
@@ -304,7 +304,7 @@ const SobreNos = () => {
             </div>
             <h3 className="text-xl font-bold mb-4 text-gray-900">Nossa Missão</h3>
             <p className="text-gray-700 leading-relaxed">
-              Nossa Igreja tem por missão "fazer discípulos e conduzi-los a Amar, Acolher e Servir."
+              Nossa Igreja tem por missão &quot;fazer discípulos e conduzi-los a Amar, Acolher e Servir.&quot;
             </p>
           </CardContent>
         </Card>
@@ -326,7 +326,7 @@ const SobreNos = () => {
       <div className="bg-gradient-to-r from-orange-600 to-orange-500 rounded-xl overflow-hidden">
         <div className="p-8 md:p-12 text-white">
           <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
-            "Fazer discípulos e conduzi-los a amar, acolher e servir."
+          &quot;Fazer discípulos e conduzi-los a amar, acolher e servir.&quot;
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
