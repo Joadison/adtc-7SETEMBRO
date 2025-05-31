@@ -13,7 +13,7 @@ export default function DefaultLayout({
       <AudioProvider>
         <Header />
         <>{children}</>
-        =<Footer />
+        <Footer />
         <AudioPlayer />
       </AudioProvider>
     </div>

@@ -292,12 +292,6 @@ export default function Main() {
                 <MapPin className="mr-2 h-4 w-4" />
                 Como Chegar
               </Button>
-              {/* <Button
-                variant="outline"
-                className="text-white border-white hover:bg-orange-700"
-              >
-                Entre em Contato
-              </Button> */}
             </div>
           </div>
         </section>
