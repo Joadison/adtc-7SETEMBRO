@@ -106,8 +106,8 @@ const SobreNos = () => {
 
   const igrejaContent = (
     <div className="space-y-6">
-      {/* <div className="flex flex-col md:flex-row gap-8 mb-8"> */}
-        {/* <div className="md:w-1/2"> */}
+      <div className="flex flex-col md:flex-row gap-8 mb-8"> 
+        <div className="md:w-1/2"> 
           <h2 className="text-2xl font-bold mb-4 text-gray-900">Assembleia de Deus Templo Central</h2>
           <p className="indent-6 text-gray-700 leading-relaxed">
             Nossa igreja, a Assembleia de Deus Templo Central é uma igreja cristã, evangélica e pentecostal, com mais de
@@ -122,17 +122,18 @@ const SobreNos = () => {
             e serviço. Nossa Igreja é uma igreja bíblica, multigeracional, multilocal, que crê na experiência do
             Pentecostes para nossos dias e busca comunicar de maneira íntegra e relevante o Evangelho ao mundo
             contemporâneo.
-          </p>
-        {/* </div> */}
-        {/* <div className="md:w-1/2 relative h-64 md:h-auto rounded-xl overflow-hidden">
+          </p> 
+        </div> 
+        <div className="md:w-1/2 relative h-64 md:h-auto rounded-xl overflow-hidden">
           <Image
-            src="/placeholder.svg?height=600&width=800&text=Templo Central"
+            src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qMjQJBiKnBclR6x9A7mOqZQit2G1ugVhYwTEN"
             alt="Templo Central"
             fill
             className="object-cover"
           />
-        </div> */}
-      {/* </div> */}
+        </div>
+      </div> 
+        
 
       <div className="bg-orange-50 p-6 rounded-xl border border-orange-100">
         <h3 className="text-xl font-bold mb-4 text-orange-700">Projeto Atos 2</h3>

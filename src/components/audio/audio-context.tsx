@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState, useRef, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useRef, ReactNode, useEffect } from 'react';
 
 interface AudioContextType {
+  audioRef: React.RefObject<HTMLAudioElement>;
   isPlaying: boolean;
   volume: number;
   isMuted: boolean;
@@ -21,16 +22,45 @@ export const useAudio = () => {
   return context;
 };
 
-// Tipagem para o AudioProvider aceitar `children`
 interface AudioProviderProps {
   children: ReactNode;
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('audioState');
+      return saved ? JSON.parse(saved).isPlaying : false;
+    }
+    return false;
+  });
+  const [isMuted, setIsMuted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('audioState');
+      return saved ? JSON.parse(saved).isMuted : false;
+    }
+    return false;
+  });
+  
+  const [volume, setVolume] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('audioState');
+      return saved ? JSON.parse(saved).volume : 1;
+    }
+    return 1;
+  });
+
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('audioState', JSON.stringify({
+        isPlaying,
+        isMuted,
+        volume
+      }));
+    }
+  }, [isPlaying, isMuted, volume]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -38,7 +68,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play();
+      audio.play().catch(error => {
+        console.error("Erro ao reproduzir áudio:", error);
+      });
     }
     setIsPlaying(!isPlaying);
   };
@@ -59,9 +91,21 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = volume;
+    audio.muted = isMuted;
+    if (isPlaying) {
+      audio.play().catch(error => {
+        console.error("Erro ao retomar reprodução:", error);
+      });
+    }
+  }, []);
+
   return (
-    <AudioContext.Provider value={{ isPlaying, volume, isMuted, togglePlayPause, toggleMute, handleVolumeChange }}>
-      <audio ref={audioRef} src="https://r16.ciclano.io:15045/stream" autoPlay={isPlaying} className="hidden" />
+    <AudioContext.Provider value={{audioRef, isPlaying, volume, isMuted, togglePlayPause, toggleMute, handleVolumeChange }}>
+      <audio ref={audioRef} src="https://r16.ciclano.io/proxy/rdoassembleia/stream" autoPlay={isPlaying} className="hidden" />
       {children}
     </AudioContext.Provider>
   );

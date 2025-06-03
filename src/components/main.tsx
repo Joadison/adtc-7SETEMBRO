@@ -27,7 +27,7 @@ export default function Main() {
         {/* Imagem e Apresentação */}
         <section className="relative">
           <div className="absolute inset-0 bg-black/50 z-10" />
-          <div className="relative h-[70vh] overflow-hidden">
+          <div className="relative h-[79vh] overflow-hidden">
             <Image
               src="https://utfs.io/f/R1WGWTYNvh5qCYMA8pYH4EyDWJlihTzvtuRmKVpLg3jsBIa1"
               alt="Igreja AD Templo Central 7 de Setembro"
@@ -108,12 +108,12 @@ export default function Main() {
                 </Button>
               </div>
               <div className="relative h-[400px] rounded-lg overflow-hidden">
-                {/* <Image
-                            src="/placeholder.svg?height=800&width=800"
-                            alt="Comunidade da Igreja"
-                            fill
-                            className="object-cover"
-                            /> */}
+                <Image
+                  src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI"
+                  alt="Comunidade da Igreja"
+                  fill
+                  className="object-cover"
+                  />
               </div>
             </div>
           </div>

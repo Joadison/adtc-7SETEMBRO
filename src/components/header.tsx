@@ -23,7 +23,7 @@ const Header = () => {
   return (
     <>
       {/* <AudioPlayer /> */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="sticky top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="container flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-auto h-12 cursor-pointer">
@@ -87,7 +87,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-20 left-0 right-0 bottom-0 z-50 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed top-28 left-0 right-0 bottom-0 z-50 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

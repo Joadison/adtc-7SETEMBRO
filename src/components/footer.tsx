@@ -3,13 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Instagram, MapPin, Phone, Mail, Calendar, Clock } from "lucide-react";
+import {
+  Instagram,
+  MapPin,
+  Mail,
+  Calendar,
+  Clock,
+  Facebook,
+  Youtube,
+} from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Image
@@ -27,7 +35,8 @@ const Footer = () => {
 
             <div className="p-4 border-l-2 border-orange-600 mb-4 bg-gray-800/50 rounded">
               <p className="italic text-gray-300">
-              &quot;Fazer discípulos e conduzi-los a amar, acolher e servir.&quot;
+                &quot;Fazer discípulos e conduzi-los a amar, acolher e
+                servir.&quot;
               </p>
             </div>
 
@@ -41,24 +50,24 @@ const Footer = () => {
                 <Instagram className="h-4 w-4" />
                 <span className="sr-only">Instagram</span>
               </Link>
-              {/* <Link
-                href="https://facebook.com"
+              <Link
+                href="https://www.facebook.com/adtc.7setembro1"
                 className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Facebook className="h-4 w-4" />
                 <span className="sr-only">Facebook</span>
-              </Link> */}
-              {/* <Link
-                href="https://youtube.com"
+              </Link>
+              <Link
+                href="https://www.youtube.com/@ADTC7deSetembro1"
                 className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-orange-600 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Youtube className="h-4 w-4" />
                 <span className="sr-only">Youtube</span>
-              </Link> */}
+              </Link>
             </div>
           </div>
 
@@ -90,29 +99,29 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Horários de Culto</h3>
             <ul className="space-y-3 text-gray-400">
-              <li className="flex items-start">
+              <li className="flex flex-wrap items-start">
                 <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
                 <div>
                   <p className="font-medium text-white">Cultos - Domingo</p>
-                  <div className="flex items-center">
+                  <div className="flex flex-wrap items-center">
                     <Clock className="h-3 w-3 mr-1 text-gray-500" />
                     <p>18:00h às 20:00h</p>
                   </div>
                 </div>
               </li>
-              <li className="flex items-start">
+              <li className="flex flex-wrap items-start">
                 <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
                 <div>
                   <p className="font-medium text-white">
                     Cultos de Doutrinas - Quinta-Feira
                   </p>
-                  <div className="flex items-center">
+                  <div className="flex flex-wrap items-center">
                     <Clock className="h-3 w-3 mr-1 text-gray-500" />
                     <p>19:00h às 21:00h</p>
                   </div>
                 </div>
               </li>
-              <li className="flex items-start">
+              <li className="flex flex-wrap items-start">
                 <Calendar className="h-4 w-4 mr-2 mt-1 text-orange-500" />
                 <div>
                   <p className="font-medium text-white">
@@ -131,19 +140,17 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Contato</h3>
             <ul className="space-y-3 text-gray-400">
-              <li className="flex items-start">
+              <li className="flex flex-wrap items-start">
                 <MapPin className="h-4 w-4 mr-2 mt-1 text-orange-500" />
                 <span>
                   Rua Santa Rita, 857 - Siqueira, Fortaleza - CE, 60544-428
                 </span>
               </li>
-              {/* <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 text-orange-500" />
-                <span>(85) 4008 5200</span>
-              </li> */}
-              <li className="flex items-center">
+              <li className="flex flex-wrap items-center">
                 <Mail className="h-4 w-4 mr-2 text-orange-500" />
-                <span>adtemplocentral7setembro1@gmail.com</span>
+                <span className="break-all">
+                  adtemplocentral7setembro1@gmail.com
+                </span>
               </li>
             </ul>
 
@@ -166,8 +173,8 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
           <p>
-            © {new Date().getFullYear()} AD Templo Central - 7 de Setembro.
-            Todos os direitos reservados.
+            © 2024 AD Templo Central - 7 de Setembro. Todos os direitos
+            reservados.
           </p>
         </div>
       </div>
