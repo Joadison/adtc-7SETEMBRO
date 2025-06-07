@@ -106,8 +106,10 @@ const SobreNos = () => {
 
   const igrejaContent = (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row gap-8 mb-8"> 
-        <div className="md:w-1/2"> 
+     {/*  <div className="flex flex-col md:flex-row gap-8 mb-8">  */}
+     <div className="flex flex-col gap-8 mb-8"> 
+       {/*  <div className="md:w-1/2">  */}
+        <div className=""> 
           <h2 className="text-2xl font-bold mb-4 text-gray-900">Assembleia de Deus Templo Central</h2>
           <p className="indent-6 text-gray-700 leading-relaxed">
             Nossa igreja, a Assembleia de Deus Templo Central é uma igreja cristã, evangélica e pentecostal, com mais de
@@ -124,14 +126,14 @@ const SobreNos = () => {
             contemporâneo.
           </p> 
         </div> 
-        <div className="md:w-1/2 relative h-64 md:h-auto rounded-xl overflow-hidden">
+        {/* <div className="md:w-1/2 relative h-64 md:h-auto rounded-xl overflow-hidden">
           <Image
             src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qMjQJBiKnBclR6x9A7mOqZQit2G1ugVhYwTEN"
             alt="Templo Central"
             fill
             className="object-cover"
           />
-        </div>
+        </div> */}
       </div> 
         
 
