@@ -80,8 +80,8 @@ export default function Main() {
         {/* Apresentação da igreja */}
         <section className="py-16 bg-white">
           <div className="container">
-            {/* <div className="grid md:grid-cols-2 gap-12 items-center"> */}
-            <div className="grid gap-12 items-center">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* <div className="grid gap-12 items-center"> */}
               <div>
                 <h2 className="text-3xl font-bold mb-6">
                   Bem-vindo à nossa igreja
@@ -108,14 +108,14 @@ export default function Main() {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-            {/*   <div className="relative h-[400px] rounded-lg overflow-hidden">
+             <div className="relative h-[400px] rounded-lg overflow-hidden">
                 <Image
                   src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI"
                   alt="Comunidade da Igreja"
                   fill
                   className="object-cover"
                   />
-              </div> */}
+              </div>
             </div>
           </div>
         </section>
@@ -243,8 +243,8 @@ export default function Main() {
                         alt={event.title}
                         fill
                         className="object-cover"
-                    /> 
-                    </div> 
+                    />
+                    </div>
                     <CardContent className="pt-6">
                     <h3 className="text-xl font-bold mb-2">{event.title}</h3>
                     <div className="space-y-2 mb-4">

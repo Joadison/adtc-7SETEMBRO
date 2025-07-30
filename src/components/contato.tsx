@@ -5,23 +5,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   MapPin,
-  Phone,
   Mail,
-  Send,
-  MessageSquare,
-  Clock,
   Calendar,
   Instagram,
   Facebook,
   Youtube,
-  Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Link from "next/link";
 
 const Contato = () => {
   const [formState, setFormState] = useState({
@@ -88,20 +79,20 @@ const Contato = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid md:grid-cols-2 gap-5 items-start">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl overflow-hidden border border-orange-200 mb-8">
-              <div className="p-8">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">
+            <Card className="mx-auto w-full max-w-2xl bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl overflow-hidden border border-orange-200 mb-8">
+              <CardContent className="p-6">
+                <h2 className="text-2xl font-bold mb-3 text-gray-900">
                   Informações de Contato
                 </h2>
 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className="flex items-start">
                     <div className="bg-white p-2 rounded-full mr-4">
                       <MapPin className="h-6 w-6 text-orange-600" />
@@ -115,76 +106,52 @@ const Contato = () => {
                     </div>
                   </div>
 
-                  {/*  <div className="flex items-start">
-                    <div className="bg-white p-2 rounded-full mr-4">
-                      <Phone className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-1">Telefone</h3>
-                      <p className="text-gray-700">(85) 4008-5200</p>
-                    </div>
-                  </div> */}
-
                   <div className="flex items-start">
                     <div className="bg-white p-2 rounded-full mr-4">
                       <Mail className="h-6 w-6 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 mb-1">E-mail</h3>
-                      <p className="text-gray-700">
+                      <p className="text-gray-700 break-all">
                         adtemplocentral7setembro1@gmail.com
                       </p>
                     </div>
                   </div>
-
-                  {/* <div className="flex items-start">
-                    <div className="bg-white p-2 rounded-full mr-4">
-                      <Clock className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 mb-1">
-                        Horários de Atendimento
-                      </h3>
-                      <p className="text-gray-700">
-                        Segunda a Sexta: 08:00h às 17:00h
-                      </p>
-                    </div>
-                  </div> */}
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-6">
                   <h3 className="font-bold text-gray-900 mb-3">
                     Redes Sociais
                   </h3>
                   <div className="flex gap-4">
-                    <a
+                    <Link
                       href="https://www.instagram.com/adtc.7setembro1/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                     >
                       <Instagram className="h-5 w-5" />
-                    </a>
-                    {/*  <a
-                      href="https://www.facebook.com"
+                    </Link>
+                    <Link
+                      href="https://www.facebook.com/adtc.7setembro1"
+                      className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                     >
                       <Facebook className="h-5 w-5" />
-                    </a> */}
-                    {/* <a
-                      href="https://www.youtube.com"
+                    </Link>
+                    <Link
+                      href="https://www.youtube.com/@ADTC7deSetembro1"
+                      className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                     >
                       <Youtube className="h-5 w-5" />
-                    </a> */}
+                    </Link>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </motion.div>
 
           <motion.div
@@ -193,7 +160,7 @@ const Contato = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="p-6 mx-auto w-full max-w-2xl">
                 <h2 className="text-xl font-bold mb-4 text-gray-900">
                   Horários de Culto
                 </h2>
@@ -419,7 +386,7 @@ const Contato = () => {
           <h2 className="text-2xl font-bold mb-6 text-gray-900">Como Chegar</h2>
           <div className="rounded-xl overflow-hidden border border-gray-200 h-[400px] w-full">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.1679767708584!2d-38.5899!3d-3.7899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM8KwNDcnMjMuNiJTIDM4wrAzNScyMy42Ilc!5e0!3m2!1spt-BR!2sbr!4v1625761234567!5m2!1spt-BR!2sbr"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7962.09302267817!2d-38.6250463!3d-3.8000145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7c74d9f2177a227%3A0x6c627ce0d77446b4!2sAD%20Templo%20Central%20-%207%20de%20Setembro%201!5e0!3m2!1spt-BR!2sbr!4v1753909465319!5m2!1spt-BR!2sbr"
               width="100%"
               height="100%"
               style={{ border: 0 }}
