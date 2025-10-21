@@ -172,35 +172,10 @@ export default function Main() {
             </div>
             <div className="text-center mt-10">
               <Button
-                className="bg-orange-600 hover:bg-orange-700"
+                className="bg-orange-600 text-white hover:bg-orange-700"
                 onClick={() => navigateTo("/ministerios")}
               >
                 Ver Todos os Ministérios
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 bg-white">
-          <div className="container">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Contribua com Amor</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Participe de nossas rifas online de forma rápida e segura.
-                Escolha seus números da sorte e concorra a prêmio incrível!
-              </p>
-            </div>
-
-            <div className="text-center mt-10">
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={() =>
-                  router.push("https://rifa-adtc-7setembro.vercel.app/")
-                }
-              >
-                Participar agora
-                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>

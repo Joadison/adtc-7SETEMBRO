@@ -24,8 +24,6 @@ const Ministerios = () => {
     {
       title: "Crianças",
       img: "/crianca.png",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+Infantil",
       bg: "bg-gradient-to-br from-yellow-100 to-yellow-200",
       borderColor: "border-yellow-300",
       iconBg: "bg-yellow-200",
@@ -43,8 +41,6 @@ const Ministerios = () => {
     {
       title: "Jovens",
       img: "/jovens.png",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+de+Jovens",
       bg: "bg-gradient-to-br from-indigo-100 to-indigo-200",
       borderColor: "border-indigo-300",
       iconBg: "bg-indigo-200",
@@ -58,8 +54,6 @@ const Ministerios = () => {
     {
       title: "Casais",
       img: "/casais.png",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+de+Casais",
       bg: "bg-gradient-to-br from-red-100 to-red-200",
       borderColor: "border-red-300",
       iconBg: "bg-red-200",
@@ -73,8 +67,6 @@ const Ministerios = () => {
     {
       title: "Mulheres",
       img: "/mulheres.png",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+de+Mulheres",
       bg: "bg-gradient-to-br from-purple-100 to-purple-200",
       borderColor: "border-purple-300",
       iconBg: "bg-purple-200",
@@ -87,8 +79,6 @@ const Ministerios = () => {
     },
     {
       title: "Círculo de Oração",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Círculo+de+Oração",
       bg: "bg-gradient-to-br from-sky-100 to-sky-200",
       borderColor: "border-sky-300",
       iconBg: "bg-sky-200",
@@ -101,8 +91,6 @@ const Ministerios = () => {
     },
     {
       title: "Missão",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+de+Missões",
       bg: "bg-gradient-to-br from-green-100 to-green-200",
       borderColor: "border-green-300",
       iconBg: "bg-green-200",
@@ -120,8 +108,6 @@ const Ministerios = () => {
     {
       title: "EBD",
       img: "/ebd.png",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Escola+Bíblica+Dominical",
       bg: "bg-gradient-to-br from-amber-100 to-amber-200",
       borderColor: "border-amber-300",
       iconBg: "bg-amber-200",
@@ -138,8 +124,6 @@ const Ministerios = () => {
     },
     {
       title: "Pastoral",
-      placeholderImg:
-        "/placeholder.svg?height=400&width=600&text=Ministério+Pastoral",
       bg: "bg-gradient-to-br from-emerald-100 to-emerald-200",
       borderColor: "border-emerald-300",
       iconBg: "bg-emerald-200",
@@ -206,19 +190,6 @@ const Ministerios = () => {
               <Card
                 className={`md:h-[340px] h-[400px] flex flex-col justify-between overflow-hidden border ${ministry.borderColor} hover:shadow-lg transition-shadow`}
               >
-              {/*  <div className="relative h-48">
-                  <Image
-                    src={ministry.img || ministry.placeholderImg}
-                    alt={ministry.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <h2 className="text-2xl font-bold text-white drop-shadow-md">
-                      {ministry.title}
-                    </h2>
-                  </div>
-                </div> */}
 
                 <CardContent className={`p-6 ${ministry.bg} h-full`}>
                   <div className="flex items-start gap-4 mb-4">
@@ -300,7 +271,7 @@ const Ministerios = () => {
                         }`}
                       />
                     </Button>
-                    
+
                   </CardFooter>
                 </motion.div>
               </Card>

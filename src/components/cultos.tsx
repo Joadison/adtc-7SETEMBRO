@@ -140,7 +140,7 @@ const Cultos = () => {
     //if (activeTab === "estudos") return video.snippet.title.toLowerCase().includes("estudo")
     //if (activeTab === "eventos") return video.snippet.title.toLowerCase().includes("evento")
     return true
-  }) 
+  })
 
   // Format date
   const formatDate = (dateString: string) => {
@@ -391,7 +391,7 @@ const Cultos = () => {
                 </div>
               </div>
             </div>
-            <Button className="bg-orange-600 hover:bg-orange-700" onClick={() => router.push("https://bit.ly/enderecoadtc7stm")}>Como Chegar</Button>
+            <Button className="bg-orange-600 text-white hover:bg-orange-700" onClick={() => router.push("https://bit.ly/enderecoadtc7stm")}>Como Chegar</Button>
           </div>
         </motion.div>
 
@@ -428,8 +428,6 @@ const Cultos = () => {
                     strokeLinejoin="round"
                     className="h-6 w-6"
                   >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </Button>
               </div>
