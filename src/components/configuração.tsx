@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import EscalaWork from "./escalaWork";
+import EscalaMensal from "./escalaMensal";
+import { Button } from "./ui/button";
+import EscalaOp from "./escalaOp";
 /* import EscalaOp from "./escalaOp";*/
 
 const Config = () => {
@@ -13,23 +16,22 @@ const Config = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center items-center text-white p-4 bg-[#ff7f00] ">
-        {/*  <Button variant="default" onClick={() => handleNavigation("EscalaWork")}>
+      <div className="flex flex-row justify-center items-center text-white p-2 bg-[#ff7f00] ">
+        <Button variant="default" onClick={() => handleNavigation("EscalaWork")}>
           Escalas de Trabalhos
         </Button>
           <Button variant="default" onClick={() => handleNavigation("EscalaOp")}>
           Escala de Oportunidade
         </Button> 
           <Button variant="default" onClick={() => handleNavigation('Story')}>
-          Criação de Story
-        </Button> */}
+          Escala Mensal
+        </Button> 
       </div>
 
       <div className="relative overflow-auto">
-        <EscalaWork />
-        {/* {activeComponent === "EscalaWork" && <EscalaWork />}
+        {activeComponent === "EscalaWork" && <EscalaWork />}
           {activeComponent === "EscalaOp" && <EscalaOp />} 
-          {activeComponent === 'Story' && <Story />} */}
+          {activeComponent === 'Story' && <EscalaMensal />} 
       </div>
     </>
   );

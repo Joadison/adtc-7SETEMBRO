@@ -11,7 +11,7 @@ export default function DefaultLayout({
   return (
     <AudioProvider>
       <div className="flex flex-col min-h-screen">
-        <AudioPlayer />
+        <AudioPlayer/>
         <Header />
         <>{children}</>
         <Footer />

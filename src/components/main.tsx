@@ -28,13 +28,16 @@ export default function Main() {
         <section className="relative">
           <div className="absolute inset-0 bg-black/50 z-10" />
           <div className="relative h-[79vh] overflow-hidden">
-            <Image
-              src="https://utfs.io/f/R1WGWTYNvh5qCYMA8pYH4EyDWJlihTzvtuRmKVpLg3jsBIa1"
-              alt="Igreja AD Templo Central 7 de Setembro"
-              fill
-              className="object-cover"
-              priority
-            />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/lion.mp4" type="video/mp4" />
+            </video>
+
           </div>
           <div className="absolute inset-0 z-20 flex items-center justify-center">
             <div className="container text-center text-white">
@@ -108,12 +111,11 @@ export default function Main() {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-             <div className="relative h-[400px] rounded-lg overflow-hidden">
-                <Image
-                  src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI"
-                  alt="Comunidade da Igreja"
-                  fill
-                  className="object-cover"
+             <div className="relative h-[300px] rounded-xl overflow-hidden">
+                  <img 
+                    src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI" 
+                    alt="Descrição da imagem"
+                    loading="lazy"
                   />
               </div>
             </div>
