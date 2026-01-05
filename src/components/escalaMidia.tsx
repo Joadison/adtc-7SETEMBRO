@@ -6,8 +6,9 @@ import html2canvas from "html2canvas";
 interface Evento {
   data: string;
   tipo: string;
-  porteiro: string;
-  recepcao: string;
+  foto: string;
+  projetor: string;
+  som: string;
 }
 
 interface SemanaEscala {
@@ -26,18 +27,33 @@ const opcoesTipoEvento = [
   "Celebração","Jovens","Mulheres","Infantil"
 ];
 
-const opcoesPorteiro = [
-  "LIVRE","Pb. Gleidystone","Dc. Cleiton","Aux. Wagner",
-  "Aux. Viana","Aux. Joadison","Aux. Vitor",
-  "Aux. Davi","Aux. Paulo","Aux. Antonilson"
+const opcoesFotos = [
+  "Victoria","Rebeca","Daniele","Antonilson",
+  "none"
 ];
 
-const opcoesRecepcao = [
-  "LIVRE","Ir. Natalia","Ir. Victoria",
-  "Ir. Ester","Ir. Rebeca","Ir. Iris"
+const opcoesProjetor = [
+  "Joadison","Victoria","Rebeca","Daniele",
+  "Antonilson","Samuele"
 ];
 
-export default function EscalaMensal() {
+const opcoesSom = [
+  "Joadison","Samuele"
+];
+
+const coresPorTipo: Record<string, string> = {
+  Doutrina: "text-orange-500",
+  Missão: "text-green-500",
+  Família: "text-blue-500",
+  Celebração: "text-purple-500",
+  Jovens: "text-pink-500",
+  Mulheres: "text-rose-500 ",
+  Infantil: "text-yellow-400",
+  "Santa Ceia": "text-red-600",
+};
+
+
+export default function EscalaMidia() {
   const [mes, setMes] = useState("");
   const [ano, setAno] = useState("2026");
   const [escala, setEscala] = useState<SemanaEscala[]>([]);
@@ -78,19 +94,19 @@ export default function EscalaMensal() {
       const quinta = new Date(atual);
       quinta.setDate(atual.getDate() + 3);
       if (quinta.getMonth() === mesIndex) {
-        eventos.push({ data: toISO(quinta), tipo: "Doutrina", porteiro: "", recepcao: "" });
+        eventos.push({ data: toISO(quinta), tipo: "Doutrina", foto: "none", projetor: "", som: "" });
       }
 
       const domingo = new Date(atual);
       domingo.setDate(atual.getDate() + 6);
       if (domingo.getMonth() === mesIndex) {
-        eventos.push({ data: toISO(domingo), tipo: "", porteiro: "", recepcao: "" });
+        eventos.push({ data: toISO(domingo), tipo: "", foto: "", projetor: "", som: "" });
       }
 
       semanas.push({
         periodo: `${formatarPeriodo(atual)} a ${formatarPeriodo(fim)}`,
         tema: "",
-        eventos: eventos.length ? eventos : [{ data:"",tipo:"",porteiro:"",recepcao:"" }]
+        eventos: eventos.length ? eventos : [{ data:"",tipo:"", foto: "", projetor: "", som: ""}]
       });
 
       atual.setDate(atual.getDate() + 7);
@@ -116,7 +132,7 @@ export default function EscalaMensal() {
               ...semana,
               eventos: [
                 ...semana.eventos,
-                { data: "", tipo: "", porteiro: "", recepcao: "" }
+                { data: "", tipo: "",  foto: "", projetor: "", som: ""  }
               ]
             }
           : semana
@@ -182,78 +198,26 @@ export default function EscalaMensal() {
 
         {/* ESCALA */}
         {mes && (
-          <div ref={captureRef} className="bg-white p-8 rounded shadow space-y-6">
-            <h2 className="text-3xl font-bold text-center">Escala – {mes.toUpperCase()}</h2>
-
-            {/* Cabeçalho com Versículo */}
-            <div className="text-center">
-              <div className="relative mb-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-orange-200"></div>
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-4 text-2xl text-orange-400"></span>
-                </div>
-              </div>
-              
-              <p className="text-lg italic text-gray-700 mb-2 leading-none block">
-                &ldquo;Não se esqueçam da hospitalidade; foi praticando-a que, sem o saber, alguns acolheram anjos.&rdquo;
-              </p>
-              <p className="text-xl text-gray-900 font-semibold leading-none block">Hebreus 13:2</p>
-              
-              <div className="relative mt-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-orange-200"></div>
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-6 text-3xl text-orange-600"></span>
-                </div>
-              </div>
-            </div>
+          <div ref={captureRef} className="bg-white p-8 rounded shadow">
+            <h2 className="text-4xl font-bold text-center">Escala Mídia</h2>
+            <h2 className="text-3xl font-extralight text-center mb-6">Mês: {mes.toUpperCase()}</h2>
 
             {escala.map((semana, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden">
-                <div className="flex bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 text-2xl font-bold">
-                  Semana {semana.periodo}
-                  {!modoPreview ? (
-                    <select
-                      value={semana.tema}
-                      onChange={(e) => {
-                        const novaEscala = [...escala];
-                        novaEscala[i].tema = e.target.value;
-                        setEscala(novaEscala);
-                      }}
-                      className="ml-2 text-2xl min-w-[300px] max-w-[450px] font-bold text-white bg-transparent text-left border-0 leading-tight appearance-none focus:outline-none cursor-pointer"
-                    >
-                      <option className="text-black" value="">
-                        Selecione o tema
-                      </option>
-                      <option className="text-black" value="Conjunto de Senhoras">
-                        Conjunto de Senhoras
-                      </option>
-                      <option className="text-black" value="Conjunto de Jovens">
-                        Conjunto de Jovens
-                      </option>
-                    </select>
-                  ) : (
-                    <div className="ml-2 text-2xl font-bold">
-                      {semana.tema || "—"}
-                    </div>
-                  )}
+              <div key={i} className={`rounded-2xl overflow-hidden 
+                ${modoPreview ? "flex justify-center items-center": ""}`}>
 
-                  {!modoPreview && (
+                {!modoPreview && (
                     <button
-                      onClick={() => removerSemana(i)}
-                      className="text-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
+                        onClick={() => removerSemana(i)}
+                        className="text-sm bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
                     >
-                      🗑 Remover semana
+                        🗑 Remover semana
                     </button>
-                  )}
-                </div>
-
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gradient-to-br from-orange-50 to-white">
+                )}
+               
+                <div className="grid">
                   {semana.eventos.map((ev, j) => (
-                    <div key={j} className="rounded-xl p-3 space-y-2 border border-orange-100">
+                    <div key={j} className={`rounded-xl p-3 w-[40rem]`}>
 
                       {/* TIPO + DATA */}
                       {!modoPreview ? (
@@ -270,30 +234,44 @@ export default function EscalaMensal() {
                           }} className="border rounded px-2"/>
                         </div>
                       ) : (
-                        <p className="text-xl font-semibold">{ev.tipo} – {ddmm(ev.data)}</p>
+                        <p className={`text-3xl font-bold ${modoPreview ? coresPorTipo[ev.tipo] ?? "text-black": "text-gray-50"}`}>{ev.tipo} – {ddmm(ev.data)}</p>
                       )}
 
-                      {/* PORTEIRO */}
-                      {!modoPreview ? (
-                        <select value={ev.porteiro} onChange={e=>{
-                          const n=[...escala]; n[i].eventos[j].porteiro=e.target.value; setEscala(n);
-                        }} className="border rounded px-2 w-full">
-                          {opcoesPorteiro.map(o=><option key={o}>{o}</option>)}
-                        </select>
-                      ) : (
-                        <p>Porteiro: {ev.porteiro}</p>
-                      )}
+                      <div className="flex gap-8">
+                        {!modoPreview ? (
+                            <select value={ev.foto} onChange={e=>{
+                            const n=[...escala]; n[i].eventos[j].foto=e.target.value; setEscala(n);
+                            }} className="border rounded px-2 w-full">
+                            <option value="">Selecione</option>
+                            {opcoesFotos.map(o=><option key={o}>{o}</option>)}
+                            </select>
+                        ) : (
+                            ev.foto === "none" ? (<></>):(<p className="text-2xl">Foto: {ev.foto}</p>)
+                        )}
 
-                      {/* RECEPÇÃO */}
-                      {!modoPreview ? (
-                        <select value={ev.recepcao} onChange={e=>{
-                          const n=[...escala]; n[i].eventos[j].recepcao=e.target.value; setEscala(n);
+                        {!modoPreview ? (
+                            <select value={ev.projetor} onChange={e=>{
+                            const n=[...escala]; n[i].eventos[j].projetor=e.target.value; setEscala(n);
+                            }} className="border rounded px-2 w-full">
+                            <option value="">Selecione</option>
+                            {opcoesProjetor.map(o=><option key={o}>{o}</option>)}
+                            </select>
+                        ) : (
+                            <p className="text-2xl">Projetor: {ev.projetor}</p>
+                        )}
+                      </div>
+
+                      
+                      {/* {!modoPreview ? (
+                        <select value={ev.som} onChange={e=>{
+                          const n=[...escala]; n[i].eventos[j].som=e.target.value; setEscala(n);
                         }} className="border rounded px-2 w-full">
-                          {opcoesRecepcao.map(o=><option key={o}>{o}</option>)}
+                          {opcoesSom.map(o=><option key={o}>{o}</option>)}
                         </select>
                       ) : (
-                        <p>Recepção: {ev.recepcao}</p>
-                      )}
+                        <p>Som: {ev.som}</p>
+                      )} */}
+
 
                       {!modoPreview && (
                         <div className="flex justify-end">
@@ -309,20 +287,19 @@ export default function EscalaMensal() {
                   ))}
                   {!modoPreview && (
                     <button
-                      onClick={() => adicionarEvento(i)}
-                      className="md:col-span-2 mt-2 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                        onClick={() => adicionarEvento(i)}
+                        className="md:col-span-2 mt-2 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
                     >
-                      ➕ Adicionar evento
+                        ➕ Adicionar evento
                     </button>
-                  )}
+                    )}
                 </div>
               </div>
             ))}
             <div className="text-center mt-12 pt-8 border-t border-orange-200">
-              <p className="text-black italic leading-none block">
-                &ldquo;Tudo quanto fizerdes, fazei-o de todo o coração, como para o Senhor e não para homens.&rdquo;
+              <p className="text-black  bg-yellow-300 italic leading-none block">
+                &ldquo;OBSERVAÇÕES Nos dias que o Samuel estiver no projetor, Joadison fica no som e dá auxilio a ele também no projetor.&rdquo;
               </p>
-              <p className="text-black font-semibold mt-2 leading-none block">Colossenses 3:23</p>
             </div>
           </div>
         )}

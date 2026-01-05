@@ -5,6 +5,7 @@ import EscalaWork from "./escalaWork";
 import EscalaMensal from "./escalaMensal";
 import { Button } from "./ui/button";
 import EscalaOp from "./escalaOp";
+import EscalaMidia from "./escalaMidia";
 /* import EscalaOp from "./escalaOp";*/
 
 const Config = () => {
@@ -23,8 +24,11 @@ const Config = () => {
           <Button variant="default" onClick={() => handleNavigation("EscalaOp")}>
           Escala de Oportunidade
         </Button> 
-          <Button variant="default" onClick={() => handleNavigation('Story')}>
+        <Button variant="default" onClick={() => handleNavigation('Story')}>
           Escala Mensal
+        </Button>
+         <Button variant="default" onClick={() => handleNavigation('Midia')}>
+          Escala Midia
         </Button> 
       </div>
 
@@ -32,6 +36,7 @@ const Config = () => {
         {activeComponent === "EscalaWork" && <EscalaWork />}
           {activeComponent === "EscalaOp" && <EscalaOp />} 
           {activeComponent === 'Story' && <EscalaMensal />} 
+          {activeComponent === "Midia" && <EscalaMidia />}
       </div>
     </>
   );
