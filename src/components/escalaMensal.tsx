@@ -17,24 +17,19 @@ interface SemanaEscala {
 }
 
 const meses = [
-  "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-  "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  "Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
 ];
 
 const opcoesTipoEvento = [
-  "Doutrina","Santa Ceia","Missão","Família",
-  "Celebração","Jovens","Mulheres","Infantil"
+  "Doutrina","Santa Ceia","Missão","Família","Celebração","Jovens","Mulheres","Infantil"
 ];
 
 const opcoesPorteiro = [
-  "LIVRE","Pb. Gleidystone","Dc. Cleiton","Aux. Wagner",
-  "Aux. Viana","Aux. Joadison","Aux. Vitor",
-  "Aux. Davi","Aux. Paulo","Aux. Antonilson"
+  "LIVRE","Pb. Gleidystone","Dc. Cleiton","Aux. Wagner","Aux. Viana","Aux. Joadison","Aux. Davi","Aux. Paulo","Aux. Antonilson"
 ];
 
 const opcoesRecepcao = [
-  "LIVRE","Ir. Natalia","Ir. Victoria",
-  "Ir. Ester","Ir. Rebeca","Ir. Iris"
+  "LIVRE","Ir. Natalia","Ir. Victoria","Ir. Daniele","Ir. Rebeca","Ir. Iris","Ir.Ruthe","Ir. Eloisa"
 ];
 
 export default function EscalaMensal() {
@@ -213,7 +208,7 @@ export default function EscalaMensal() {
 
             {escala.map((semana, i) => (
               <div key={i} className="rounded-2xl overflow-hidden">
-                <div className="flex bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 text-2xl font-bold">
+                <div className="flex bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 text-3xl font-bold">
                   Semana {semana.periodo}
                   {!modoPreview ? (
                     <select
@@ -223,7 +218,7 @@ export default function EscalaMensal() {
                         novaEscala[i].tema = e.target.value;
                         setEscala(novaEscala);
                       }}
-                      className="ml-2 text-2xl min-w-[300px] max-w-[450px] font-bold text-white bg-transparent text-left border-0 leading-tight appearance-none focus:outline-none cursor-pointer"
+                      className="ml-2 text-3xl min-w-[300px] max-w-[450px] font-bold text-white bg-transparent text-left border-0 leading-tight appearance-none focus:outline-none cursor-pointer"
                     >
                       <option className="text-black" value="">
                         Selecione o tema
@@ -270,7 +265,7 @@ export default function EscalaMensal() {
                           }} className="border rounded px-2"/>
                         </div>
                       ) : (
-                        <p className="text-xl font-semibold">{ev.tipo} – {ddmm(ev.data)}</p>
+                        <p className="text-4xl font-semibold">{ev.tipo} – {ddmm(ev.data)}</p>
                       )}
 
                       {/* PORTEIRO */}
@@ -281,7 +276,7 @@ export default function EscalaMensal() {
                           {opcoesPorteiro.map(o=><option key={o}>{o}</option>)}
                         </select>
                       ) : (
-                        <p>Porteiro: {ev.porteiro}</p>
+                        <p className="text-3xl">Porteiro: {ev.porteiro}</p>
                       )}
 
                       {/* RECEPÇÃO */}
@@ -292,7 +287,7 @@ export default function EscalaMensal() {
                           {opcoesRecepcao.map(o=><option key={o}>{o}</option>)}
                         </select>
                       ) : (
-                        <p>Recepção: {ev.recepcao}</p>
+                        <p className="text-3xl">Recepção: {ev.recepcao}</p>
                       )}
 
                       {!modoPreview && (
