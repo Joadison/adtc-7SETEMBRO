@@ -6,7 +6,7 @@ import EscalaMensal from "./escalaMensal";
 import { Button } from "./ui/button";
 import EscalaOp from "./escalaOp";
 import EscalaMidia from "./escalaMidia";
-/* import EscalaOp from "./escalaOp";*/
+import Img from "./img";
 
 const Config = () => {
   const [activeComponent, setActiveComponent] = useState(null);
@@ -30,6 +30,9 @@ const Config = () => {
          <Button variant="default" onClick={() => handleNavigation('Midia')}>
           Escala Midia
         </Button> 
+        <Button variant="default" onClick={() => handleNavigation('Imagem')}>
+          Imagem
+        </Button> 
       </div>
 
       <div className="relative overflow-auto">
@@ -37,6 +40,7 @@ const Config = () => {
           {activeComponent === "EscalaOp" && <EscalaOp />} 
           {activeComponent === 'Story' && <EscalaMensal />} 
           {activeComponent === "Midia" && <EscalaMidia />}
+          {activeComponent === "Imagem" && <Img />}
       </div>
     </>
   );
