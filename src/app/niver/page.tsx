@@ -62,17 +62,10 @@ export default function Niver() {
   const toggleMes = (mes: number) => {
     setMesesSelecionados(prev => {
       if (prev.includes(mes)) {
-        if (prev.length <= 3) {
-          return prev.filter(m => m !== mes);
-        }
         return prev.filter(m => m !== mes);
       } else {
-        if (prev.length >= 3) {
-          const novosMeses = [...prev.slice(1), mes];
-          return novosMeses.sort((a, b) => a - b);
-        }
-        const novosMeses = [...prev, mes].sort((a, b) => a - b);
-        return novosMeses;
+        const novosMeses = [...prev, mes];
+        return novosMeses.sort((a, b) => a - b);
       }
     });
   };
@@ -86,24 +79,9 @@ export default function Niver() {
     setMesesSelecionados(trimestre.sort((a, b) => a - b));
   };
 
-  const gerarImagem = async () => {
-    setModoPreview(true);
-    setTimeout(async () => {
-      if (!captureRef.current) return;
-      const canvas = await html2canvas(captureRef.current, { 
-        scale: 2, 
-        backgroundColor: "#fff",
-        width: 1240,
-        height: 1754,
-        useCORS: true
-      });
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      const mesesNomes = mesesSelecionados.map(m => meses[m-1]).join('-');
-      link.download = `aniversariantes-${mesesNomes}.png`;
-      link.click();
-      setModoPreview(false);
-    }, 500);
+  const selecionarTodosMeses = () => {
+    const todosMeses = Array.from({ length: 12 }, (_, i) => i + 1);
+    setMesesSelecionados(todosMeses);
   };
 
   const aniversariantesPorMes = mesesSelecionados.reduce((acc, mes) => {
@@ -132,6 +110,13 @@ export default function Niver() {
                     {meses[mesInicio-1]} a {meses[(mesInicio+1)%12]}
                   </button>
                 ))}
+                 <button
+                  onClick={selecionarTodosMeses}
+                  className="px-3 py-1 md:px-4 md:py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm rounded-lg transition"
+                              
+                  >
+                    Todos os meses
+                  </button>
               </div>
             </div>
 
@@ -157,29 +142,6 @@ export default function Niver() {
               })}
             </div>
 
-            <div className="mb-4">
-              <p className="text-sm font-semibold text-gray-700 mb-2">Meses Selecionados:</p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {mesesSelecionados.map(mes => (
-                  <div 
-                    key={mes}
-                    className="px-3 py-1 bg-blue-100 text-blue-800 font-semibold rounded-full flex items-center gap-2"
-                  >
-                    <span>{meses[mes-1]}</span>
-                    <button 
-                      onClick={() => toggleMes(mes)}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                Selecione exatamente 3 meses
-              </p>
-            </div>
-
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button
                 onClick={buscarAniversariantes}
@@ -192,12 +154,7 @@ export default function Niver() {
                   >
                 {loading ? 'Carregando...' : 'Atualizar Lista'}
               </button>
-              
-              <button
-                onClick={gerarImagem}
-                className="px-6 py-2 rounded-lg font-semibold transition shadow-md bg-green-600 hover:bg-green-700 text-white">
-                Gerar Imagem
-              </button>
+          
             </div>
           </div>
           
