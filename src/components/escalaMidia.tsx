@@ -34,11 +34,11 @@ const opcoesFotos = [
 
 const opcoesProjetor = [
   "Joadison","Victoria","Rebeca","Daniele",
-  "Antonilson","Samuele"
+  "Antonilson","Samuel"
 ];
 
 const opcoesSom = [
-  "Joadison","Samuele"
+  "Joadison","Samuel"
 ];
 
 const coresPorTipo: Record<string, string> = {
