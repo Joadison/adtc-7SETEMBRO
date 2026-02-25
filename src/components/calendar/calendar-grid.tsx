@@ -27,10 +27,46 @@ interface CalendarGridProps {
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
 
+export function parseLocalDate(dateString: string) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+
+function sortEventsByPriority(events: CalendarEvent[]): CalendarEvent[] {
+  const priorityOrder: Partial<Record<EventCategory, number>> = {
+    "Aniversário": 1,
+    "SEDE": 2,
+    "Culto de Missão": 3,
+    "Culto da Família": 3,
+    "Culto de Santa Ceia": 3,
+    "Culto de Louvor e Adoração": 3,
+    "Culto de Mulheres": 3,
+    "Culto de Doutrina": 3,
+    "Círculo de Oração": 4,
+    "Consagração": 4,
+    "Culto de Jovens": 4,
+    "Culto de Crianças": 4,
+    "Reunião de Liderança": 5,
+  };
+
+  return [...events].sort((a, b) => {
+    const priorityA = priorityOrder[a.category] ?? 999;
+    const priorityB = priorityOrder[b.category] ?? 999;
+    return priorityA - priorityB;
+  });
+}
+
+
 function getEventsForDay(events: CalendarEvent[], day: Date): CalendarEvent[] {
   return events.filter((event) => {
-    const eventStart = new Date(event.start);
-    const eventEnd = new Date(event.end);
+    const eventStart = event.allDay
+      ? parseLocalDate(event.start)
+      : new Date(event.start);
+
+    const eventEnd = event.allDay
+      ? parseLocalDate(event.end)
+      : new Date(event.end);
 
     if (event.allDay) {
       const adjustedEnd = new Date(eventEnd);
@@ -145,13 +181,13 @@ export function CalendarGrid({
       {/* Days grid */}
       <div className="grid grid-cols-7">
         {days.map((day, index) => {
-          const dayEvents = getEventsForDay(events, day);
+          const dayEvents = sortEventsByPriority(getEventsForDay(events, day));
           const isCurrentMonth = isSameMonth(day, currentDate);
           const isSelected = selectedDate && isSameDay(day, selectedDate);
           const isDayToday = isToday(day);
           const isSunday = day.getDay() === 0;
           const hasBirthday = dayEvents.some(
-            (e) => e.title === "aniversario",
+            (e) => e.title === "Aniversário",
           );
 
           return (
@@ -196,8 +232,6 @@ export function CalendarGrid({
                 )}
               </div>
 
-              {/* Event pills */}
-              {/* Adicionar SCROLL para que posso ver todos!!! */}
               {dayEvents.length > 0 && (
                 <div className="mt-0.5 flex max-h-20 flex-col gap-0.5 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent sm:mt-1">
                   {dayEvents.map((event) => (
@@ -246,7 +280,6 @@ export function CalendarGrid({
                 </div>
               )}
 
-              {/* Dot indicators for mobile when too many events */}
               {dayEvents.length > 0 && (
                 <div className="mt-auto flex gap-0.5 pt-0.5 sm:hidden">
                   {dayEvents.slice(0, 4).map((event) => (

@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { addMonths, subMonths, startOfMonth, isSameDay } from "date-fns";
 import { useCalendarEvents } from "@/hooks/use-calendar-events";
 import { CalendarHeader } from "@/components/calendar/calendar-header";
-import { CalendarGrid } from "@/components/calendar/calendar-grid";
+import { CalendarGrid, parseLocalDate } from "@/components/calendar/calendar-grid";
 import { EventDetailPanel } from "@/components/calendar/event-detail-panel";
 import { UpcomingEvents } from "@/components/calendar/upcoming-events";
 import { CalendarSkeleton } from "@/components/calendar/calendar-skeleton";
@@ -49,7 +49,12 @@ export function ChurchCalendar() {
 
   const handleSelectEvent = useCallback((event: CalendarEvent) => {
     setSelectedEvent(event);
-    setSelectedDate(new Date(event.start));
+
+    const eventDate = event.allDay
+      ? parseLocalDate(event.start)
+      : new Date(event.start);
+
+    setSelectedDate(eventDate);
   }, []);
 
   const handleCloseDetail = useCallback(() => {
