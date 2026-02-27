@@ -46,14 +46,12 @@ const AudioPlayer = () => {
 
   return (
     <div className="fixed top-0 z-50 w-full bg-gray-900 shadow-lg">
-      <div className="flex items-center w-full relative px-4 py-2">
-        <div className="flex-1 text-white text-sm font-semibold whitespace-nowrap">
-          <span className="">
-            FM 102,3
-          </span>
+      <div className="flex items-center sm:justify-center justify-between w-full px-4 py-2 space-x-16">
+        <div className="flex-shrink-0 text-white text-sm font-semibold">
+          FM 102,3
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <button
             onClick={togglePlayPause}
             className="p-1 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md"
@@ -93,7 +91,7 @@ const AudioPlayer = () => {
             🔴 AO VIVO
           </span>
 
-          <div className="flex items-center space-x-1 group">
+          <div className="sm:flex items-center space-x-1 group hidden">
             <button
               onClick={toggleMute}
               aria-label={isMuted ? "Ativar som" : "Desativar som"}
