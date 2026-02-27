@@ -127,6 +127,13 @@ const Header = () => {
           >
             Culto ao Vivo
           </Button>
+          <Button
+            variant="default"
+            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
+            onClick={() => navigateTo("/calendar")}
+          >
+            Calendário 
+          </Button>
           <Button className="bg-orange-600 hover:bg-orange-700 text-white mt-4" onClick={() => navigateTo("/contato")}>
             Fale Conosco
           </Button>
