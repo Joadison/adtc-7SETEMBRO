@@ -82,7 +82,7 @@ export function ChurchCalendar() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2">
       <CalendarHeader
         currentDate={currentDate}
         onPreviousMonth={handlePreviousMonth}

@@ -9,7 +9,7 @@ export default function CalendarPage() {
   return (
     <DefaultLayout>
       <div className="flex-1 overflow-auto">
-        <div className="relative w-full h-full p-10">
+        <div className="relative w-full h-full px-4 py-14">
           <ChurchCalendar />
         </div>
       </div>
