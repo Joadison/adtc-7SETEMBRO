@@ -34,20 +34,18 @@ export interface CalendarEvent {
 export function extractField(description: string, field: string): string | undefined {
   if (!description) return undefined;
 
+  const normalized = description.replace(/<br\s*\/?>/gi, "\n");
+
   const escapedField = field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const pattern = new RegExp(
-    `${escapedField}\\s*[:\\-]\\s*([^\\n]+)`,
-    "i"
+    `^\\s*${escapedField}\\s*[:\\-]\\s*([^\\n]+)`,
+    "im"
   );
 
-  const match = description.match(pattern);
+  const match = normalized.match(pattern);
 
-  if (match && match[1]) {
-    return match[1].trim();
-  }
-
-  return undefined;
+  return match?.[1]?.trim();
 }
 
 function categorizeEvent(

@@ -66,6 +66,13 @@ const Header = () => {
             >
               Culto ao Vivo
             </Button>
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors"
+              onClick={() => navigateTo("/calendar")}
+            >
+              Calendário 
+            </Button>
           </nav>
 
           <div className="flex items-center gap-4">

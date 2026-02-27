@@ -1,9 +1,18 @@
 import { ChurchCalendar } from "@/components/calendar/church-calendar";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
-export default function HomePage() {
+export const metadata = {
+  title: "Calendário  | ADTC 7 de Setembro",
+};
+
+export default function CalendarPage() {
   return (
-    <main className="mx-auto min-h-screen max-w-7xl bg-background px-4 py-6 sm:px-6 lg:px-8">
-      <ChurchCalendar />
-    </main>
+    <DefaultLayout>
+      <div className="flex-1 overflow-auto">
+        <div className="relative w-full h-full p-10">
+          <ChurchCalendar />
+        </div>
+      </div>
+    </DefaultLayout>
   );
 }

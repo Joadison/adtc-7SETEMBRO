@@ -110,12 +110,12 @@ function getCategoryLabel(title: EventCategory) {
 export function cleanEventDescription(description: string): string {
   if (!description) return "";
 
-  const cleaned = description.replace(
-    /^(Porteiro|Recepção|Pregador)\s*[:\-].*$\n?/gim,
-    ""
-  ).trim();
-
-  return cleaned;
+  return description
+    .replace(/<br\s*\/?>/gi, "\n")
+    .split(/\r?\n/)
+    .filter(line => !/^\s*(Porteiro|Recepção|Pregador)\s*[:\-]/i.test(line))
+    .join("<br />")
+    .trim();
 }
 
 function RoleCard({
@@ -160,6 +160,8 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
   const rawDescription = event.description || "";
   const cleanDescription = cleanEventDescription(rawDescription);
   const hasMeaningfulContent = cleanDescription.trim().length > 0;
+
+  console.log(event)
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg">

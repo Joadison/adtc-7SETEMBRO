@@ -21,18 +21,7 @@ export function CalendarHeader({
   const monthYear = format(currentDate, "MMMM yyyy", { locale: ptBR });
 
   return (
-    <header className="flex flex-col gap-4 pb-6 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-3">
-        <div>
-          <h1 className="font-serif text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-            ADTC 7 de Setembro
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Calendario da Igreja
-          </p>
-        </div>
-      </div>
-
+    <header className="flex flex-col gap-4 pb-6 sm:flex-row items-center justify-center">
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={onToday}>
           Hoje
