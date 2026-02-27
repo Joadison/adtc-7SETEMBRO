@@ -32,7 +32,6 @@ export function parseLocalDate(dateString: string) {
   return new Date(year, month - 1, day);
 }
 
-
 function sortEventsByPriority(events: CalendarEvent[]): CalendarEvent[] {
   const priorityOrder: Partial<Record<EventCategory, number>> = {
     "Aniversário": 1,
@@ -56,7 +55,6 @@ function sortEventsByPriority(events: CalendarEvent[]): CalendarEvent[] {
     return priorityA - priorityB;
   });
 }
-
 
 function getEventsForDay(events: CalendarEvent[], day: Date): CalendarEvent[] {
   return events.filter((event) => {
