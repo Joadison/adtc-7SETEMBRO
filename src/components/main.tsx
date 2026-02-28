@@ -27,7 +27,7 @@ export default function Main() {
         {/* Imagem e Apresentação */}
         <section className="relative">
           <div className="absolute inset-0 bg-black/50 z-10" />
-          <div className="relative h-[79vh] overflow-hidden">
+          <div className="relative md:h-[75vh] h-[65vh] overflow-hidden">
             <video
               autoPlay
               loop
@@ -123,7 +123,7 @@ export default function Main() {
         </section>
 
         {/* Ministries */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-gray-50 sm:flex hidden">
           <div className="container">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Nossos Ministérios</h2>
