@@ -30,8 +30,7 @@ const Header = () => {
   const tabs = [
     { icon: House, label: "Início", path: "/" },
     { icon: Church, label: "Cultos", path: "/cultos" },
-    { icon: User, label: "Ministérios", path: "/ministerios" },
-    //{ icon: HandHeart, label: "Acreditamos?", path: "/em-que-cremos"},
+    { icon: HandHeart, label: "Em que cremos?", path: "/em-que-cremos" },
     { icon: MoreHorizontal, label: "Mais", path: "/mais", isMore: true},
   ];
 
@@ -107,53 +106,6 @@ const Header = () => {
       {/* Mobile Menu Overlay */}
       {isMenuOpen && <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={toggleMenu} />}
 
-      {/* Mobile Menu */}
-      {/* <div
-        className={`fixed top-28 left-0 right-0 bottom-0 z-50 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col p-6 space-y-4 h-full overflow-y-auto">
-          <Button
-            variant="default"
-            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
-            onClick={() => navigateTo("/em-que-cremos")}
-          >
-            Em que cremos?
-          </Button>
-          <Button
-            variant="default"
-            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
-            onClick={() => navigateTo("/sobre-nos")}
-          >
-            Sobre nós
-          </Button>
-          <Button
-            variant="default"
-            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
-            onClick={() => navigateTo("/ministerios")}
-          >
-            Ministérios
-          </Button>
-          <Button
-            variant="default"
-            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
-            onClick={() => navigateTo("/cultos")}
-          >
-            Culto ao Vivo
-          </Button>
-          <Button
-            variant="default"
-            className="justify-start text-lg font-medium hover:text-orange-600 hover:bg-orange-50 py-4"
-            onClick={() => navigateTo("/calendar")}
-          >
-            Calendário 
-          </Button>
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white mt-4" onClick={() => navigateTo("/contato")}>
-            Fale Conosco
-          </Button>
-        </div>
-      </div>*/}
 
        <nav className="md:hidden flex fixed bg-slate-100 bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border safe-bottom">
         <div className="flex items-center justify-around px-2 pt-2 pb-1 max-w-md mx-auto gap-1 w-full">
@@ -202,14 +154,6 @@ const Header = () => {
                 </button>
               </div>
               <div className="flex flex-col space-y-1 py-2">
-                <Button
-                  variant="default"
-                  className="justify-start text-base font-medium hover:text-orange-600 hover:bg-orange-50 py-3"
-                  onClick={() => navigateTo("/em-que-cremos")}
-                >
-                  <HandHeart className="mr-3 h-5 w-5" />
-                  Em que cremos?
-                </Button>
                 <Button
                   variant="default"
                   className="justify-start text-base font-medium hover:text-orange-600 hover:bg-orange-50 py-3"
