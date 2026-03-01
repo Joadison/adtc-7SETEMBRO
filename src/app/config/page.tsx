@@ -1,4 +1,4 @@
-import Config from "@/components/configuração";
+import Config from "@/components/config/configuração";
 import ConfigLayout from "../../layouts/ConfigLayout";
 
 export const metadata = {

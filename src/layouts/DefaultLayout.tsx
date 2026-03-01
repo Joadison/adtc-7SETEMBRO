@@ -1,5 +1,6 @@
 import { AudioProvider } from "@/components/audio/audio-context";
 import AudioPlayer from "@/components/audio/AudioPlayer";
+import { CalendarNotification } from "@/components/calendar/CalendarNotification";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 
@@ -15,6 +16,7 @@ export default function DefaultLayout({
         <Header />
         <>{children}</>
         <Footer />
+        <CalendarNotification />
       </div>
     </AudioProvider>
   );

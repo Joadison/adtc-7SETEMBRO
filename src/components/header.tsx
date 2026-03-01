@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { Menu, X, House, Church, User, HandHeart, MoreHorizontal, CalendarDays } from "lucide-react";
+import { Menu, X, House, Church, User, HandHeart, MoreHorizontal, CalendarDays, Camera } from "lucide-react";
 import { Button } from "./ui/button"
 import Link from "next/link"
 
@@ -177,6 +177,14 @@ const Header = () => {
                 >
                   <CalendarDays className="mr-3 h-5 w-5" />
                   Calendário
+                </Button>
+                <Button
+                  variant="default"
+                  className="justify-start text-base font-medium hover:text-orange-600 hover:bg-orange-50 py-3"
+                  onClick={() => navigateTo("/cam")}
+                >
+                  <Camera className="mr-3 h-5 w-5" />
+                  Câmera
                 </Button>
                 <div className="border-t my-2"></div>
                 <Button 

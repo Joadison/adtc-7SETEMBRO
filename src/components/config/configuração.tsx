@@ -3,7 +3,7 @@
 import { useState } from "react";
 import EscalaWork from "./escalaWork";
 import EscalaMensal from "./escalaMensal";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import EscalaOp from "./escalaOp";
 import EscalaMidia from "./escalaMidia";
 import Img from "./img";
