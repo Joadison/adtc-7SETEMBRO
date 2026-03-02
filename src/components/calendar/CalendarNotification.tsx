@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Bell, X, Calendar } from "lucide-react";
 import { useCalendarNotifications } from "@/hooks/useCalendarNotifications";
 import { parseISO } from "date-fns";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function CalendarNotification() {
     const { events, requestPermission, hasPermission } = useCalendarNotifications();
@@ -12,6 +12,9 @@ export function CalendarNotification() {
     const [recentEvents, setRecentEvents] = useState<any[]>([]);
     const [isMobile, setIsMobile] = useState(false);
     const router = useRouter();    
+    const pathname = usePathname();
+
+    const isCalendarPage = pathname === "/calendar";
 
     useEffect(() => {
         const checkMobile = () => {
@@ -38,18 +41,27 @@ export function CalendarNotification() {
     };
 
     useEffect(() => {
-        const now = new Date();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
         const recent = events
-        .filter(event => {
-            const eventDate = parseISO(event.start);
-            const diffHours = (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-            return diffHours > 0 && diffHours <= 24;
-        })
-        .sort((a, b) => parseISO(a.start).getTime() - parseISO(b.start).getTime())
-        .slice(0, 3);
+            .filter(event => {
+                const eventDate = parseISO(event.start);
+                return eventDate >= today && eventDate < tomorrow;
+            })
+            .sort((a, b) => parseISO(a.start).getTime() - parseISO(b.start).getTime())
+            .slice(0, 3);
+
+        console.log(recent)
 
         setRecentEvents(recent);
     }, [events]);
+
+    if (isCalendarPage) {
+        return null;
+    }
 
     if (showPrompt) {
         return (
@@ -91,7 +103,7 @@ export function CalendarNotification() {
         );
     }
 
-    if (hasPermission && recentEvents.length > 0) {
+    if (hasPermission && recentEvents.length > 0    ) {
         return (
         <div className={`fixed ${isMobile ? 'bottom-20 left-4' : 'top-32 right-4'} z-50`}>
             <button

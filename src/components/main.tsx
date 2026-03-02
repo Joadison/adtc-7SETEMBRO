@@ -13,7 +13,6 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 
 export default function Main() {
   const router = useRouter();
@@ -81,7 +80,7 @@ export default function Main() {
           </div>
         </section>
         {/* Apresentação da igreja */}
-        <section className="py-16 bg-white">
+        <section className="pb-10 pt-12 bg-white">
           <div className="container">
             <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* <div className="grid gap-12 items-center"> */}
@@ -123,7 +122,7 @@ export default function Main() {
         </section>
 
         {/* Ministries */}
-        <section className="py-16 bg-gray-50 sm:flex hidden">
+        <section className="pb-10 pt-12 bg-gray-50 sm:flex hidden">
           <div className="container">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Nossos Ministérios</h2>
@@ -255,7 +254,7 @@ export default function Main() {
         </section>*/}
 
         {/* Visitar! */}
-        <section className="py-16 bg-orange-600 text-white">
+        <section className="pb-20 pt-12 bg-orange-600 text-white">
           <div className="container text-center">
             <h2 className="text-3xl font-bold mb-4">Venha nos Visitar</h2>
             <p className="max-w-2xl mx-auto mb-8">

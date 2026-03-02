@@ -8,6 +8,7 @@ interface CameraViewProps {
   onCapture: (imageDataUrl: string) => void
 }
 
+// Extended types for iOS-specific camera constraints
 interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
   focusMode?: string[];
   pointsOfInterest?: boolean;
@@ -33,6 +34,7 @@ export function CameraView({ onCapture }: CameraViewProps) {
 
   const startCamera = useCallback(async (facing: "user" | "environment") => {
     try {
+      // ✅ VERIFICAÇÃO CRÍTICA PARA CELULAR
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("Seu navegador não suporta acesso à câmera ou a página não está em HTTPS")
       }
@@ -40,6 +42,8 @@ export function CameraView({ onCapture }: CameraViewProps) {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
+
+      // Simplified video constraints - focusMode is not standard
       const videoConstraints = isIOS
         ? { 
             facingMode: facing, 
@@ -123,14 +127,24 @@ export function CameraView({ onCapture }: CameraViewProps) {
     const focusX = x / rect.width
     const focusY = y / rect.height
 
-    await track.applyConstraints({
-      advanced: [
-        {
-          pointsOfInterest: [{ x: focusX, y: focusY }],
-          focusMode: "continuous",
-        },
-      ],
-    })
+    const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
+    
+    // Check if pointsOfInterest is supported (iOS feature)
+    if (capabilities.pointsOfInterest) {
+      try {
+        await track.applyConstraints({
+          advanced: [
+            {
+              pointsOfInterest: [{ x: focusX, y: focusY }],
+              focusMode: "continuous",
+            },
+          ] as ExtendedMediaTrackConstraintSet[],
+        });
+        console.log('Focus point set');
+      } catch (e) {
+        console.log('Points of interest not supported');
+      }
+    }
   }
 
   const handleCapture = useCallback(() => {
@@ -194,8 +208,6 @@ export function CameraView({ onCapture }: CameraViewProps) {
       onCapture(canvas.toDataURL("image/png"))
     }
   }, [selectedFrame, onCapture, facingMode])
-
-  
 
   return (
     <div className="">
