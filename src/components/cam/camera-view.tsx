@@ -8,6 +8,16 @@ interface CameraViewProps {
   onCapture: (imageDataUrl: string) => void
 }
 
+interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
+  focusMode?: string[];
+  pointsOfInterest?: boolean;
+}
+
+interface ExtendedMediaTrackConstraintSet extends MediaTrackConstraintSet {
+  focusMode?: string;
+  pointsOfInterest?: Array<{ x: number; y: number }>;
+}
+
 export function CameraView({ onCapture }: CameraViewProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -23,7 +33,6 @@ export function CameraView({ onCapture }: CameraViewProps) {
 
   const startCamera = useCallback(async (facing: "user" | "environment") => {
     try {
-      // ✅ VERIFICAÇÃO CRÍTICA PARA CELULAR
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("Seu navegador não suporta acesso à câmera ou a página não está em HTTPS")
       }
@@ -31,12 +40,20 @@ export function CameraView({ onCapture }: CameraViewProps) {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
-
       const videoConstraints = isIOS
-      ? { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 60 }, focusMode: "continuous", pointsOfInterest: [{ x: 0.5, y: 0.5 }]}
-      : { facingMode: facing, aspectRatio: 9/16, frameRate: { ideal: 60 }, focusMode: "continuous", pointsOfInterest: [{ x: 0.5, y: 0.5 }]}
+        ? { 
+            facingMode: facing, 
+            width: { ideal: 1920 }, 
+            height: { ideal: 1080 }, 
+            frameRate: { ideal: 60 }
+          }
+        : { 
+            facingMode: facing, 
+            aspectRatio: 9/16, 
+            frameRate: { ideal: 60 }
+          };
 
-      alert(`Iniciando câmera com resolução ${videoConstraints.width?.ideal}x${videoConstraints.height?.ideal} a 60fps`)
+      alert(`Iniciando câmera com resolução ${isIOS ? '1920x1080' : '9:16'} a 60fps`)
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: videoConstraints,
@@ -44,17 +61,24 @@ export function CameraView({ onCapture }: CameraViewProps) {
       })
 
       streamRef.current = stream
-      const track = stream.getVideoTracks()[0]
+      const track = stream.getVideoTracks()[0];
 
-      if (
-        !isIOS &&
-        track.getCapabilities &&
-        track.getCapabilities().focusMode
-      ) {
-        await track.applyConstraints({
-          advanced: [{ focusMode: "continuous" }],
-        })
-      };
+      // Try to set focus mode if supported (iOS only feature)
+      if (track.getCapabilities) {
+        const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
+        
+        // Check if focusMode is supported (iOS feature)
+        if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+          try {
+            await track.applyConstraints({
+              advanced: [{ focusMode: "continuous" }] as ExtendedMediaTrackConstraintSet[]
+            });
+            console.log('Continuous focus enabled');
+          } catch (e) {
+            console.log('Focus mode not supported');
+          }
+        }
+      }
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
