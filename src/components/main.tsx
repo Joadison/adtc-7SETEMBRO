@@ -32,6 +32,10 @@ export default function Main() {
               loop
               muted
               playsInline
+              webkit-playsInline
+              disablePictureInPicture
+              controls={false}
+              preload="auto"
               className="absolute inset-0 w-full h-full object-cover"
             >
               <source src="/lion.mp4" type="video/mp4" />

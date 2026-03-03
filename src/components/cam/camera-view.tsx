@@ -1,8 +1,9 @@
 "use client"
 
 import { useRef, useEffect, useCallback, useState } from "react"
-import { Camera, SwitchCamera } from "lucide-react"
+import { ArrowLeft, Camera, SwitchCamera } from "lucide-react"
 import { FrameSelector, type Frame } from "@/components/cam/frame-selector"
+import { useRouter } from "next/navigation"
 
 interface CameraViewProps {
   onCapture: (imageDataUrl: string) => void
@@ -20,6 +21,7 @@ interface ExtendedMediaTrackConstraintSet extends MediaTrackConstraintSet {
 }
 
 export function CameraView({ onCapture }: CameraViewProps) {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -209,6 +211,10 @@ export function CameraView({ onCapture }: CameraViewProps) {
     }
   }, [selectedFrame, onCapture, facingMode])
 
+  const handleGoBack = () => {
+    router.push("/");
+  }
+
   return (
     <div className="">
       {/* Camera viewfinder - 9:16 story format */}
@@ -216,8 +222,12 @@ export function CameraView({ onCapture }: CameraViewProps) {
         <video
           ref={videoRef}
           autoPlay
-          playsInline
           muted
+          playsInline
+          webkit-playsInline
+          disablePictureInPicture
+          controls={false}
+          preload="auto"
           onClick={handleFocus}
           onTouchStart={handleFocus}
           className={`absolute inset-0 w-full h-full object-contain ${facingMode === "user" ? "scale-x-[-1]" : ""}`}
@@ -245,6 +255,14 @@ export function CameraView({ onCapture }: CameraViewProps) {
             </div>
           </div>
         )}
+
+        <button
+          onClick={handleGoBack}
+          className="absolute top-3 left-3 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-black/60"
+          aria-label="Trocar camera"
+        >
+          <ArrowLeft className="w-5 h-5 text-white" />
+        </button>
 
         <button
           onClick={handleFlipCamera}
