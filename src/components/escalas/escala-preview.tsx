@@ -9,6 +9,18 @@ interface EscalaPreviewProps {
 
 export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
   function EscalaPreview({ data }, ref) {
+    const isDomingo = (dataISO?: string): boolean => {
+      if (!dataISO) return false;
+      try {
+        const data = new Date(dataISO);
+        if (isNaN(data.getTime())) return false;
+        return data.getDay() === 0;
+      } catch (error) {
+        console.error("Erro ao processar data:", error);
+        return false;
+      }
+    }
+
     return (
       <div
         ref={ref}
@@ -110,7 +122,6 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
               </span>
             </div>
 
-            {/* Culto entries grid - 2 columns */}
             <div
               style={{
                 display: "grid",
@@ -120,45 +131,73 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                 padding: "0 12px",
               }}
             >
-              {week.cultos.map((culto) => (
-                <div key={culto.id} style={{ paddingBottom: 4 }}>
-                  <p
-                    style={{
-                      fontSize: 17,
-                      fontWeight: 800,
-                      margin: "0 0 2px 0",
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {culto.nome + " \u2013 " + culto.data}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      margin: "0 0 1px 0",
-                      color: "#333",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {"Porteiro: " + culto.porteiro}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      margin: 0,
-                      color: "#333",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {"Recep\u00e7\u00e3o: " + culto.recepcao}
-                  </p>
-                </div>
-              ))}
+              {week.cultos.map((culto) => {
+                const ehDomingo = isDomingo(culto.dataISO);
+
+                return (
+                  <div key={culto.id} style={{ paddingBottom: 4 }}>
+                    <p
+                      style={{
+                        fontSize: 17,
+                        fontWeight: 800,
+                        margin: "0 0 2px 0",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {culto.nome + " \u2013 " + culto.data}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        margin: "0 0 1px 0",
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Porteiro: " + culto.porteiro}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        margin: 0,
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Recep\u00e7\u00e3o: " + culto.recepcao}
+                    </p>
+                   {/*  {ehDomingo && (
+                      <>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        margin: "0 0 1px 0",
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Professoras dos Maiores: " + culto.professoraUp }
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        margin: "0 0 1px 0",
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Professoras dos Menores: " + culto.professoraDow}
+                    </p>
+                    </>
+                  )} */}
+                  </div>
+
+                )
+              })}
             </div>
           </div>
         ))}
 
-        {/* Bottom divider */}
         <div
           style={{
             height: 2,

@@ -92,6 +92,8 @@ function convertEventToCulto(event: CalendarEvent): CultoEntry {
     pregador: extractField(event.description || "", "pregador") || "",
     porteiro: extractField(event.description || "", "porteiro") || "",
     recepcao: extractField(event.description || "", "recepção") || "",
+    professoraUp: extractField(event.description || "", "professoraMaiores") || "",
+    professoraDow: extractField(event.description || "", "professoraMenores") || "",
     observacoes: event.description,
     calendarioId: event.id,
     categoriaOriginal: event.category,

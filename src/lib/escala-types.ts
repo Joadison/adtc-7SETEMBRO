@@ -18,6 +18,8 @@ export interface CultoEntry {
   pregador: string;
   porteiro: string;
   recepcao: string;
+  professoraUp: string;
+  professoraDow: string;
   observacoes?: string;
   calendarioId?: string;
   categoriaOriginal?: EventCategory;
@@ -33,7 +35,7 @@ export interface WeekEntry {
 }
 
 export interface EscalaData {
-  mes: string;
+  mes: string[];
   versiculoTopo: string;
   referenciaTopo: string;
   versiculoRodape: string;
@@ -75,6 +77,8 @@ export function createEmptyCulto(): CultoEntry {
     pregador: "",
     porteiro: "",
     recepcao: "",
+    professoraUp: "",
+    professoraDow: ""
   };
 }
 
@@ -91,7 +95,7 @@ export function createEmptyWeek(): WeekEntry {
 
 export function createDefaultEscala(): EscalaData {
   return {
-    mes: "",
+    mes: [],
     versiculoTopo:
       '"Nao se esquecam da hospitalidade; foi praticando-a que, sem o saber, alguns acolheram anjos."',
     referenciaTopo: "Hebreus 13:2",

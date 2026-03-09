@@ -117,6 +117,8 @@ export function UpcomingEvents({
     );
   }
 
+  console.log(events)
+
   return (
     <div className="flex flex-col gap-2">
       <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -141,8 +143,8 @@ export function UpcomingEvents({
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  {event.title === "aniversario" ? (
-                    <Cake className="h-4 w-4 shrink-0 text-pink-500" />
+                  {event.title.startsWith("Aniversário") ? (
+                    <Cake className="h-4 w-4 shrink-0  text-orange-600" />
                   ) : event.category.startsWith("culto") ? (
                     <Church className="h-4 w-4 shrink-0 text-primary" />
                   ) : null}
@@ -178,19 +180,19 @@ export function UpcomingEvents({
               {(event.porteiro || event.recepcao || event.pregador) && (
                 <div className="mt-0.5 flex flex-wrap gap-1.5">
                   {event.porteiro && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                    <span className="inline-flex items-center gap-1 rounded-md  px-1.5 py-0.5 text-[10px] font-medium text-primary">
                       <DoorOpen className="h-2.5 w-2.5" />
                       {event.porteiro}
                     </span>
                   )}
                   {event.recepcao && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
+                    <span className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
                       <HandHelping className="h-2.5 w-2.5" />
                       {event.recepcao}
                     </span>
                   )}
                   {event.pregador && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
+                    <span className="inline-flex items-center gap-1 rounded-md  px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
                       <Mic2 className="h-2.5 w-2.5" />
                       {event.pregador}
                     </span>

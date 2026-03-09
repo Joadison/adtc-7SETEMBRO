@@ -11,6 +11,9 @@ import type { EscalaData } from "@/lib/escala-types";
 
 import { updateCalendarWithEscalaData } from "@/lib/update-calendar";
 import { CalendarEvent } from "@/lib/ics-parser";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EscalaPreviewKids } from "@/components/escalas/escala-previewkids";
+import { EscalaFormKids } from "@/components/escalas/escala-formkids";
 
 export default function EscalaPage() {
   const [data, setData] = useState<EscalaData>(createDefaultEscala);
@@ -23,31 +26,30 @@ export default function EscalaPage() {
 
   useEffect(() => {
     async function fetchCalendar() {
-      if (!data.mes) return;
+      if (!data.mes || data.mes.length === 0) return;
       try {
         setIsSyncing(true);
         const anoAtual = new Date().getFullYear();
-        const mesIndex = MESES.indexOf(data.mes.toUpperCase());
-        const mesNumero = mesIndex + 1;
-        
-        if (mesNumero < 1 || mesNumero > 12) {
-          console.warn("Mês inválido:", data.mes);
-          return;
+        let allEvents: CalendarEvent[] = [];
+        for (const mes of data.mes) {
+          const mesIndex = MESES.indexOf(mes.toUpperCase());
+          const mesNumero = mesIndex + 1;
+          if (mesNumero < 1 || mesNumero > 12) continue;
+          const res = await fetch(
+            `/api/calendar?year=${anoAtual}&month=${mesNumero}`
+          );
+          const json = await res.json();
+          allEvents = [...allEvents, ...(json.events || [])];
         }
-
-        const res = await fetch(`/api/calendar/?year=${anoAtual}&month=${mesNumero}`);
-        const json = await res.json();
-        setCalendarEvents(json.events || []);
+        setCalendarEvents(allEvents);
       } catch (err) {
         console.error("Erro ao buscar calendario", err);
-        setCalendarEvents([]); 
+        setCalendarEvents([]);
       } finally {
         setIsSyncing(false);
       }
     }
-    if (data.mes) {
-      fetchCalendar();
-    }
+    fetchCalendar();
   }, [data.mes]);
 
   const handleSyncToCalendar = async () => {
@@ -84,7 +86,7 @@ export default function EscalaPage() {
       });
 
       const link = document.createElement("a");
-      link.download = `Escala-${data.mes}.png`;
+      link.download = `Escala-${data.mes.join("-")}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {
@@ -129,29 +131,49 @@ export default function EscalaPage() {
           </Button>
         </div>
       </header>
+       
+       <Tabs defaultValue="escala"  className="min-w-0 flex-1">
+        <TabsList>
+            <TabsTrigger value="escala">Escala</TabsTrigger>
+            <TabsTrigger value="escalakid">Escala Kids</TabsTrigger>
+          </TabsList>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div
-          className="w-full shrink-0 lg:w-[420px] xl:w-[460px]"
-        >
-          <EscalaForm data={data} onChange={setData} calendarEvents={calendarEvents}/>
-        </div>
-
-        <div
-          className="min-w-0 flex-1"
-        >
-          <div className="rounded-xl border bg-card p-2">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Pre-visualizacao
-            </h3>
-            <div className="flex justify-center overflow-x-auto">
-              <div className="inline-block min-w-full rounded-lg border shadow-sm">
-                <EscalaPreview ref={previewRef} data={data}/>
+          <TabsContent value="escala">
+            <div className="flex flex-col gap-6 lg:flex-row">
+              <div className="w-full shrink-0 lg:w-[420px] xl:w-[460px]">
+                <EscalaForm data={data} onChange={setData} calendarEvents={calendarEvents}/>
+              </div>
+              <div className="rounded-xl border bg-card p-2">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Pre-visualizacao
+                </h3>
+                <div className="flex justify-center overflow-x-auto">
+                  <div className="inline-block min-w-full rounded-lg border shadow-sm">
+                    <EscalaPreview ref={previewRef} data={data}/>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </TabsContent>
+
+          <TabsContent value="escalakid">
+            <div className="flex flex-col gap-6 lg:flex-row">
+              <div className="w-full shrink-0 lg:w-[420px] xl:w-[460px]">
+                <EscalaFormKids data={data} onChange={setData} calendarEvents={calendarEvents}/>
+              </div>
+              <div className="rounded-xl border bg-card p-2">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Pre-visualizacao
+                </h3>
+                <div className="flex justify-center overflow-x-auto">
+                  <div className="inline-block min-w-full rounded-lg border shadow-sm">
+                    <EscalaPreviewKids ref={previewRef} data={data}/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+       </Tabs>
     </main>
   );
 }

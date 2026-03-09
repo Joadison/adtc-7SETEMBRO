@@ -3,7 +3,7 @@ import { google } from "googleapis";
 
 export async function POST(request: Request) {
   try {
-    const { eventId, porteiro, recepcao, timeMax, timeMin } = await request.json();
+    const { eventId, porteiro, recepcao, timeMax, timeMin, professoraUp, professoraDow } = await request.json();
 
     if (!eventId) {
       return NextResponse.json({ error: "ID do evento é obrigatório" }, { status: 400 });
@@ -41,6 +41,14 @@ export async function POST(request: Request) {
     }
     if (recepcao) {
       description = updateFieldInDescription(description, "Recepção", recepcao);
+    }
+
+    if (professoraUp) {
+      description = updateFieldInDescription(description, "professoraMaiores", professoraUp);
+    }
+
+    if (professoraDow) {
+      description = updateFieldInDescription(description, "professoraMenores", professoraDow);
     }
 
     await calendar.events.patch({

@@ -23,6 +23,8 @@ import {
 } from "@/lib/escala-types";
 import { CalendarEvent } from "@/lib/ics-parser";
 import { generateWeeksFromMonth } from "@/lib/generate-weeks";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 
 interface EscalaFormProps {
   data: EscalaData;
@@ -30,31 +32,7 @@ interface EscalaFormProps {
   calendarEvents: CalendarEvent[];
 }
 
-export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) {
-
-  const PORTEIROS = [
-    "LIVRE",
-    "Pb. Gleidystone",
-    "Dc. Cleiton",
-    "Aux. Wagner",
-    "Aux. Viana",
-    "Aux. Joadison",
-    "Aux. Davi",
-    "Aux. Paulo",
-    "Aux. Antonilson",
-  ];
-
-  const RECEPCOES = [
-    "LIVRE",
-    "Ir. Natalia",
-    "Ir. Victoria",
-    "Ir. Daniele",
-    "Ir. Rebeca",
-    "Ir. Iris",
-    "Ir. Ruthe",
-    "Ir. Eloisa",
-  ];
-
+export function EscalaFormKids({ data, onChange, calendarEvents }: EscalaFormProps) {
   const PROFESSORAS = [
     "LIVRE",
     "Ir. Monica",
@@ -78,31 +56,40 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     }
   }
 
-  const handleMonthChange = async (v: string) => {
+  const handleMonthChange = async (meses: string[]) => {
 
     const anoAtual = new Date().getFullYear();
 
-    const mesIndex = MESES.indexOf(v.toUpperCase());
-    const mesNumero = mesIndex + 1;
+    let todasSemanas: WeekEntry[] = [];
 
-    const res = await fetch(
-      `/api/calendar?year=${anoAtual}&month=${mesNumero}`
-    );
+    for (const mes of meses) {
 
-    const json = await res.json();
-    const eventos = json.events || [];
+      const mesIndex = MESES.indexOf(mes.toUpperCase());
+      const mesNumero = mesIndex + 1;
 
-    const novasSemanas = generateWeeksFromMonth(
-      v,
-      anoAtual,
-      eventos
-    );
+      const res = await fetch(
+        `/api/calendar?year=${anoAtual}&month=${mesNumero}`
+      );
+
+      const json = await res.json();
+      const eventos = json.events || [];
+
+      const semanasMes = generateWeeksFromMonth(
+        mes,
+        anoAtual,
+        eventos
+      );
+
+      todasSemanas = [...todasSemanas, ...semanasMes];
+
+    }
 
     onChange({
       ...data,
-      mes: [v],   // 👈 vira array com 1 mês
-      semanas: novasSemanas,
+      mes: meses,
+      semanas: todasSemanas,
     });
+
   };
 
   const updateWeek = (weekId: string, updates: Partial<WeekEntry>) => {
@@ -170,6 +157,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     });
   };
   
+  console.log(data.mes)
   return (
     <div className="flex flex-col gap-6">
       <section className="rounded-xl border border-border bg-card p-4">
@@ -177,27 +165,31 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
           Configuracoes gerais
         </h3>
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="mes" className="text-sm font-medium text-foreground">
-              Mes
-            </label>
-            <Select
-              value={data.mes?.[0] || ""}
-              onValueChange={handleMonthChange}
-            >
-              <SelectTrigger id="mes">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {MESES.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
+          <label htmlFor="mes" className="text-sm font-medium text-foreground">
+            Mes
+          </label>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {MESES.map((mes) => (
+              <div key={mes} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`mes-${mes}`}
+                  checked={data.mes?.includes(mes)}
+                  onCheckedChange={(checked) => {
+                    const novosMeses = checked
+                      ? [...(data.mes || []), mes]
+                      : (data.mes || []).filter((m) => m !== mes);
+                    handleMonthChange(novosMeses);
+                  }}
+                />
+                <Label htmlFor={`mes-${mes}`} className="text-sm cursor-pointer">
+                  {mes}
+                </Label>
+              </div>
+            ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Você pode selecionar múltiplos meses (2 ou 3)
+        </p>
        </div>
       </section>
 
@@ -225,34 +217,6 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  Louvor
-                </label>
-                <Select
-                  value={week.conjunto}
-                  onValueChange={(v) =>
-                    updateWeek(week.id, {
-                      conjunto: v as WeekEntry["conjunto"],
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Conjunto de Jovens">
-                      Conjunto de Jovens
-                    </SelectItem>
-                    <SelectItem value="Conjunto de Senhoras">
-                      Conjunto de Senhoras
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
             <div className="flex flex-col gap-2">
               {week.cultos.map((culto, cultoIndex) => {
                 const ehDomingo = isDomingo(culto.dataISO);
@@ -309,58 +273,6 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                       </div>
                     </div>
                       
-                    {/* Porteiro e Recepção */}
-                    <div className="grid grid-cols-2 gap-2 mb-2">
-                      <div className="flex flex-col gap-1">
-                        <label className="text-xs text-muted-foreground">
-                          Porteiro
-                        </label>
-                        <Select
-                          value={culto.porteiro}
-                          onValueChange={(v) =>
-                            updateCulto(week.id, culto.id, {
-                              porteiro: v,
-                            })
-                          }
-                        >
-                          <SelectTrigger className="h-8 text-sm">
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {PORTEIROS.map((p) => (
-                              <SelectItem key={p} value={p}>
-                                {p}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex flex-col gap-1">
-                        <label className="text-xs text-muted-foreground">
-                          Recepcao
-                        </label>
-                        <Select
-                          value={culto.recepcao}
-                          onValueChange={(v) =>
-                            updateCulto(week.id, culto.id, {
-                              recepcao: v,
-                            })
-                          }
-                        >
-                          <SelectTrigger className="h-8 text-sm">
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {RECEPCOES.map((r) => (
-                              <SelectItem key={r} value={r}>
-                                {r}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
                     
                     {/* Salinha */}
                     {ehDomingo && (
