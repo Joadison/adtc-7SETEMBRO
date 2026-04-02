@@ -10,10 +10,11 @@ import {
   Church,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { format, isToday, isTomorrow, isPast } from "date-fns";
+import { format, isToday, isTomorrow, isPast, isBefore, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { CalendarEvent, EventCategory } from "@/lib/ics-parser";
 import { cn } from "@/lib/utils";
+import { parseLocalDate } from "./calendar-grid";
 
 interface UpcomingEventsProps {
   events: CalendarEvent[];
@@ -21,8 +22,11 @@ interface UpcomingEventsProps {
   selectedEvent: CalendarEvent | null;
 }
 
-function formatRelativeDate(dateStr: string): string {
-  const date = new Date(dateStr);
+function formatRelativeDate(dateInput: string | Date): string {
+  const date =
+    typeof dateInput === "string"
+      ? parseLocalDate(dateInput)
+      : dateInput;
   if (isToday(date)) return "Hoje";
   if (isTomorrow(date)) return "Amanha";
   return format(date, "EEEE, d MMM", { locale: ptBR });
@@ -101,8 +105,8 @@ export function UpcomingEvents({
 }: UpcomingEventsProps) {
   const upcoming = events
     .filter((e) => {
-      const eventDate = new Date(e.start);
-      return !isPast(eventDate) || isToday(eventDate);
+      const eventDate = e.allDay ? parseLocalDate(e.start) : new Date(e.start);
+      return !isBefore(startOfDay(eventDate), startOfDay(new Date()));
     })
     .slice(0, 6);
 
@@ -117,8 +121,6 @@ export function UpcomingEvents({
     );
   }
 
-  console.log(events)
-
   return (
     <div className="flex flex-col gap-2">
       <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -126,8 +128,15 @@ export function UpcomingEvents({
       </h2>
       <div className="flex flex-col gap-2">
         {upcoming.map((event) => {
-          const startDate = new Date(event.start);
+          const startDate = event.allDay ? parseLocalDate(event.start) : new Date(event.start);
           const dayIsToday = isToday(startDate);
+
+          const isBirthday =
+            event.category === "Aniversário" ||
+            event.title.toLowerCase().startsWith("aniversário") ||
+            event.title.toLowerCase().startsWith("aniversario");
+
+          const isCulto = event.category.toLowerCase().startsWith("culto");
 
           return (
             <button
@@ -143,9 +152,9 @@ export function UpcomingEvents({
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  {event.title.startsWith("Aniversário") ? (
+                  {isBirthday ? (
                     <Cake className="h-4 w-4 shrink-0  text-orange-600" />
-                  ) : event.category.startsWith("culto") ? (
+                  ) : isCulto ? (
                     <Church className="h-4 w-4 shrink-0 text-primary" />
                   ) : null}
                   <span className="text-sm font-semibold text-foreground">
@@ -165,13 +174,19 @@ export function UpcomingEvents({
               </div>
 
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1 capitalize">
+                <span className={cn(
+                    "flex items-center gap-1 capitalize rounded-md px-1.5 py-0.5 text-[10px] font-medium",
+                    getCategoryBadgeStyle(event.category),
+                  )}>
                   <CalendarDays className="h-3 w-3" />
-                  {formatRelativeDate(event.start)}
+                  {formatRelativeDate(startDate)}
                 </span>
                 {!event.allDay && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                  <span className={cn(
+                    "flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium",
+                    getCategoryBadgeStyle(event.category),
+                  )}>
+                    <Clock className="h-3 w-3"/>
                     {format(startDate, "HH:mm")}
                   </span>
                 )}
