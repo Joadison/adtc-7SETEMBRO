@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import {
   DoorOpen,
@@ -12,10 +12,6 @@ import {
   X,
   Cake,
   Church,
-  ToyBrick,
-  Balloon,
-  AArrowDown,
-  AArrowUp,
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
@@ -28,6 +24,7 @@ import type { CalendarEvent, EventCategory } from "@/lib/ics-parser";
 import { cn } from "@/lib/utils";
 import { TIPOS_CULTO } from "@/lib/escala-types";
 import { TipoCulto } from '../../lib/escala-types';
+import { parseLocalDate } from "./calendar-grid";
 
 interface EventDetailPanelProps {
   event: CalendarEvent | null;
@@ -156,8 +153,8 @@ function RoleCard({
 export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
   if (!event) return null;
 
-  const startDate = new Date(event.start);
-  const endDate = new Date(event.end);
+  const startDate = event.allDay ? parseLocalDate(event.start) : new Date(event.start);
+  const endDate = event.allDay ? parseLocalDate(event.end) : new Date(event.end);
   const sameDay = isSameDay(startDate, endDate);
   const CategoryIcon = getCategoryIcon(event.category);
 
