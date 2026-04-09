@@ -159,7 +159,7 @@ export default function EscalaPage() {
           <TabsContent value="escalakid">
             <div className="flex flex-col gap-6 lg:flex-row">
               <div className="w-full shrink-0 lg:w-[420px] xl:w-[460px]">
-                <EscalaFormKids data={data} onChange={setData} calendarEvents={calendarEvents}/>
+                <EscalaForm data={data} onChange={setData} calendarEvents={calendarEvents}/>
               </div>
               <div className="rounded-xl border bg-card p-2">
                 <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

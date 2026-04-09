@@ -27,7 +27,7 @@ export default function DefaultLayout({
         <Header />
         <>{children}</>
         <Footer />
-        <CalendarNotification />
+        {/* <CalendarNotification /> */}
       </div>
     </AudioProvider>
   );

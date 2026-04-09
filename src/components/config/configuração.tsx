@@ -9,7 +9,7 @@ import EscalaMidia from "./escalaMidia";
 import Img from "./img";
 
 const Config = () => {
-  const [activeComponent, setActiveComponent] = useState(null);
+  const [activeComponent, setActiveComponent] = useState("Imagem");
 
   const handleNavigation = (component: any) => {
     setActiveComponent(component);
@@ -18,7 +18,7 @@ const Config = () => {
   return (
     <>
       <div className="flex flex-row justify-center items-center text-white p-2 bg-[#ff7f00] ">
-        <Button variant="default" onClick={() => handleNavigation("EscalaWork")}>
+        {/* <Button variant="default" onClick={() => handleNavigation("EscalaWork")}>
           Escalas de Trabalhos
         </Button>
           <Button variant="default" onClick={() => handleNavigation("EscalaOp")}>
@@ -29,17 +29,17 @@ const Config = () => {
         </Button>
          <Button variant="default" onClick={() => handleNavigation('Midia')}>
           Escala Midia
-        </Button> 
+        </Button>  */}
         <Button variant="default" onClick={() => handleNavigation('Imagem')}>
           Imagem
         </Button> 
       </div>
 
-      <div className="relative overflow-auto">
+      <div className="relative overflow-auto">{/* 
         {activeComponent === "EscalaWork" && <EscalaWork />}
           {activeComponent === "EscalaOp" && <EscalaOp />} 
           {activeComponent === 'Story' && <EscalaMensal />} 
-          {activeComponent === "Midia" && <EscalaMidia />}
+          {activeComponent === "Midia" && <EscalaMidia />} */}
           {activeComponent === "Imagem" && <Img />}
       </div>
     </>
