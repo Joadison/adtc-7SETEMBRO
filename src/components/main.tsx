@@ -13,6 +13,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function Main() {
   const router = useRouter();
@@ -86,8 +87,8 @@ export default function Main() {
         {/* Apresentação da igreja */}
         <section className="pb-10 pt-12 bg-white">
           <div className="container">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* <div className="grid gap-12 items-center"> */}
+            {/* <div className="grid md:grid-cols-2 gap-12 items-center"> */}
+            <div className="grid gap-12 items-center"> 
               <div>
                 <h2 className="text-3xl font-bold mb-6">
                   Bem-vindo à nossa igreja
@@ -114,13 +115,16 @@ export default function Main() {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-             <div className="relative h-[300px] rounded-xl overflow-hidden">
-                  <img 
-                    src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI" 
-                    alt="Descrição da imagem"
-                    loading="lazy"
-                  />
-              </div>
+             {/* <div className="relative h-[300px] rounded-xl overflow-hidden">
+                   <Image
+                      src="https://iiisjlgwrr.ufs.sh/f/R1WGWTYNvh5qIKED2uIk2C7LDvBRF5noXQ9qbMVm1ZKfjWPI"
+                      alt="Descrição da imagem"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      loading="lazy"
+                    />
+              </div> */}
             </div>
           </div>
         </section>

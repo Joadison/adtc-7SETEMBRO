@@ -7,7 +7,7 @@ export async function POST(request: Request) {
 
     //VALIDAR ACESSO!!!
     const cookieStore = await cookies();
-    const authCookie = cookieStore.get("escala_auth");
+    const authCookie = cookieStore.get("auth");
 
     if (authCookie?.value !== "true") {
       return NextResponse.json(
