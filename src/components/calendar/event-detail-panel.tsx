@@ -34,33 +34,46 @@ interface EventDetailPanelProps {
 function getCategoryHeaderStyle(title: EventCategory) {
   switch (title) {
     case "Aniversário":
-      return "bg-orange-400 text-orange-800 border-orange-200";
+      return "bg-orange-400 text-white border-orange-500";
+
     case "SEDE":
-      return "bg-blue-900 text-blue-50 border-blue-800";
+      return "bg-slate-900 text-white border-slate-800";
+
     case "Culto de Missão":
-      return "bg-green-800 text-green-800 border-green-200";
+      return "bg-green-700 text-white border-green-800";
+
     case "Culto da Família":
-      return "bg-red-800 text-red-800 border-red-200";
+      return "bg-rose-700 text-white border-rose-800";
+
     case "Culto de Santa Ceia":
-      return "bg-red-900 text-red-800 border-red-200";
+      return "bg-red-800 text-white border-red-900";
+
     case "Culto de Louvor e Adoração":
-      return "bg-indigo-900 text-indigo-800 border-indigo-200";
+      return "bg-indigo-700 text-white border-indigo-800";
+
     case "Culto de Mulheres":
-      return "bg-pink-900 text-pink-800 border-pink-200";
+      return "bg-pink-700 text-white border-pink-800";
+
     case "Culto de Doutrina":
-      return "bg-purple-800 text-purple-800 border-purple-200";
+      return "bg-purple-700 text-white border-purple-800";
+
     case "Círculo de Oração":
-      return "bg-yellow-500 text-yellow-800 border-yellow-200";
+      return "bg-amber-400 text-amber-950 border-amber-500";
+
     case "Consagração":
-      return "bg-emerald-400 text-emerald-800 border-emerald-200";
+      return "bg-emerald-500 text-white border-emerald-600";
+
     case "Culto de Jovens":
-      return "bg-cyan-900 text-cyan-800 border-cyan-200";
+      return "bg-cyan-700 text-white border-cyan-800";
+
     case "Culto de Crianças":
-      return "bg-lime-600 text-lime-95 border-lime-25";
+      return "bg-lime-400 text-lime-950 border-lime-500";
+
     case "Reunião de Liderança":
-      return "bg-violet-600 text-violet-95 border-violet-25";
+      return "bg-violet-700 text-white border-violet-800";
+
     default:
-      return "bg-muted text-muted-foreground border-border";
+      return "bg-zinc-700 text-zinc-800 border-zinc-200";
   }
 }
 

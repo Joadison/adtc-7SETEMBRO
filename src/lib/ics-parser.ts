@@ -14,6 +14,7 @@ export type EventCategory =
   | "Culto de Jovens"
   | "Culto de Crianças"
   | "Culto de Mulheres"
+  | "Bazar"
   | "Reunião de Liderança";
 
 export interface CalendarEvent {
@@ -75,8 +76,9 @@ function categorizeEvent(
 
   // ⛪ Cultos específicos
   if (t.includes("doutrina")) return "Culto de Doutrina";
+  if (t.includes("bazar")) return "Bazar";
   if (t.includes("missão") || t.includes("missao")) return "Culto de Missão";
-  if (t.includes("família") || t.includes("familia")) return "Culto da Família";
+  if (t.includes("família") || t.includes("familia") || t.includes("gv de casais") || t.includes("gv dos casais")) return "Culto da Família";
   if (t.includes("santa ceia")) return "Culto de Santa Ceia";
   if (t.includes("mulheres")) return "Culto de Mulheres";
   if (t.includes("louvor") || t.includes("adoração") || t.includes("adoracao"))
@@ -87,7 +89,7 @@ function categorizeEvent(
     return "Círculo de Oração";
   if (t.includes("consagração") || t.includes("consagracao"))
     return "Consagração";
-  if (t.includes("jovens")) return "Culto de Jovens";
+  if (t.includes("jovens") || t.includes("gv de jovens")) return "Culto de Jovens";
   if (t.includes("crianças") || t.includes("criancas"))
     return "Culto de Crianças";
   if (t.includes("liderança") || t.includes("lideranca"))

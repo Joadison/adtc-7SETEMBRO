@@ -80,68 +80,94 @@ function getEventsForDay(events: CalendarEvent[], day: Date): CalendarEvent[] {
 }
 
 function getCategoryStyle(title: EventCategory): string {
-  switch (title) {
+    switch (title) {
     case "Aniversário":
-      return "bg-orange-100 text-orange-800 border-orange-200";
+      return "bg-orange-500 text-white border-orange-600";
+
     case "SEDE":
-      return "bg-blue-900 text-blue-50 border-blue-800";
+      return "bg-slate-900 text-white border-slate-800";
+
     case "Culto de Missão":
-      return "bg-green-100 text-green-800 border-green-200";
+      return "bg-green-600 text-white border-green-700";
+
     case "Culto da Família":
-      return "bg-red-100 text-red-800 border-red-200";
+      return "bg-rose-600 text-white border-rose-700";
+
     case "Culto de Santa Ceia":
-      return "bg-red-100 text-red-800 border-red-200";
+      return "bg-red-700 text-white border-red-800";
+
     case "Culto de Louvor e Adoração":
-      return "bg-indigo-100 text-indigo-800 border-indigo-200";
+      return "bg-indigo-600 text-white border-indigo-700";
+
     case "Culto de Mulheres":
-      return "bg-pink-100 text-pink-800 border-pink-200";
+      return "bg-pink-600 text-white border-pink-700";
+
     case "Culto de Doutrina":
-      return "bg-purple-100 text-purple-800 border-purple-200";
+      return "bg-purple-600 text-white border-purple-700";
+
     case "Círculo de Oração":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      return "bg-amber-500 text-black border-amber-600";
+
     case "Consagração":
-      return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      return "bg-emerald-600 text-white border-emerald-700";
+
     case "Culto de Jovens":
-      return "bg-cyan-100 text-cyan-800 border-cyan-200";
+      return "bg-cyan-600 text-white border-cyan-700";
+
     case "Culto de Crianças":
-      return "bg-lime-400 text-lime-95 border-lime-25";
+      return "bg-lime-400 text-lime-950 border-lime-500";
+
     case "Reunião de Liderança":
-      return "bg-violet-15 text-violet-95 border-violet-25";
+      return "bg-violet-700 text-white border-violet-800";
+
     default:
-      return "bg-muted text-muted-foreground border-border";
+      return "bg-zinc-600 text-white border-zinc-700";
   }
 }
 
 function getCategoryDot(title: EventCategory): string {
   switch (title) {
     case "Aniversário":
-      return "bg-orange-500";
+      return "bg-orange-500 text-white border-orange-600";
+
     case "SEDE":
-      return "bg-blue-900";
-    case "Culto de Mulheres":
-      return "bg-pink-600";
-    case "Culto de Doutrina":
-      return "bg-purple-600";
+      return "bg-slate-900 text-white border-slate-800";
+
     case "Culto de Missão":
-      return "bg-green-600";
+      return "bg-green-600 text-white border-green-700";
+
     case "Culto da Família":
-      return "bg-red-600";
+      return "bg-rose-600 text-white border-rose-700";
+
     case "Culto de Santa Ceia":
-      return "bg-red-100";
+      return "bg-red-700 text-white border-red-800";
+
     case "Culto de Louvor e Adoração":
-      return "bg-indigo-600";
+      return "bg-indigo-600 text-white border-indigo-700";
+
+    case "Culto de Mulheres":
+      return "bg-pink-600 text-white border-pink-700";
+
+    case "Culto de Doutrina":
+      return "bg-purple-600 text-white border-purple-700";
+
     case "Círculo de Oração":
-      return "bg-yellow-600";
+      return "bg-amber-500 text-black border-amber-600";
+
     case "Consagração":
-      return "bg-emerald-600";
+      return "bg-emerald-600 text-white border-emerald-700";
+
     case "Culto de Jovens":
-      return "bg-cyan-600";
+      return "bg-cyan-600 text-white border-cyan-700";
+
     case "Culto de Crianças":
-      return "bg-lime-75";
+      return "bg-lime-400 text-lime-950 border-lime-500";
+
     case "Reunião de Liderança":
-      return "bg-violet-75";
+      return "bg-violet-700 text-white border-violet-800";
+
     default:
-      return "bg-muted-foreground";
+      return "bg-zinc-600 text-white border-zinc-700";
   }
 }
 
