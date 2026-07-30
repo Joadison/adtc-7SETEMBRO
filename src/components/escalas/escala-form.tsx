@@ -61,6 +61,8 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Ir. Daniele",
     "Ir. Rebeca",
     "Ir. Val",
+    "Ir. Cleuma",
+    "Ir. Marilia",
     "Ir. Ruthe",
     "Ir. Raryane",
   ];
