@@ -8,7 +8,8 @@ export type TipoCulto =
   | "Culto de Louvor e Adoração"
   | "Culto de Mulheres"
   | "Culto de Crianças"
-  | "Culto de Jovens";
+  | "Culto de Jovens"
+  | "Culto Natalício"
 
 export interface CultoEntry {
   id: string;
@@ -20,6 +21,7 @@ export interface CultoEntry {
   recepcao: string;
   professoraUp: string;
   professoraDow: string;
+  acomodadores: string;
   observacoes?: string;
   calendarioId?: string;
   categoriaOriginal?: EventCategory;
@@ -66,7 +68,8 @@ export const TIPOS_CULTO: TipoCulto[] = [
   "Culto de Louvor e Adoração",
   "Culto de Mulheres",
   "Culto de Crianças",
-  "Culto de Jovens"
+  "Culto de Jovens",
+  "Culto Natalício"
 ];
 
 export function createEmptyCulto(): CultoEntry {
@@ -78,7 +81,8 @@ export function createEmptyCulto(): CultoEntry {
     porteiro: "",
     recepcao: "",
     professoraUp: "",
-    professoraDow: ""
+    professoraDow: "",
+    acomodadores: ""
   };
 }
 

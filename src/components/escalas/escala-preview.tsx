@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import type { EscalaData } from "@/lib/escala-types";
+import type { CultoEntry, EscalaData } from "@/lib/escala-types";
 
 interface EscalaPreviewProps {
   data: EscalaData;
@@ -20,6 +20,37 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
         return false;
       }
     }
+
+    const parseDate = (dateString: string): Date | null => {
+      if (!dateString) return null;
+      
+      // Se está no formato DD/MM
+      if (dateString.includes("/") && dateString.length === 5) {
+        const [day, month] = dateString.split("/");
+        const year = new Date().getFullYear();
+        return new Date(year, parseInt(month) - 1, parseInt(day));
+      }
+      
+      // Se está no formato YYYY-MM-DD
+      if (dateString.includes("-") && dateString.length === 10) {
+        return new Date(dateString);
+      }
+      
+      return null;
+    };
+
+    const sortCultosByDate = (cultos: CultoEntry[]): CultoEntry[] => {
+      return [...cultos].sort((a, b) => {
+        const dateA = parseDate(a.data);
+        const dateB = parseDate(b.data);
+        
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1;
+        if (!dateB) return -1;
+        
+        return dateA.getTime() - dateB.getTime();
+      });
+    };
 
     return (
       <div
@@ -131,7 +162,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                 padding: "0 12px",
               }}
             >
-              {week.cultos.map((culto) => {
+              {sortCultosByDate(week.cultos).map((culto) => {
                 const ehDomingo = isDomingo(culto.dataISO);
 
                 return (
@@ -166,6 +197,16 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                     >
                       {"Recep\u00e7\u00e3o: " + culto.recepcao}
                     </p>
+                    {culto.acomodadores && (<p
+                      style={{
+                        fontSize: 14,
+                        margin: 0,
+                        color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Acomodadores: " + culto.acomodadores}
+                    </p>)}
                    {/*  {ehDomingo && (
                       <>
                     <p

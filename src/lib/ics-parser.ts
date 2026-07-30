@@ -2,6 +2,7 @@
 export type EventCategory =
   | "SEDE"
   | "Aniversário"
+  | "Culto Natalício"
   | "Culto Campal"
   | "Culto de Doutrina"
   | "Culto de Missão"
@@ -31,6 +32,7 @@ export interface CalendarEvent {
   pregador?: string;
   professoraUp?: string;
   professoraDow?: string;
+  acomodadores?: string;
   category: EventCategory;
 }
 
@@ -73,6 +75,17 @@ function categorizeEvent(
   if (t.includes("sede") || d.includes("sede") || l.includes("sede")) {
     return "SEDE";
   }
+
+  // Culto Natalício
+  if (
+    t.includes("culto natalício") ||
+    t.includes("culto natalicio") ||
+    t.includes("natalício") ||
+    t.includes("natalicio")
+  ) {
+    return "Culto Natalício";
+  }
+
 
   // ⛪ Cultos específicos
   if (t.includes("doutrina")) return "Culto de Doutrina";
@@ -123,6 +136,7 @@ export function parseGoogleEvents(data: any[]): CalendarEvent[] {
       pregador: extractField(description, "Pregador"),
       professoraUp: extractField(event.description || "", "professoraMaiores") || "",
       professoraDow: extractField(event.description || "", "professoraMenores") || "",
+      acomodadores: "",
       allDay: isAllDay,
       category: categorizeEvent(title, description, location),
       recurringEventId: event.recurringEventId,

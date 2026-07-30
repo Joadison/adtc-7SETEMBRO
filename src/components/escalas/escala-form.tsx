@@ -31,7 +31,6 @@ interface EscalaFormProps {
 }
 
 export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) {
-
   const PORTEIROS = [
     "LIVRE",
     "Pb. Gleidystone",
@@ -65,6 +64,39 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Ir. Ruthe",
     "Ir. Raryane",
   ];
+
+  const sortCultosByDate = (cultos: CultoEntry[]): CultoEntry[] => {
+    return [...cultos].sort((a, b) => {
+      // Converte as datas "DD/MM" para objetos Date para comparação
+      const dateA = parseDate(a.data);
+      const dateB = parseDate(b.data);
+      
+      // Se não tiver data, coloca no final
+      if (!dateA && !dateB) return 0;
+      if (!dateA) return 1;
+      if (!dateB) return -1;
+      
+      return dateA.getTime() - dateB.getTime();
+    });
+  };
+
+  const parseDate = (dateString: string): Date | null => {
+    if (!dateString) return null;
+    
+    // Se está no formato DD/MM
+    if (dateString.includes("/") && dateString.length === 5) {
+      const [day, month] = dateString.split("/");
+      const year = new Date().getFullYear();
+      return new Date(year, parseInt(month) - 1, parseInt(day));
+    }
+    
+    // Se está no formato YYYY-MM-DD
+    if (dateString.includes("-") && dateString.length === 10) {
+      return new Date(dateString);
+    }
+    
+    return null;
+  };
 
   const isDomingo = (dataISO?: string): boolean => {
     if (!dataISO) return false;
@@ -100,7 +132,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
 
     onChange({
       ...data,
-      mes: [v],   // 👈 vira array com 1 mês
+      mes: [v], 
       semanas: novasSemanas,
     });
   };
@@ -170,6 +202,20 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     });
   };
   
+  const formatToDateInput = (dateString: string): string => {
+    if (!dateString) return "";
+    
+    // Se está no formato DD/MM, converte para YYYY-MM-DD
+    if (dateString.includes("/") && dateString.length === 5) {
+      const [day, month] = dateString.split("/");
+      const year = new Date().getFullYear();
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+    
+    // Se já está no formato YYYY-MM-DD, retorna como está
+    return dateString;
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <section className="rounded-xl border border-border bg-card p-4">
@@ -254,7 +300,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              {week.cultos.map((culto, cultoIndex) => {
+              {sortCultosByDate(week.cultos).map((culto, cultoIndex) => {
                 const ehDomingo = isDomingo(culto.dataISO);
      
                 return (
@@ -298,12 +344,14 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                           Data
                         </label>
                         <Input
-                          value={culto.data}
-                          onChange={(e) =>
+                          value={culto.data ? formatToDateInput(culto.data) : ""}
+                          type="date"
+                          onChange={(e) => {
+                            const [year, month, day] = e.target.value.split("-");
                             updateCulto(week.id, culto.id, {
-                              data: e.target.value,
-                            })
-                          }
+                              data: e.target.value ? `${day}/${month}` : "",
+                            });
+                          }}
                           className="h-8 text-sm"
                         />
                       </div>
@@ -416,6 +464,21 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                         </div>
                       </div>
                     )}
+
+                    <div className="flex flex-col gap-1 mb-2">
+                      <label className="text-xs text-muted-foreground">
+                        Acomodadores
+                      </label>
+                      <Input
+                        value={culto.acomodadores || ""}
+                        onChange={(e) =>
+                          updateCulto(week.id, culto.id, {
+                            acomodadores: e.target.value,
+                          })
+                        }
+                        className="h-8 text-sm"
+                      />
+                    </div>
 
                   </div>
                 )

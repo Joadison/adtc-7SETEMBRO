@@ -39,6 +39,7 @@ export async function updateCalendarWithEscalaData({
           recepcao: culto.recepcao,
           professoraUp: culto.professoraUp,
           professoraDow: culto.professoraDow,
+          acomodadores: culto.acomodadores,
           timeMin: matchingEvent.start,
           timeMax: matchingEvent.end,
         }),

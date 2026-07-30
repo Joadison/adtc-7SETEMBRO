@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
 
-    const { eventId, porteiro, recepcao, timeMax, timeMin, professoraUp, professoraDow } = await request.json();
+    const { eventId, porteiro, recepcao, professoraUp, professoraDow, acomodadores, timeMin, timeMax } = await request.json();
 
     if (!eventId) {
       return NextResponse.json({ error: "ID do evento é obrigatório" }, { status: 400 });
@@ -71,6 +71,10 @@ export async function POST(request: Request) {
     }
     if (recepcao) {
       description = updateFieldInDescription(description, "Recepção", recepcao);
+    }
+
+    if (acomodadores) {
+      description = updateFieldInDescription(description, "Acomodadores", acomodadores);
     }
 
     if (professoraUp) {
