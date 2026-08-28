@@ -41,6 +41,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Aux. Davi",
     "Aux. Paulo",
     "Aux. Antonilson",
+    "Aux. Vitor",
   ];
 
   const RECEPCOES = [
@@ -52,6 +53,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Ir. Iris",
     "Ir. Ruthe",
     "Ir. Eloisa",
+    "Ir. Ester,"
   ];
 
   const PROFESSORAS = [
