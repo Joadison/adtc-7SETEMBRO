@@ -17,7 +17,9 @@ export interface CultoEntry {
   data: string;
   dataISO?: string;
   pregador: string;
-  porteiro: string;
+  conjunto: string;
+  porteiro1: string;
+  porteiro2: string;
   recepcao: string;
   professoraUp: string;
   professoraDow: string;
@@ -32,7 +34,7 @@ export interface WeekEntry {
   id: string;
   inicio: string;
   fim: string;
-  conjunto: "Conjunto de Jovens" | "Conjunto de Senhoras";
+  conjunto: string;
   cultos: CultoEntry[];
 }
 
@@ -78,7 +80,9 @@ export function createEmptyCulto(): CultoEntry {
     nome: "",
     data: "",
     pregador: "",
-    porteiro: "",
+    conjunto: "",
+    porteiro1: "",
+    porteiro2: "",
     recepcao: "",
     professoraUp: "",
     professoraDow: "",
@@ -91,7 +95,7 @@ export function createEmptyWeek(): WeekEntry {
     id: crypto.randomUUID(),
     inicio: "",
     fim: "",
-    conjunto: "Conjunto de Jovens",
+    conjunto: "",
     cultos: [],
     //cultos: [createEmptyCulto(), createEmptyCulto()],
   };

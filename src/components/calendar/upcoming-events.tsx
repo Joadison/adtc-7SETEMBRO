@@ -194,12 +194,18 @@ export function UpcomingEvents({
                 )}
               </div>
 
-              {(event.porteiro || event.recepcao || event.pregador) && (
+              {(event.porteiro1 || event.porteiro2 || event.recepcao || event.pregador) && (
                 <div className="mt-0.5 flex flex-wrap gap-1.5">
-                  {event.porteiro && (
+                  {event.porteiro1 && (
                     <span className="inline-flex items-center gap-1 rounded-md  px-1.5 py-0.5 text-[10px] font-medium text-primary">
                       <DoorOpen className="h-2.5 w-2.5" />
-                      {event.porteiro}
+                      {event.porteiro1}
+                    </span>
+                  )}
+                  {event.porteiro2 && (
+                    <span className="inline-flex items-center gap-1 rounded-md  px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                      <DoorOpen className="h-2.5 w-2.5" />
+                      {event.porteiro2}
                     </span>
                   )}
                   {event.recepcao && (

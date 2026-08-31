@@ -143,13 +143,15 @@ export default function EscalaPage() {
               <div className="w-full shrink-0 lg:w-[420px] xl:w-[460px]">
                 <EscalaForm data={data} onChange={setData} calendarEvents={calendarEvents}/>
               </div>
-              <div className="rounded-xl border bg-card p-2">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Pre-visualizacao
-                </h3>
-                <div className="flex justify-center overflow-x-auto">
-                  <div className="inline-block min-w-full rounded-lg border shadow-sm">
-                    <EscalaPreview ref={previewRef} data={data}/>
+              <div className="w-full lg:flex-1">
+                <div className="rounded-xl border bg-card p-2 sticky top-6">
+                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Pré-visualização
+                  </h3>
+                  <div className="flex justify-center overflow-x-auto">
+                    <div className="inline-block min-w-full rounded-lg border shadow-sm">
+                      <EscalaPreview ref={previewRef} data={data} />
+                    </div>
                   </div>
                 </div>
               </div>

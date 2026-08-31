@@ -27,7 +27,9 @@ export interface CalendarEvent {
   end: string;
   location: string;
   allDay: boolean;
-  porteiro?: string;
+  conjunto?: string;
+  porteiro1?: string;
+  porteiro2?: string;
   recepcao?: string;
   pregador?: string;
   professoraUp?: string;
@@ -131,12 +133,14 @@ export function parseGoogleEvents(data: any[]): CalendarEvent[] {
       start: event.start?.dateTime || event.start?.date || "",
       end: event.end?.dateTime || event.end?.date || "",
       location,
-      porteiro: extractField(description, "Porteiro"),
-      recepcao: extractField(description, "Recepção"),
-      pregador: extractField(description, "Pregador"),
+      conjunto: extractField(event.description || "", "conjunto") || "",
+      porteiro1: extractField(event.description || "", "porteiro 1") || extractField(event.description || "", "porteiro") || "",
+      porteiro2: extractField(event.description || "", "porteiro 2") || "",
+      recepcao: extractField(event.description || "", "recepção") || "",
+      pregador: extractField(event.description || "", "pregador") || "",
       professoraUp: extractField(event.description || "", "professoraMaiores") || "",
       professoraDow: extractField(event.description || "", "professoraMenores") || "",
-      acomodadores: "",
+      acomodadores: extractField(event.description || "", "acomodadores") || "",
       allDay: isAllDay,
       category: categorizeEvent(title, description, location),
       recurringEventId: event.recurringEventId,

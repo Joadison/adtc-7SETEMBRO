@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
 
-    const { eventId, porteiro, recepcao, professoraUp, professoraDow, acomodadores, timeMin, timeMax } = await request.json();
+    const { eventId, pregador, conjunto, porteiro1, porteiro2, recepcao, professoraUp, professoraDow, acomodadores, timeMin, timeMax } = await request.json();
 
     if (!eventId) {
       return NextResponse.json({ error: "ID do evento é obrigatório" }, { status: 400 });
@@ -66,8 +66,17 @@ export async function POST(request: Request) {
 
     let description = eventData?.description || "";
 
-    if (porteiro) {
-      description = updateFieldInDescription(description, "Porteiro", porteiro);
+    if (pregador) {
+      description = updateFieldInDescription(description, "Pregador", pregador);
+    }
+    if (conjunto) {
+      description = updateFieldInDescription(description, "Conjunto", conjunto);
+    }
+    if (porteiro1) {
+      description = updateFieldInDescription(description, "Porteiro 1", porteiro1);
+    }
+    if (porteiro2) {
+      description = updateFieldInDescription(description, "Porteiro 2", porteiro2);
     }
     if (recepcao) {
       description = updateFieldInDescription(description, "Recepção", recepcao);

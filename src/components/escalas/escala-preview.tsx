@@ -185,12 +185,24 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                         lineHeight: 1.5,
                       }}
                     >
-                      {"Porteiro: " + culto.porteiro}
+                      {"Porteiro 1: " + culto.porteiro1}
                     </p>
+                    {culto.porteiro2 && (
+                      <p
+                        style={{
+                          fontSize: 14,
+                          margin: "0 0 1px 0",
+                          color: "#333",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {"Porteiro 2: " + culto.porteiro2}
+                    </p>
+                    )}
                     <p
                       style={{
                         fontSize: 14,
-                        margin: 0,
+                        margin: "0 0 1px 0",
                         color: "#333",
                         lineHeight: 1.5,
                       }}

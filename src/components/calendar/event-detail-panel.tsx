@@ -14,6 +14,7 @@ import {
   Church,
   ArrowUp,
   ArrowDown,
+  MicVocal,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,7 @@ export function cleanEventDescription(description: string): string {
   return description
     .replace(/<br\s*\/?>/gi, "\n")
     .split(/\r?\n/)
-    .filter(line => !/^\s*(Porteiro|Recepção|Pregador|professoraMaiores|professoraMenores)\s*[:\-]/i.test(line))
+    .filter(line => !/^\s*(Porteiro|Porteiro 1|Porteiro 2|Conjunto|Recepção|Pregador|professoraMaiores|professoraMenores)\s*[:\-]/i.test(line))
     .join("<br />")
     .trim();
 }
@@ -286,16 +287,38 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
                 <p className="text-sm text-foreground">
                   Consulte a escala completa no grupo de WhatsApp.
                 </p>
-              ) : event.porteiro || event.recepcao ? (
-                <div className="flex gap-2">
-                  {event.porteiro && (
+              ) : event.conjunto || event.porteiro1 || event.porteiro2 || event.recepcao ? (
+                <>
+                <div className="flex gap-2 w-full">
+                  {event.conjunto && (
+                    <RoleCard
+                      icon={MicVocal}
+                      label="Conjunto"
+                      name={event.conjunto}
+                      colorClass="bg-violet-100 text-violet-700"
+                    />
+                  )}
+                </div>
+
+                <div className="flex gap-2 my-2">
+                  {event.porteiro1 && (
                     <RoleCard
                       icon={DoorOpen}
-                      label="Porteiro"
-                      name={event.porteiro}
+                      label="Porteiro 1 "
+                      name={event.porteiro1}
                       colorClass="bg-primary/10 text-primary"
                     />
                   )}
+                  {event.porteiro2 && (
+                    <RoleCard
+                      icon={DoorOpen}
+                      label="Porteiro 2 "
+                      name={event.porteiro2}
+                      colorClass="bg-primary/10 text-primary"
+                    />
+                  )}
+                </div>
+                <div className="flex gap-2 mb-2 w-full">
                   {event.recepcao && (
                     <RoleCard
                       icon={HandHelping}
@@ -305,6 +328,7 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
                     />
                   )}
                 </div>
+                </>
               ) : (
                 <p className="text-xs text-muted-foreground italic">
                   Nenhuma escala definida na descricao.

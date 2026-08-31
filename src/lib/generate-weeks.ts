@@ -60,13 +60,22 @@ export function generateWeeksFromMonth(
             )
             .map(convertEventToCulto)
         : [createEmptyCulto()];
+      
+    const conjuntoDaSemana = cultos.length > 0 && cultos[0].conjunto 
+      ? cultos[0].conjunto 
+      : "Conjunto de Jovens";
+
+    const cultosComConjunto = cultos.map(c => ({
+      ...c,
+      conjunto: c.conjunto || conjuntoDaSemana
+    }));
 
     semanas.push({
       id: crypto.randomUUID(),
       inicio: formatar(inicio),
       fim: formatar(fimSemana),
-      conjunto: "Conjunto de Jovens",
-      cultos,
+      conjunto: "",
+      cultos: cultosComConjunto,
     });
 
     atual.setDate(atual.getDate() + 7);
@@ -90,7 +99,9 @@ function convertEventToCulto(event: CalendarEvent): CultoEntry {
     data: dataFormatada,
     dataISO: event.start,
     pregador: extractField(event.description || "", "pregador") || "",
-    porteiro: extractField(event.description || "", "porteiro") || "",
+    conjunto: extractField(event.description || "", "conjunto") || "",
+    porteiro1: extractField(event.description || "", "porteiro 1") || extractField(event.description || "", "porteiro") || "",
+    porteiro2: extractField(event.description || "", "porteiro 2") || "",
     recepcao: extractField(event.description || "", "recepção") || "",
     professoraUp: extractField(event.description || "", "professoraMaiores") || "",
     professoraDow: extractField(event.description || "", "professoraMenores") || "",
