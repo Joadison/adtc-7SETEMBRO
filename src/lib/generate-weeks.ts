@@ -50,7 +50,23 @@ export function generateWeeksFromMonth(
       return dataEvento >= inicio && dataEvento <= fimSemana;
     });
 
-    const cultos: CultoEntry[] =
+    if (eventosDaSemana.length === 0) {
+      atual.setDate(atual.getDate() + 7);
+      continue;
+    }
+
+    const cultos = eventosDaSemana
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
+    .map(convertEventToCulto);
+
+    const conjuntoDaSemana = cultos[0].conjunto || "Conjunto de Jovens";
+
+    const cultosComConjunto = cultos.map((c) => ({
+      ...c,
+      conjunto: c.conjunto || conjuntoDaSemana,
+    }));
+
+    /* const cultos: CultoEntry[] =
       eventosDaSemana.length > 0
         ? eventosDaSemana
             .sort(
@@ -59,16 +75,7 @@ export function generateWeeksFromMonth(
                 new Date(b.start).getTime()
             )
             .map(convertEventToCulto)
-        : [createEmptyCulto()];
-      
-    const conjuntoDaSemana = cultos.length > 0 && cultos[0].conjunto 
-      ? cultos[0].conjunto 
-      : "Conjunto de Jovens";
-
-    const cultosComConjunto = cultos.map(c => ({
-      ...c,
-      conjunto: c.conjunto || conjuntoDaSemana
-    }));
+        : [createEmptyCulto()]; */
 
     semanas.push({
       id: crypto.randomUUID(),

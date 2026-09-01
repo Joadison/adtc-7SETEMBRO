@@ -304,7 +304,7 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
                   {event.porteiro1 && (
                     <RoleCard
                       icon={DoorOpen}
-                      label="Porteiro 1 "
+                      label="Porteiro Externo"
                       name={event.porteiro1}
                       colorClass="bg-primary/10 text-primary"
                     />
@@ -312,7 +312,7 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
                   {event.porteiro2 && (
                     <RoleCard
                       icon={DoorOpen}
-                      label="Porteiro 2 "
+                      label="Porteiro Interno"
                       name={event.porteiro2}
                       colorClass="bg-primary/10 text-primary"
                     />

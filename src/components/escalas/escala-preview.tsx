@@ -124,7 +124,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
             {/* Orange header bar */}
             <div
               style={{
-                backgroundColor: "#EA580C",
+                backgroundColor: (week.cultos[0]?.conjunto || week.conjunto) === "Conjunto de Jovens" ? "#EA580C" : "#ea0c7b",
                 borderRadius: "8px",
                 padding: "10px 18px",
                 marginBottom: 14,
@@ -149,7 +149,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                   fontSize: 14,
                 }}
               >
-                {week.conjunto}
+                {week.cultos[0]?.conjunto || week.conjunto}
               </span>
             </div>
 
@@ -185,7 +185,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                         lineHeight: 1.5,
                       }}
                     >
-                      {"Porteiro 1: " + culto.porteiro1}
+                      {"Porteiro Externo: " + culto.porteiro1}
                     </p>
                     {culto.porteiro2 && (
                       <p
@@ -196,7 +196,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                         lineHeight: 1.5,
                       }}
                     >
-                      {"Porteiro 2: " + culto.porteiro2}
+                      {"Porteiro Interno: " + culto.porteiro2}
                     </p>
                     )}
                     <p

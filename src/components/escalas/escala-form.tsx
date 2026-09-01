@@ -319,10 +319,9 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                     Louvor
                   </label>
                   <Select
-                    value={week.conjunto || ""}
+                    value={week.cultos[0]?.conjunto || week.conjunto}
                     onValueChange={(v) => {
                       updateWeek(week.id, { conjunto: v });
-                      console.log("Conjunto selecionado para a semana:", v, week.cultos);
                       onChange({
                         ...data,
                         semanas: data.semanas.map((w) =>
@@ -357,8 +356,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
               <div className="flex flex-col gap-2">
                 {sortCultosByDate(week.cultos).map((culto, cultoIndex) => {
                   const ehDomingo = isDomingo(culto.dataISO);
-                  const ehQuinta = isQuinta(culto.dataISO);
-      
+                  const ehQuinta = isQuinta(culto.dataISO);      
                   return (
                     <div
                       key={culto.id}
@@ -385,7 +383,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                             Culto
                           </label>
                           <Input
-                            value={culto.nome}
+                            value={week.conjunto || culto.nome || ""}
                             onChange={(e) =>
                               updateCulto(week.id, culto.id, {
                                 nome: e.target.value,
