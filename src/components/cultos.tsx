@@ -51,11 +51,23 @@ const Cultos = () => {
 
         // Fetch videos
         const videosResponse = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=20&order=date&type=video&key=${apiKey}`,
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=8&order=date&type=video&key=${apiKey}`,
         )
 
         if (!videosResponse.ok) {
-          throw new Error("Erro ao buscar vídeos do YouTube")
+          const errorData = await videosResponse.json().catch(() => null)
+
+          console.error("Erro da API do YouTube:", {
+            status: videosResponse.status,
+            statusText: videosResponse.statusText,
+            details: errorData,
+          })
+
+          throw new Error(
+            `YouTube API: ${videosResponse.status} - ${
+              errorData?.error?.message || videosResponse.statusText
+            }`
+          )
         }
 
         const videosData = await videosResponse.json()
@@ -66,8 +78,20 @@ const Cultos = () => {
           `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`,
         )
 
-        if (!liveResponse.ok) {
-          throw new Error("Erro ao buscar transmissão ao vivo do YouTube")
+         if (!liveResponse.ok) {
+          const errorData = await liveResponse.json().catch(() => null)
+
+          console.error("Erro da API do YouTube:", {
+            status: liveResponse.status,
+            statusText: liveResponse.statusText,
+            details: errorData,
+          })
+
+          throw new Error(
+            `YouTube API: ${liveResponse.status} - ${
+              errorData?.error?.message || liveResponse.statusText
+            }`
+          )
         }
 
         const liveData = await liveResponse.json()

@@ -279,10 +279,9 @@ export function CalendarGrid({
                         }
                       }}
                       className={cn(
-                        "flex w-full items-center gap-1 truncate rounded-md border px-1 py-0.5 text-left text-[10px] font-semibold leading-tight transition-all sm:text-xs ",
+                        "flex w-full items-start gap-1 rounded-md border px-1 py-0.5 text-left text-[10px] font-semibold leading-tight transition-all sm:text-xs",
                         getCategoryStyle(event.category),
-                        selectedEvent?.id === event.id &&
-                          "ring-2 ring-foreground/20 shadow-sm",
+                        selectedEvent?.id === event.id && "ring-2 ring-foreground/20 shadow-sm",
                       )}
                     >
                       {event.title === "Aniversário" && (
@@ -295,11 +294,9 @@ export function CalendarGrid({
                         <Church className="hidden h-2.5 w-2.5 shrink-0 sm:inline-block" />
                       )}
                       <span className="truncate">
-                        <span className="hidden sm:inline">{event.title}</span>
+                        {event.title.length > 25  ? <span className="hidden sm:inline">{event.title.slice(0, 25)}…</span> : <span className="truncate">{event.title}</span>}
                         <span className="sm:hidden">
-                          {event.title.length > 10
-                            ? `${event.title.slice(0, 10)}..`
-                            : event.title}
+                          {event.title.length > 10 ? `${event.title.slice(0, 5)}…` : event.title}
                         </span>
                       </span>
                     </div>

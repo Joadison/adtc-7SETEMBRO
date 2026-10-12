@@ -126,34 +126,46 @@ export function ChurchCalendar() {
               </h3>
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded bg-blue-900" />
+                  <span className="h-3 w-3 rounded bg-slate-900" />
                   <span className="text-xs text-foreground">
                     Sede
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded bg-green-800" />
-                  <span className="h-3 w-3 rounded bg-red-800" />
-                  <span className="h-3 w-3 rounded bg-red-900" />
-                  <span className="h-3 w-3 rounded bg-indigo-900" />
+                  <span className="h-3 w-3 rounded bg-green-600" />
+                  <span className="h-3 w-3 rounded bg-rose-600" />
+                  <span className="h-3 w-3 rounded bg-red-700" />
+                  <span className="h-3 w-3 rounded bg-indigo-600" />
                   <span className="text-xs text-foreground">
                     Cultos
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded bg-purple-800" />
+                  <span className="h-3 w-3 rounded bg-purple-600" />
                   <span className="text-xs text-foreground">
                     Culto de Doutrina
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded bg-yellow-400" />
+                  <span className="h-3 w-3 rounded bg-cyan-600" />
+                  <span className="text-xs text-foreground">
+                    Culto de Jovens
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded bg-pink-600" />
+                  <span className="text-xs text-foreground">
+                    Culto de Mulheres
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded bg-amber-500" />
                   <span className="text-xs text-foreground">
                     Circulo de Oração
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded bg-emerald-400" />
+                  <span className="h-3 w-3 rounded bg-emerald-600" />
                   <span className="text-xs text-foreground">
                     Consagração
                   </span>
