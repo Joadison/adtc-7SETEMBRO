@@ -1,0 +1,14 @@
+import Config from "@/components/config/configuração";
+import ConfigLayout from "../../layouts/ConfigLayout";
+
+export const metadata = {
+  title: "Editor IMG | ADTC 7 de Setembro",
+};
+
+export default function ConfigPage() {
+  return (
+    <ConfigLayout>
+      <Config />
+    </ConfigLayout>
+  );
+}

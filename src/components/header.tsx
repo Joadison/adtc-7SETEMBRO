@@ -8,6 +8,8 @@ import { Button } from "./ui/button"
 import Link from "next/link"
 
 const Header = () => {
+  const albumUrl = process.env.NEXT_PUBLIC_CURRENT_ALBUM_LINK;
+
   const router = useRouter()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -86,6 +88,13 @@ const Header = () => {
               onClick={() => navigateTo("/calendar")}
             >
               Calendário 
+            </Button>
+            <Button
+              variant="default"
+              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
+              onClick={() => window.open(`https://photos.app.goo.gl/${albumUrl}`,"_blank","noopener,noreferrer")}
+            >
+              Fotos
             </Button>
           </nav>
 
@@ -181,10 +190,10 @@ const Header = () => {
                 <Button
                   variant="default"
                   className="justify-start text-base font-medium hover:text-orange-600 hover:bg-orange-50 py-3"
-                  onClick={() => navigateTo("/cam")}
+                  onClick={() => window.open(`https://photos.app.goo.gl/${albumUrl}`,"_blank","noopener,noreferrer")}
                 >
                   <Camera className="mr-3 h-5 w-5" />
-                  Câmera
+                  Fotos
                 </Button>
                 <div className="border-t my-2"></div>
                 <Button 

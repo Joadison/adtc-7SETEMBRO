@@ -106,7 +106,7 @@ const Fe = () => {
               <h2 className="text-xl font-bold mb-3 text-gray-900">
                 {belief.title}
               </h2>
-              <p className="text-gray-600 mb-4 flex-grow">
+              <p className="text-gray-600 mb-4 grow">
                 {belief.description}
               </p>
               <div className="text-sm text-orange-600 font-medium italic mt-auto">
@@ -156,14 +156,6 @@ const Fe = () => {
             para aprofundar seu conhecimento sobre as verdades que cremos e
             professamos.
           </p>
-          {/* <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium">
-              Fale com um Pastor
-            </button>
-            <button className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-              Horários de Culto
-            </button>
-          </div> */}
         </motion.div>
       </div>
     </div>

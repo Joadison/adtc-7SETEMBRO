@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss"
 
 const config = {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -27,12 +26,6 @@ const config = {
         'publications-header':
           'url(https://utfs.io/f/b05fb922-f9a8-47ef-8834-dbed170256c5-1d.png)',
       },
-      backgroundPosition: {
-        'right-70': 'right 70%',
-      },
-      backgroundSize: {
-        '70': '70%',
-      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -53,8 +46,7 @@ const config = {
         loading: "loading 1.2s ease-in-out infinite",
       },
     },
-  },
-  /* plugins: [require(tailwindcss-animate),nextui()], */
+  }
 } satisfies Config
 
 export default config

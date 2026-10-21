@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^2.23.0",
+    "@googleworkspace/drive-picker-element": "^0.7.3",
     "@nextui-org/modal": "^2.0.41",
     "@nextui-org/system": "^2.2.6",
     "@nextui-org/theme": "^2.2.11",
@@ -36,12 +38,14 @@
     "node-ical": "^0.23.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-google-photos-picker": "^2.0.2",
     "swr": "^2.4.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.19.27",
     "@types/react": "^18",
@@ -49,7 +53,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }

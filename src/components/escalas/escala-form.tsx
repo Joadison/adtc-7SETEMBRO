@@ -19,11 +19,12 @@ import type {
 import {
   MESES,
   createEmptyWeek,
-  createEmptyCulto,
+  createEmptyCulto, 
 } from "@/lib/escala-types";
 import { CalendarEvent } from "@/lib/ics-parser";
 import { generateWeeksFromMonth } from "@/lib/generate-weeks";
 import { useState } from "react";
+import { Loader2, Wand2 } from "lucide-react";
 
 interface EscalaFormProps {
   data: EscalaData;
@@ -32,9 +33,51 @@ interface EscalaFormProps {
 }
 
 export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) {
+  const [gerando, setGerando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  const semanasSeguras = data.semanas ?? [];
   const [semanasExpandidas, setSemanasExpandidas] = useState<Record<string, boolean>>(
-    data.semanas.reduce((acc, week) => ({ ...acc, [week.id]: true }), {})
+    semanasSeguras.reduce((acc, week) => ({ ...acc, [week.id]: true }), {})
   );
+
+  const handleGerarEscala = async () => {
+    if (!data.mes?.[0]) {
+      setErro("Selecione um mês primeiro");
+      return;
+    }
+    setGerando(true);
+    setErro(null);
+
+    try {
+      const diasComCulto = data.semanas
+        .flatMap((w) => w.cultos.map((c) => c.data))
+        .filter(Boolean);
+
+      const res = await fetch("/api/calendar/gerar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mes: data.mes[0],
+          ano: new Date().getFullYear(),
+          diasComCulto
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Falha ao gerar");
+
+      const semanas = json?.escala?.semanas;
+      if (!Array.isArray(semanas)) {
+        throw new Error("A IA retornou um formato inválido. Tente novamente.");
+      }
+      setErro(json.prompt);
+      onChange({ ...data, semanas });
+    } catch (e: any) {
+      setErro(e.message);
+    } finally {
+      setGerando(false);
+    }
+  };
 
   const toggleSemana = (weekId: string) => {
     setSemanasExpandidas(prev => ({
@@ -255,6 +298,27 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
 
   return (
     <div className="flex flex-col gap-6">
+      <Button
+        onClick={handleGerarEscala}
+        disabled={gerando || !data.mes?.[0]}
+        className="mt-3 bg-purple-600 text-white hover:bg-purple-700"
+      >
+        {gerando ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Gerando escala...
+          </>
+        ) : (
+          <>
+            <Wand2 className="h-4 w-4" />
+            Preencher escala com IA
+          </>
+        )}
+      </Button>
+
+      {erro && (
+        <p className="mt-2 text-xs text-destructive">{erro}</p>
+      )}
       <section className="rounded-xl border border-border bg-card p-4">
         <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           Configuracoes gerais

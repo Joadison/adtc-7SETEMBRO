@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { Calendar, Clock, Play} from "lucide-react"
+import { Badge, Bell, Calendar, Clock, Play, Share2, ThumbsUp} from "lucide-react"
 import { Button } from "@/components/ui/button"
 //import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
@@ -35,11 +35,11 @@ interface Video {
 const Cultos = () => {
   const router = useRouter();
   const [videos, setVideos] = useState<Video[]>([])
-  //const [isLive, setIsLive] = useState(false)
-  //const [liveVideo, setLiveVideo] = useState<Video | null>(null)
+  const [isLive, setIsLive] = useState(false)
+  const [liveVideo, setLiveVideo] = useState<Video | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("todos")
-  //const [nextService, setNextService] = useState<string>("")
+  const [nextService, setNextService] = useState<string>("")
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -96,8 +96,8 @@ const Cultos = () => {
 
         const liveData = await liveResponse.json()
         if (liveData.items && liveData.items.length > 0) {
-          //setIsLive(true)
-          //setLiveVideo(liveData.items[0])
+          setIsLive(true)
+          setLiveVideo(liveData.items[0])
         } else {
           // Calculate next service time
           const now = new Date()
@@ -160,9 +160,6 @@ const Cultos = () => {
   // Filter videos based on active tab
   const filteredVideos = videos.filter((video) => {
     if (activeTab === "todos") return true
-    //if (activeTab === "cultos") return video.snippet.title.toLowerCase().includes("culto")
-    //if (activeTab === "estudos") return video.snippet.title.toLowerCase().includes("estudo")
-    //if (activeTab === "eventos") return video.snippet.title.toLowerCase().includes("evento")
     return true
   })
 
@@ -203,7 +200,7 @@ const Cultos = () => {
         </motion.div>
 
         {/* Live Stream or Next Service Section */}
-        {/* <div className="mb-12">
+        <div className="mb-12">
           {isLive && liveVideo ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -261,33 +258,15 @@ const Cultos = () => {
                   Não estamos ao vivo no momento. Nossa próxima transmissão será no horário indicado acima. Enquanto
                   isso, você pode assistir a nossos cultos anteriores abaixo.
                 </p>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <Button className="bg-orange-600 hover:bg-orange-700">
-                    <Bell className="mr-2 h-4 w-4" />
-                    Receber Lembrete
-                  </Button>
-                  <Button variant="outline">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Ver Agenda de Cultos
-                  </Button>
-                </div>
               </div>
             </motion.div>
           )}
-        </div> */}
+        </div>
 
         {/* Videos Section */}
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Cultos Anteriores</h2>
-            {/* <Tabs defaultValue="todos" value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
-                <TabsTrigger value="todos">Todos</TabsTrigger>
-                <TabsTrigger value="cultos">Cultos</TabsTrigger>
-                <TabsTrigger value="estudos">Estudos</TabsTrigger>
-                <TabsTrigger value="eventos">Eventos</TabsTrigger>
-              </TabsList>
-            </Tabs> */}
           </div>
 
           {loading ? (

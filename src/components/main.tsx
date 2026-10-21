@@ -55,7 +55,7 @@ export default function Main() {
           </div>
         </section>
         {/* Time e Agenda Simples */}
-        <section className="py-8 bg-orange-600 text-white">
+        <section className="flex px-5 justify-center py-8 bg-orange-600 text-white">
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-center gap-3">
@@ -85,7 +85,7 @@ export default function Main() {
           </div>
         </section>
         {/* Apresentação da igreja */}
-        <section className="pb-10 pt-12 bg-white">
+        <section className="flex px-5 justify-center pb-10 pt-12 bg-white">
           <div className="container">
             {/* <div className="grid md:grid-cols-2 gap-12 items-center"> */}
             <div className="grid gap-12 items-center"> 
@@ -130,7 +130,7 @@ export default function Main() {
         </section>
 
         {/* Ministries */}
-        <section className="pb-10 pt-12 bg-gray-50 sm:flex hidden">
+        <section className="flex px-5 justify-center pb-10 pt-12 bg-gray-50 ">
           <div className="container">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Nossos Ministérios</h2>
@@ -164,9 +164,9 @@ export default function Main() {
                   key={index}
                   className="border-none shadow-md hover:shadow-lg transition-shadow"
                 >
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-6 bg-white">
                     <div className="mb-4">{ministry.icon}</div>
-                    <h3 className="text-xl font-bold mb-2">{ministry.title}</h3>
+                    <h3 className="text-xl font-bold mb-2 text-black">{ministry.title}</h3>
                     <p className="text-gray-600 mb-4">{ministry.description}</p>
                     <Button
                       className="text-orange-600 hover:text-orange-700 font-medium inline-flex items-center"
@@ -262,7 +262,7 @@ export default function Main() {
         </section>*/}
 
         {/* Visitar! */}
-        <section className="pb-20 pt-12 bg-orange-600 text-white">
+        <section className="flex justify-center px-5 pb-20 pt-12 bg-orange-600 text-white">
           <div className="container text-center">
             <h2 className="text-3xl font-bold mb-4">Venha nos Visitar</h2>
             <p className="max-w-2xl mx-auto mb-8">
