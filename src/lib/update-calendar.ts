@@ -30,22 +30,37 @@ export async function updateCalendarWithEscalaData({
     
     const updatePromises = itemsToUpdate.map(async (item) => {
       const { matchingEvent, culto } = item!;
+      const diaSemana = culto.dataISO ? new Date(culto.dataISO).getDay() : -1;
+      const isQuinta = diaSemana === 4;
+      const isDomingo = diaSemana === 0;
+
+      const payload: Record<string, unknown> = {
+        eventId: matchingEvent.id,
+        pregador: culto.pregador,
+        porteiro1: culto.porteiro1,
+        porteiro2: culto.porteiro2,
+        recepcao: culto.recepcao,
+        acomodadores: culto.acomodadores,
+        conjunto: culto.conjunto,
+        timeMin: matchingEvent.start,
+        timeMax: matchingEvent.end,
+      };
+
+      if (isQuinta) {
+        // Quinta: envia só o campo combinado "professora"
+        payload.professora = [culto.professoraUp, culto.professoraDow]
+          .filter((nome) => nome && nome !== "")
+          .join(" / ");
+      } else if (isDomingo) {
+        // Domingo: envia só os campos separados
+        payload.professoraUp = culto.professoraUp;
+        payload.professoraDow = culto.professoraDow;
+      }
+
       const response = await fetch("/api/calendar/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          eventId: matchingEvent.id,
-          pregador: culto.pregador,
-          porteiro1: culto.porteiro1,
-          porteiro2: culto.porteiro2,
-          recepcao: culto.recepcao,
-          professoraUp: culto.professoraUp,
-          professoraDow: culto.professoraDow,
-          acomodadores: culto.acomodadores,
-          conjunto: culto.conjunto,
-          timeMin: matchingEvent.start,
-          timeMax: matchingEvent.end,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) throw new Error(`Erro no evento ${matchingEvent.id}`);

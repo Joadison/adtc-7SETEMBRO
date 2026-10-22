@@ -41,7 +41,7 @@ const Header = () => {
       {/* <AudioPlayer /> */}
       <header className="sm:flex sticky hidden top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="flex container h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 pl-10">
             <div className="w-auto h-12 cursor-pointer">
               <Image
                 src="https://iiisjlgwrr.ufs.sh/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
@@ -98,7 +98,7 @@ const Header = () => {
             </Button>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Button
               className="hidden md:flex bg-orange-600 hover:bg-orange-700 text-white"
               onClick={() => navigateTo("/contato")}

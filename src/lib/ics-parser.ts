@@ -32,6 +32,7 @@ export interface CalendarEvent {
   porteiro2?: string;
   recepcao?: string;
   pregador?: string;
+  professora?: string;
   professoraUp?: string;
   professoraDow?: string;
   acomodadores?: string;
@@ -138,6 +139,7 @@ export function parseGoogleEvents(data: any[]): CalendarEvent[] {
       porteiro2: extractField(event.description || "", "porteiro 2") || "",
       recepcao: extractField(event.description || "", "recepção") || "",
       pregador: extractField(event.description || "", "pregador") || "",
+      professora: extractField(event.description || "", "professora") || "",
       professoraUp: extractField(event.description || "", "professoraMaiores") || "",
       professoraDow: extractField(event.description || "", "professoraMenores") || "",
       acomodadores: extractField(event.description || "", "acomodadores") || "",

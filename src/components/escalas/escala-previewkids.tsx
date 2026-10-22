@@ -15,6 +15,17 @@ export const EscalaPreviewKids = forwardRef<HTMLDivElement, EscalaPreviewProps>(
       if (isNaN(d.getTime())) return false;
       return d.getDay() === 0;
     };
+    const isQuinta = (dataISO?: string): boolean => {
+      if (!dataISO) return false;
+      try {
+        const data = new Date(dataISO);
+        if (isNaN(data.getTime())) return false;
+        return data.getDay() === 4;
+      } catch (error) {
+        console.error("Erro ao processar data:", error);
+        return false;
+      }
+    }
 
     return (
       <div
@@ -58,12 +69,14 @@ export const EscalaPreviewKids = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                 gap: "12px 24px",
                 padding: "0 12px",
               }}
-            >
+            >              
               {week.cultos.map((culto) => {
                 const ehDomingo = isDomingo(culto.dataISO);
+                const ehQuinta = isQuinta(culto.dataISO);
+
+                if (!ehDomingo && !ehQuinta) return null;
 
                 return (
-                 ehDomingo && (
                   <div key={culto.id} style={{ paddingBottom: 4 }}>
                     <p
                       style={{
@@ -73,32 +86,52 @@ export const EscalaPreviewKids = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                         lineHeight: 1.3,
                       }}
                     >
-                      {culto.nome + " \u2013 " + culto.data}
+                      {culto.nome + " – " + culto.data}
                     </p>
-                    <p
-                      style={{
-                        fontSize: 14,
-                        margin: "0 0 1px 0",
-                        color: "#333",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {"Professoras dos Maiores: " + culto.professoraUp }
-                    </p>
-                    <p
-                      style={{
-                        fontSize: 14,
-                        margin: "0 0 1px 0",
-                        color: "#333",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {"Professoras dos Menores: " + culto.professoraDow}
-                    </p>
-                  
+
+                    {ehDomingo && (
+                      <>
+                        <p
+                          style={{
+                            fontSize: 14,
+                            margin: "0 0 1px 0",
+                            color: "#333",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {"Professoras dos Maiores: " + culto.professoraUp}
+                        </p>
+
+                        <p
+                          style={{
+                            fontSize: 14,
+                            margin: "0 0 1px 0",
+                            color: "#333",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {"Professoras dos Menores: " + culto.professoraDow}
+                        </p>
+                      </>
+                    )}
+
+                    {ehQuinta && (
+                      <p
+                        style={{
+                          fontSize: 14,
+                          margin: "0 0 1px 0",
+                          color: "#333",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {"Professora: " +
+                          culto.professoraUp +
+                          " / " +
+                          culto.professoraDow}
+                      </p>
+                    )}
                   </div>
-                  )
-                )
+                );
               })}
             </div>
           </div>

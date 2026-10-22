@@ -108,7 +108,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Ir. Iris",
     "Ir. Ruthe",
     "Ir. Eloisa",
-    "Ir. Ester,"
+    "Ir. Ester"
   ];
 
   const PROFESSORAS = [
@@ -119,7 +119,6 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     "Ir. Rebeca",
     "Ir. Val",
     "Ir. Cleuma",
-    "Ir. Marilia",
     "Ir. Ruthe",
     "Ir. Raryane",
   ];
@@ -573,7 +572,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                       </div>
                       
                       {/* Salinha */}
-                      {ehDomingo && (
+                      {ehDomingo && ( 
                         <div className="grid grid-cols-2 gap-2 mb-2">
                           <div className="flex flex-col gap-1">
                             <label className="text-xs text-muted-foreground">
@@ -625,7 +624,61 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                             </Select>
                           </div>
                         </div>
-                      )}
+                      )} 
+
+                      {ehQuinta && ( 
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          <div className="flex flex-col gap-1">
+                            <label className="text-xs text-muted-foreground">
+                              Professoras 1
+                            </label>
+                            <Select
+                              value={culto.professoraUp}
+                              onValueChange={(v) =>
+                                updateCulto(week.id, culto.id, {
+                                  professoraUp: v,
+                                })
+                              }
+                            >
+                              <SelectTrigger className="h-8 text-sm">
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {PROFESSORAS.map((r) => (
+                                  <SelectItem key={r} value={r}>
+                                    {r}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="flex flex-col gap-1">
+                            <label className="text-xs text-muted-foreground">
+                              Professoras 2
+                            </label>
+                            <Select
+                              value={culto.professoraDow}
+                              onValueChange={(v) =>
+                                updateCulto(week.id, culto.id, {
+                                  professoraDow: v,
+                                })
+                              }
+                            >
+                              <SelectTrigger className="h-8 text-sm">
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                              <SelectContent className="p-0 m-0">
+                                {PROFESSORAS.map((r) => (
+                                  <SelectItem key={r} value={r}>
+                                    {r}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )} 
 
                       <div className="flex flex-col gap-1 mb-2">
                         <label className="text-xs text-muted-foreground">

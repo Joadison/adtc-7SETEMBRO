@@ -132,7 +132,7 @@ export function cleanEventDescription(description: string): string {
   return description
     .replace(/<br\s*\/?>/gi, "\n")
     .split(/\r?\n/)
-    .filter(line => !/^\s*(Porteiro|Porteiro 1|Porteiro 2|Conjunto|Recepção|Pregador|professoraMaiores|professoraMenores)\s*[:\-]/i.test(line))
+    .filter(line => !/^\s*(Porteiro|Porteiro 1|Porteiro 2|Conjunto|Recepção|Pregador|professora|professoraMaiores|professoraMenores)\s*[:\-]/i.test(line))
     .join("<br />")
     .trim();
 }
@@ -349,8 +349,16 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
                 <p className="text-sm text-foreground">
                   Consulte a escala completa no grupo de WhatsApp.
                 </p>
-              ) : event.professoraDow || event.professoraUp ? (
+              ) : event.professoraDow || event.professoraUp || event.professora? (
                 <div className="flex gap-2">
+                   {event.professora && (
+                    <RoleCard
+                      icon={ArrowDown}
+                      label="Professora"
+                      name={event.professora}
+                      colorClass="bg-blue-100 text-blue-700"
+                    />
+                  )}
                   {event.professoraDow && (
                     <RoleCard
                       icon={ArrowDown}

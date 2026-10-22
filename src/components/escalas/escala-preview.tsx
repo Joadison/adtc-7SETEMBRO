@@ -219,32 +219,7 @@ export const EscalaPreview = forwardRef<HTMLDivElement, EscalaPreviewProps>(
                     >
                       {"Acomodadores: " + culto.acomodadores}
                     </p>)}
-                   {/*  {ehDomingo && (
-                      <>
-                    <p
-                      style={{
-                        fontSize: 14,
-                        margin: "0 0 1px 0",
-                        color: "#333",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {"Professoras dos Maiores: " + culto.professoraUp }
-                    </p>
-                    <p
-                      style={{
-                        fontSize: 14,
-                        margin: "0 0 1px 0",
-                        color: "#333",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {"Professoras dos Menores: " + culto.professoraDow}
-                    </p>
-                    </>
-                  )} */}
                   </div>
-
                 )
               })}
             </div>

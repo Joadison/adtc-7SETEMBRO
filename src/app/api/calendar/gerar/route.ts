@@ -285,11 +285,13 @@ export async function POST(req: NextRequest) {
 
       const porteiro = desc.match(/Porteiro\s*\d?\s*:\s*([^\n]+)/i);
       const recepcao = desc.match(/Recep(?:ç|c)(?:ão|ao)\s*:\s*([^\n]+)/i);
+      const prof = desc.match(/professora\s*:\s*([^\n]+)/i);
       const profUp = desc.match(/professoraMaiores\s*:\s*([^\n]+)/i);
       const profDown = desc.match(/professoraMenores\s*:\s*([^\n]+)/i);
 
       if (porteiro) campos.push(`Porteiro: ${porteiro[1].trim()}`);
       if (recepcao) campos.push(`Recepcao: ${recepcao[1].trim()}`);
+      if (prof) campos.push(`Professora ${prof[1].trim()}`);
       if (profUp) campos.push(`professoraMaiores: ${profUp[1].trim()}`);
       if (profDown) campos.push(`professoraMenores: ${profDown[1].trim()}`);
 

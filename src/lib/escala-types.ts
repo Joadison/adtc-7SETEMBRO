@@ -21,6 +21,7 @@ export interface CultoEntry {
   porteiro1: string;
   porteiro2: string;
   recepcao: string;
+  professora: string;
   professoraUp: string;
   professoraDow: string;
   acomodadores: string;
@@ -84,6 +85,7 @@ export function createEmptyCulto(): CultoEntry {
     porteiro1: "",
     porteiro2: "",
     recepcao: "",
+    professora: "",
     professoraUp: "",
     professoraDow: "",
     acomodadores: ""

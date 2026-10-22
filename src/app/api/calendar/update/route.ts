@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
 
-    const { eventId, pregador, conjunto, porteiro1, porteiro2, recepcao, professoraUp, professoraDow, acomodadores, timeMin, timeMax } = await request.json();
+    const { eventId, pregador, conjunto, porteiro1, porteiro2, recepcao, professora, professoraUp, professoraDow, acomodadores, timeMin, timeMax } = await request.json();
 
     if (!eventId) {
       return NextResponse.json({ error: "ID do evento é obrigatório" }, { status: 400 });
@@ -83,15 +83,35 @@ export async function POST(request: Request) {
     }
 
     if (acomodadores) {
-      description = updateFieldInDescription(description, "Acomodadores", acomodadores);
+      description = updateFieldInDescription(
+        description, 
+        "Acomodadores", 
+        acomodadores
+      );
     }
 
-    if (professoraUp) {
-      description = updateFieldInDescription(description, "professoraMaiores", professoraUp);
+    if (professora !== undefined) {
+      description = updateFieldInDescription(
+        description,
+        "professora",
+        professora
+      );
     }
 
-    if (professoraDow) {
-      description = updateFieldInDescription(description, "professoraMenores", professoraDow);
+    if (professoraUp !== undefined) {
+      description = updateFieldInDescription(
+        description,
+        "professoraMaiores",
+        professoraUp
+      );
+    }
+
+    if (professoraDow !== undefined) {
+      description = updateFieldInDescription(
+        description,
+        "professoraMenores",
+        professoraDow
+      );
     }
 
     await calendar.events.patch({
