@@ -13,7 +13,6 @@ import { updateCalendarWithEscalaData } from "@/lib/update-calendar";
 import { CalendarEvent } from "@/lib/ics-parser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EscalaPreviewKids } from "@/components/escalas/escala-previewkids";
-import { EscalaFormKids } from "@/components/escalas/escala-formkids";
 
 export default function EscalaPage() {
   const [data, setData] = useState<EscalaData>(createDefaultEscala);
