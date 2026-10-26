@@ -29,6 +29,17 @@ const Header = () => {
     setIsMoreMenuOpen(false)
   }
 
+  const navItems = [
+    { label: "Em que cremos?", href: "/em-que-cremos" },
+    { label: "Sobre nós", href: "/sobre-nos" },
+    { label: "Ministérios", href: "/ministerios" },
+    { label: "Culto ao Vivo", href: "/cultos" },
+    { label: "Calendário", href: "/calendar" },
+  ];
+  
+  const navButtonClass =
+    "text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1";
+
   const tabs = [
     { icon: House, label: "Início", path: "/" },
     { icon: Church, label: "Cultos", path: "/cultos" },
@@ -40,74 +51,59 @@ const Header = () => {
     <>
       {/* <AudioPlayer /> */}
       <header className="sm:flex sticky hidden top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-        <div className="flex container h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 pl-10">
+        <div className="hidden md:grid container mx-auto px-4 h-20 md:grid-cols-[1fr_auto_1fr] items-center">
+          <Link href="/" className=" items-center gap-2 justify-self-start">
             <div className="w-auto h-12 cursor-pointer">
               <Image
                 src="https://iiisjlgwrr.ufs.sh/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
                 alt="7Setembro"
                 width={200}
                 height={48}
-                className="object-contain h-full"
+                className="object-contain h-full hidden lg:block"
+              />
+              <Image
+                src="/favicon.png"
+                alt="7Setembro"
+                width={200}
+                height={48}
+                className="object-contain h-full block lg:hidden"
               />
             </div>
           </Link>
-
-          <nav className="hidden md:flex gap-0 lg:gap-9 md:gap-2">
+        
+          <nav className="hidden md:flex items-center justify-self-center gap-0 md:gap-1 lg:gap-4">
+            {navItems.map((item) => (
+              <Button
+                key={item.href}
+                variant="default"
+                className={navButtonClass}
+                onClick={() => navigateTo(item.href)}
+              >
+                {item.label}
+              </Button>
+            ))}
             <Button
               variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => navigateTo("/em-que-cremos")}
-            >
-              Em que cremos?
-            </Button>
-            <Button
-              variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => navigateTo("/sobre-nos")}
-            >
-              Sobre nós
-            </Button>
-            <Button
-              variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => navigateTo("/ministerios")}
-            >
-              Ministérios
-            </Button>
-            <Button
-              variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => navigateTo("/cultos")}
-            >
-              Culto ao Vivo
-            </Button>
-            <Button
-              variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => navigateTo("/calendar")}
-            >
-              Calendário 
-            </Button>
-            <Button
-              variant="default"
-              className="text-sm font-medium hover:text-orange-600 hover:bg-transparent transition-colors p-1"
-              onClick={() => window.open(`https://photos.app.goo.gl/${albumUrl}`,"_blank","noopener,noreferrer")}
+              className={navButtonClass}
+              onClick={() =>
+                window.open(
+                  `https://photos.app.goo.gl/${albumUrl}`,
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
             >
               Fotos
             </Button>
           </nav>
-
-          <div className="flex items-center gap-2">
+        
+          <div className="hidden lg:flex items-center gap-2 justify-self-end col-start-3 p-2">
             <Button
-              className="hidden md:flex bg-orange-600 hover:bg-orange-700 text-white"
+              className="bg-orange-600 hover:bg-orange-700 text-white"
               onClick={() => navigateTo("/contato")}
             >
               Fale Conosco
             </Button>
-            {/* <Button variant="outline" size="icon" className="md:hidden" onClick={toggleMenu}>
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button> */}
           </div>
         </div>
       </header>

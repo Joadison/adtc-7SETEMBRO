@@ -12,6 +12,10 @@ import {
   Compass,
   BookMarked,
   Users2,
+  Mic2,
+  Music2,
+  Headphones,
+  ListMusic,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -22,7 +26,7 @@ const Ministerios = () => {
 
   const ministries = [
     {
-      title: "Crianças",
+      title: "Crianças TC",
       img: "/crianca.png",
       bg: "bg-gradient-to-br from-yellow-100 to-yellow-200",
       borderColor: "border-yellow-300",
@@ -36,10 +40,10 @@ const Ministerios = () => {
         "Culto Infantil",
         "Eventos Especiais",
       ],
-      leaders: ["Pr. João Silva", "Irmã Maria Santos"],
+      leaders: [""],
     },
     {
-      title: "Jovens",
+      title: "Juventude TC",
       img: "/jovens.png",
       bg: "bg-gradient-to-br from-indigo-100 to-indigo-200",
       borderColor: "border-indigo-300",
@@ -49,10 +53,10 @@ const Ministerios = () => {
         "Não permita que ninguém o despreze por ser jovem, mas seja exemplo para os fiéis em palavra, comportamento, amor, fé e pureza.",
       reference: "1 Timóteo 4:12",
       activities: ["Culto de Jovens", "Grupos Pequenos", "Retiros"],
-      leaders: ["Pr. Lucas Oliveira", "Diác. Pedro Almeida"],
+      leaders: [""],
     },
     {
-      title: "Casais",
+      title: "Casais TC",
       img: "/casais.png",
       bg: "bg-gradient-to-br from-red-100 to-red-200",
       borderColor: "border-red-300",
@@ -62,10 +66,10 @@ const Ministerios = () => {
         "Sozinho, o homem pode ser vencido; mas dois conseguem resistir. Um cordão de três dobras não se rompe facilmente.",
       reference: "Eclesiastes 4:12",
       activities: ["Encontro de Casais", "Aconselhamento", "Estudos Bíblicos"],
-      leaders: ["Pr. Carlos e Marta Souza"],
+      leaders: [""],
     },
     {
-      title: "Mulheres",
+      title: "Mulheres TC",
       img: "/mulheres.png",
       bg: "bg-gradient-to-br from-purple-100 to-purple-200",
       borderColor: "border-purple-300",
@@ -75,10 +79,10 @@ const Ministerios = () => {
         "A mulher sábia edifica a sua casa, mas com as próprias mãos a insensata derruba a sua.",
       reference: "Provérbios 14:1",
       activities: ["Círculo de Oração", "Chá de Mulheres", "Estudos Bíblicos"],
-      leaders: ["Irmã Ana Beatriz", "Diác. Raquel Lima"],
+      leaders: [""],
     },
     {
-      title: "Círculo de Oração",
+      title: "Círculo de Oração & Consagração",
       bg: "bg-gradient-to-br from-sky-100 to-sky-200",
       borderColor: "border-sky-300",
       iconBg: "bg-sky-200",
@@ -87,10 +91,10 @@ const Ministerios = () => {
         "E tudo o que pedirem em oração, se crerem, vocês receberão.",
       reference: "Mateus 21:22",
       activities: ["Vigílias", "Correntes de Oração", "Intercessão"],
-      leaders: ["Irmã Joana Pereira", "Irmã Lúcia Campos"],
+      leaders: [""],
     },
     {
-      title: "Missão",
+      title: "Secretaria de Missões",
       bg: "bg-gradient-to-br from-green-100 to-green-200",
       borderColor: "border-green-300",
       iconBg: "bg-green-200",
@@ -103,7 +107,7 @@ const Ministerios = () => {
         "Apoio a Missionários",
         "Evangelismo",
       ],
-      leaders: ["Pr. Roberto Gomes", "Ev. Paulo Mendes"],
+      leaders: [""],
     },
     {
       title: "EBD",
@@ -120,7 +124,7 @@ const Ministerios = () => {
         "Formação de Professores",
         "Material Didático",
       ],
-      leaders: ["Pr. Antônio Ferreira", "Irmã Débora Santos"],
+      leaders: [""],
     },
     {
       title: "Pastoral",
@@ -132,7 +136,59 @@ const Ministerios = () => {
         "Lembrem‑se dos seus líderes, que transmitiram a palavra de Deus a vocês. Observem bem o resultado do estilo de vida deles e imitem a sua fé.",
       reference: "Hebreus 13:7",
       activities: ["Aconselhamento", "Visitação", "Pregação"],
-      leaders: ["Pr. Samuel Costa", "Pr. Tiago Oliveira"],
+      leaders: [""],
+    },
+    {
+      title: "Louvor",
+      // img: "/louvor.png", // opcional, como nos outros cards
+      bg: "bg-gradient-to-br from-rose-100 to-rose-200",
+      borderColor: "border-rose-300",
+      iconBg: "bg-rose-200",
+      icon: <Mic2 className="h-5 w-5 text-rose-600" />,
+      description:
+        "Tehillah: o Senhor habita, reina, mora, governa e se manifesta entre nós com poder quando o adoramos em espírito e verdade.",
+      reference: "João 4:24",
+      activities: ["Louvor nos Cultos", "Ensaios", "Vigílias de Adoração"],
+      leaders: [""],
+    },
+    {
+      title: "Banda",
+      // img: "/banda.png",
+      bg: "bg-gradient-to-br from-orange-100 to-orange-200",
+      borderColor: "border-orange-300",
+      iconBg: "bg-orange-200",
+      icon: <Music2 className="h-5 w-5 text-orange-600" />,
+      description:
+        "A nossa banda se chama Lemuel, nome de origem bíblica que significa “consagrado a Deus”.",
+      reference: "Salmos 33:3",
+      activities: ["Banda Lemuel", "Ensaios", "Acompanhamento dos Cultos"],
+      leaders: [""],
+    },
+    {
+      title: "Mídia / Som",
+      // img: "/midia.png",
+      bg: "bg-gradient-to-br from-cyan-100 to-cyan-200",
+      borderColor: "border-cyan-300",
+      iconBg: "bg-cyan-200",
+      icon: <Headphones className="h-5 w-5 text-cyan-600" />,
+      description:
+        "Quer vocês comam, bebam ou façam qualquer outra coisa, façam tudo para a glória de Deus.",
+      reference: "1 Coríntios 10:31",
+      activities: ["Sonorização", "Transmissão ao Vivo", "Fotos e Vídeos"],
+      leaders: [""],
+    },
+    {
+      title: "Regência",
+      // img: "/regencia.png",
+      bg: "bg-gradient-to-br from-slate-100 to-slate-200",
+      borderColor: "border-slate-300",
+      iconBg: "bg-slate-200",
+      icon: <ListMusic className="h-5 w-5 text-slate-600" />,
+      description:
+        "Tudo, porém, seja feito com decência e ordem.",
+      reference: "1 Coríntios 14:40",
+      activities: ["Condução do Louvor", "Preparação dos Cânticos", "Formação de Vozes"],
+      leaders: [""],
     },
   ];
 
@@ -213,7 +269,7 @@ const Ministerios = () => {
                     </p>
                   </div>
 
-                  {hoveredIndex === index && (
+                  {/* {hoveredIndex === index && ( */}
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
@@ -245,35 +301,7 @@ const Ministerios = () => {
                         </ul>
                       </div> */}
                     </motion.div>
-                  )}
                 </CardContent>
-                <motion.div
-                  initial={{ opacity: 1, height: "auto" }}
-                  animate={hoveredIndex === index ? { opacity: 0, height: 0 } : { opacity: 1, height: "auto" }}
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
-                >
-
-                  <CardFooter className="pb-12 pt-6 bg-white border-t flex">
-                    <Button
-                      variant="default"
-                      className="w-full flex items-center justify-between hover:bg-gray-50"
-                      onClick={() =>
-                        setHoveredIndex(hoveredIndex === index ? null : index)
-                      }
-                    >
-                      <span>
-                        {hoveredIndex === index ? "Ver menos" : "Ver mais"}
-                      </span>
-                      <ChevronRight
-                        className={`h-4 w-4 transition-transform ${
-                          hoveredIndex === index ? "rotate-90" : ""
-                        }`}
-                      />
-                    </Button>
-
-                  </CardFooter>
-                </motion.div>
               </Card>
             </motion.div>
           ))}
