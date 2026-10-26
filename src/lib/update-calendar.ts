@@ -1,7 +1,6 @@
 // lib/update-calendar.ts
 import type { EscalaData, CultoEntry } from "./escala-types";
 import { CalendarEvent } from "./ics-parser";
-
 interface UpdateCalendarParams {
   escalaData: EscalaData;
   calendarEvents: CalendarEvent[];

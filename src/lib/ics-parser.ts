@@ -16,6 +16,7 @@ export type EventCategory =
   | "Culto de Crianças"
   | "Culto de Mulheres"
   | "Bazar"
+  | "Festa"
   | "Reunião de Liderança";
 
 export interface CalendarEvent {
@@ -41,18 +42,13 @@ export interface CalendarEvent {
 
 export function extractField(description: string, field: string): string | undefined {
   if (!description) return undefined;
-
   const normalized = description.replace(/<br\s*\/?>/gi, "\n");
-
   const escapedField = field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
   const pattern = new RegExp(
     `^\\s*${escapedField}\\s*[:\\-]\\s*([^\\n]+)`,
     "im"
   );
-
   const match = normalized.match(pattern);
-
   return match?.[1]?.trim();
 }
 
@@ -79,6 +75,9 @@ function categorizeEvent(
     return "SEDE";
   }
 
+  if (t.includes("festa") || d.includes("festa") || l.includes("festa")) {
+    return "Festa";
+  }
   // Culto Natalício
   if (
     t.includes("culto natalício") ||

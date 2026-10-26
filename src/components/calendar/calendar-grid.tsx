@@ -41,6 +41,7 @@ function sortEventsByPriority(events: CalendarEvent[]): CalendarEvent[] {
     "Culto de Santa Ceia": 3,
     "Culto de Louvor e Adoração": 3,
     "Culto Natalício": 3,
+    "Festa": 3,
     "Culto de Mulheres": 3,
     "Culto de Doutrina": 3,
     "Círculo de Oração": 4,
@@ -99,6 +100,7 @@ function getCategoryStyle(title: EventCategory): string {
 
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "bg-indigo-600 text-white border-indigo-700";
 
     case "Culto de Mulheres":
@@ -146,6 +148,7 @@ function getCategoryDot(title: EventCategory): string {
 
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "bg-indigo-600 text-white border-indigo-700";
 
     case "Culto de Mulheres":

@@ -10,10 +10,10 @@ export type TipoCulto =
   | "Culto de Crianças"
   | "Culto de Jovens"
   | "Culto Natalício"
-
+  | "Festa"
 export interface CultoEntry {
   id: string;
-  nome: TipoCulto | string;
+  nome: string;
   data: string;
   dataISO?: string;
   pregador: string;
@@ -72,7 +72,8 @@ export const TIPOS_CULTO: TipoCulto[] = [
   "Culto de Mulheres",
   "Culto de Crianças",
   "Culto de Jovens",
-  "Culto Natalício"
+  "Culto Natalício",
+  "Festa"
 ];
 
 export function createEmptyCulto(): CultoEntry {

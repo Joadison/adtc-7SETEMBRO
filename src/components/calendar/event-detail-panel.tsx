@@ -51,6 +51,7 @@ function getCategoryHeaderStyle(title: EventCategory) {
 
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "bg-indigo-700 text-white border-indigo-800";
 
     case "Culto de Mulheres":
@@ -116,6 +117,7 @@ function getCategoryLabel(title: EventCategory) {
       return "Culto de Santa Ceia";
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "Culto de Louvor e Adoração";
     case "Culto de Doutrina":
       return "Culto de Doutrina";

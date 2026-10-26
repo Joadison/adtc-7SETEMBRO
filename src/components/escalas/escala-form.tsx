@@ -23,7 +23,7 @@ import {
 } from "@/lib/escala-types";
 import { CalendarEvent } from "@/lib/ics-parser";
 import { generateWeeksFromMonth } from "@/lib/generate-weeks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Wand2 } from "lucide-react";
 
 interface EscalaFormProps {
@@ -39,6 +39,18 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
   const [semanasExpandidas, setSemanasExpandidas] = useState<Record<string, boolean>>(
     semanasSeguras.reduce((acc, week) => ({ ...acc, [week.id]: true }), {})
   );
+
+  console.log(data)
+
+  useEffect(() => {
+    setSemanasExpandidas((prev) => {
+      const next = { ...prev };
+      for (const w of data.semanas ?? []) {
+        if (!(w.id in next)) next[w.id] = true;
+      }
+      return next;
+    });
+  }, [data.semanas]);
 
   const handleGerarEscala = async () => {
     if (!data.mes?.[0]) {
@@ -85,6 +97,7 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
       [weekId]: !prev[weekId]
     }));
   };
+
   const PORTEIROS = [
     "none",
     "LIVRE",
@@ -217,11 +230,10 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
   };
 
   const updateWeek = (weekId: string, updates: Partial<WeekEntry>) => {
+    const semanas = data.semanas ?? [];
     onChange({
       ...data,
-      semanas: data.semanas.map((w) =>
-        w.id === weekId ? { ...w, ...updates } : w,
-      ),
+      semanas: semanas.map((w) => (w.id === weekId ? { ...w, ...updates } : w)),
     });
   };
 
@@ -230,13 +242,14 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
     cultoId: string,
     updates: Partial<CultoEntry>,
   ) => {
+    const semanas = data.semanas ?? [];
     onChange({
       ...data,
-      semanas: data.semanas.map((w) =>
+      semanas: semanas.map((w) =>
         w.id === weekId
           ? {
               ...w,
-              cultos: w.cultos.map((c) =>
+              cultos: (w.cultos ?? []).map((c) =>
                 c.id === cultoId ? { ...c, ...updates } : c,
               ),
             }
@@ -246,40 +259,47 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
   };
 
   const addWeek = () => {
+    const semanas = data.semanas ?? [];
     onChange({ ...data, semanas: [...data.semanas, createEmptyWeek()] });
   };
 
   const removeWeek = (weekId: string) => {
-    if (data.semanas.length <= 1) return;
-    onChange({
-      ...data,
-      semanas: data.semanas.filter((w) => w.id !== weekId),
-    });
+    const semanas = data.semanas ?? [];
+    if (semanas.length <= 1) return;
+    const filtered = semanas.filter((w) => w.id !== weekId);
+    if (filtered.length === semanas.length) {
+      console.warn("removeWeek: id não encontrado", weekId);
+      return;
+    }
+    onChange({ ...data, semanas: filtered });
   };
 
   const addCulto = (weekId: string) => {
-    onChange({
-      ...data,
-      semanas: data.semanas.map((w) =>
-        w.id === weekId
-          ? { ...w, cultos: [...w.cultos, createEmptyCulto()] }
-          : w,
-      ),
-    });
-  };
+  const semanas = data.semanas ?? [];
+  onChange({
+    ...data,
+    semanas: semanas.map((w) =>
+      w.id === weekId
+        ? { ...w, cultos: [...(w.cultos ?? []), createEmptyCulto()] }
+        : w,
+    ),
+  });
+};
 
-  const removeCulto = (weekId: string, cultoId: string) => {
-    const week = data.semanas.find((w) => w.id === weekId);
-    if (!week || week.cultos.length <= 1) return;
-    onChange({
-      ...data,
-      semanas: data.semanas.map((w) =>
-        w.id === weekId
-          ? { ...w, cultos: w.cultos.filter((c) => c.id !== cultoId) }
-          : w,
-      ),
-    });
-  };
+const removeCulto = (weekId: string, cultoId: string) => {
+  const semanas = data.semanas ?? [];
+  const week = semanas.find((w) => w.id === weekId);
+  if (!week) return;
+  if ((week.cultos?.length ?? 0) <= 1) return;
+  onChange({
+    ...data,
+    semanas: semanas.map((w) =>
+      w.id === weekId
+        ? { ...w, cultos: w.cultos.filter((c) => c.id !== cultoId) }
+        : w,
+    ),
+  });
+};
   
   const formatToDateInput = (dateString: string): string => {
     if (!dateString) return "";
@@ -384,7 +404,6 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                   <Select
                     value={week.cultos[0]?.conjunto || week.conjunto}
                     onValueChange={(v) => {
-                      updateWeek(week.id, { conjunto: v });
                       onChange({
                         ...data,
                         semanas: data.semanas.map((w) =>
@@ -392,12 +411,9 @@ export function EscalaForm({ data, onChange, calendarEvents }: EscalaFormProps) 
                             ? {
                                 ...w,
                                 conjunto: v,
-                                cultos: w.cultos.map((c) => ({
-                                  ...c,
-                                  conjunto: v,
-                                })),
+                                cultos: w.cultos.map((c) => ({ ...c, conjunto: v })),
                               }
-                            : w
+                            : w,
                         ),
                       });
                     }}

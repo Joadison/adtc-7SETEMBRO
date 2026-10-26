@@ -46,6 +46,7 @@ function getCategoryBorderColor(title: EventCategory): string {
       return "border-red-200";
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "border-indigo-200";
     case "Culto de Mulheres":
       return "border-pink-200";
@@ -80,6 +81,7 @@ function getCategoryBadgeStyle(title: EventCategory): string {
       return "bg-red-100 text-red-800 border-red-200";
     case "Culto de Louvor e Adoração":
     case "Culto Natalício":
+    case "Festa":
       return "bg-indigo-100 text-indigo-800 border-indigo-200";
     case "Culto de Mulheres":
       return "bg-pink-100 text-pink-800 border-pink-200";

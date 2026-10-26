@@ -102,7 +102,7 @@ function convertEventToCulto(event: CalendarEvent): CultoEntry {
 
   return {
     id: event.id,
-    nome: event.category,
+    nome: event.title,
     data: dataFormatada,
     dataISO: event.start,
     pregador: extractField(event.description || "", "pregador") || "",
