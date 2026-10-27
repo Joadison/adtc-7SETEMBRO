@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -37,7 +38,7 @@ export default function LoginPage() {
           sameSite: "strict"
         });
         
-        router.push("/escala");
+        router.push("/editor");
       } else {
         setError(data.error || "Senha incorreta");
       }
@@ -52,6 +53,13 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="rounded-lg border bg-card p-6 shadow-sm">
+          <div>
+          <Link href="/">
+            <Button size="icon" aria-label="Voltar ao Inicio">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
           <div className="mb-6 flex flex-col items-center">
             <div className="mb-4 rounded-full bg-primary/10 p-3">
               <Lock className="h-6 w-6 text-primary" />
@@ -81,8 +89,8 @@ export default function LoginPage() {
               <p className="text-sm text-destructive text-center">{error}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Verificando..." : "Acessar Escala"}
+            <Button type="submit" className="w-full bg-orange-400 border border-orange-200 text-white hover:bg-orange-500" disabled={isLoading}>
+              {isLoading ? "Verificando..." : "Acessar Configurações"}
             </Button>
           </form>
         </div>

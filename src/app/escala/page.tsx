@@ -138,7 +138,7 @@ export default function EscalaPage() {
     <main className="mx-auto min-h-screen max-w-7xl bg-background px-4 py-6 sm:px-6 lg:px-8">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/">
+          <Link href="/editor">
             <Button size="icon" aria-label="Voltar ao calendario">
               <ArrowLeft className="h-5 w-5" />
             </Button>

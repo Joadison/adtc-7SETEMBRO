@@ -198,6 +198,13 @@ const Header = () => {
                 >
                   Fale Conosco
                 </Button>
+
+                <Button 
+                  className="bg-orange-600 hover:bg-orange-700 text-white mt-2" 
+                  onClick={() => navigateTo("/login")}
+                >
+                 <User/> <p className="ml-4">Login</p>
+                </Button>
               </div>
             </div>
           </div>
