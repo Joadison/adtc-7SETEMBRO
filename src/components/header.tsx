@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { Menu, X, House, Church, User, HandHeart, MoreHorizontal, CalendarDays, Camera } from "lucide-react";
+import { Menu, X, House, Church, User, HandHeart, MoreHorizontal, CalendarDays, Camera, Speech } from "lucide-react";
 import { Button } from "./ui/button"
 import Link from "next/link"
 
@@ -52,21 +52,21 @@ const Header = () => {
       {/* <AudioPlayer /> */}
       <header className="sm:flex sticky hidden top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="hidden md:grid container mx-auto px-4 h-20 md:grid-cols-[1fr_auto_1fr] items-center">
-          <Link href="/" className=" items-center gap-2 justify-self-start">
+          <Link href="/" className="items-center gap-4 justify-self-start">
             <div className="w-auto h-12 cursor-pointer">
               <Image
                 src="https://iiisjlgwrr.ufs.sh/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
                 alt="7Setembro"
                 width={200}
                 height={48}
-                className="object-contain h-full hidden lg:block"
+                className="object-contain h-full hidden 2xl:block"
               />
               <Image
                 src="/favicon.png"
                 alt="7Setembro"
                 width={200}
                 height={48}
-                className="object-contain h-full block lg:hidden"
+                className="object-contain h-full block 2xl:hidden"
               />
             </div>
           </Link>
@@ -97,12 +97,22 @@ const Header = () => {
             </Button>
           </nav>
         
-          <div className="hidden lg:flex items-center gap-2 justify-self-end col-start-3 p-2">
+          <div className="flex items-center gap-2 justify-self-end col-start-4 p-2">
             <Button
-              className="bg-orange-600 hover:bg-orange-700 text-white"
+              variant="outline"
+              className="border-orange-600 text-orange-700 hover:bg-orange-50 p-2 w-10 h-10 2xl:w-full 2xl:rounded-sm rounded-full"
+              onClick={() => navigateTo("/login")}
+            >
+              <User className="2xl:mr-2 h-4 w-4" />
+              <p className="hidden 2xl:block">Área restrita</p>
+            </Button>
+          
+            <Button
+              className="bg-orange-600 hover:bg-orange-700 text-white p-2 w-10 h-10 2xl:w-full 2xl:rounded-sm rounded-full"
               onClick={() => navigateTo("/contato")}
             >
-              Fale Conosco
+              <Speech className="2xl:mr-2 h-4 w-4"/>
+              <p className="hidden 2xl:block">Fale Conosco</p>
             </Button>
           </div>
         </div>
