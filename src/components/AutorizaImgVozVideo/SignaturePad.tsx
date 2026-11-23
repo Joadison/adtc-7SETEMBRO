@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef, useState, useEffect, MouseEvent, TouchEvent } from 'react';
 
 interface SignatureData {
@@ -169,7 +170,7 @@ const SignaturePad = ({ onSave }: SignaturePadProps) => {
                 {signature ? (
                     <div className="space-y-2">
                         <div className="border-2 border-gray-300 rounded-md p-2 bg-gray-50 inline-block">
-                            <img 
+                            <Image 
                                 src={signature.preview} 
                                 alt="Signature preview" 
                                 className="h-20 w-auto"

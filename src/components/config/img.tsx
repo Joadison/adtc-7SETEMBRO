@@ -448,7 +448,7 @@ const Img = () => {
         <div className="mt-6 flex flex-col items-center gap-4">
           <button
             onClick={handleCaptureClick}
-            className="bg-gradient-to-r from-[#f18933] to-[#ff7f00] border-none text-white py-3 px-10 rounded-lg focus:outline-none focus:ring-4 focus:ring-[#ff7f00] hover:from-[#e07a2b] hover:to-[#e67300] transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="bg-linear-to-r from-[#f18933] to-[#ff7f00] border-none text-white py-3 px-10 rounded-lg focus:outline-none focus:ring-4 focus:ring-[#ff7f00] hover:from-[#e07a2b] hover:to-[#e67300] transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             📥 Capturar e Baixar Imagem
           </button>

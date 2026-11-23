@@ -1,122 +1,65 @@
-import { createEmptyCulto, CultoEntry, MESES, TIPOS_CULTO, WeekEntry } from './escala-types';
-import { CalendarEvent, EventCategory, extractField } from './ics-parser';
+import { pickFields } from "./calendar-description";
+import { isCultoCategory, MESES, type CultoEntry, type WeekEntry } from "./escala-types";
+import type { CalendarEvent } from "./ics-parser";
 
-export function generateWeeksFromMonth(
-  mes: string,
-  ano: number,
-  eventos: CalendarEvent[]
-): WeekEntry[] {
+const CONJUNTO_PADRAO = "Conjunto de Jovens";
 
-  const mesIndex = MESES.indexOf(mes);
-  if (mesIndex === -1) return [];
+const fmt = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
 
-  const primeiroDia = new Date(ano, mesIndex, 1);
-  const ultimoDia = new Date(ano, mesIndex + 1, 0);
-
-  const semanas: WeekEntry[] = [];
-  let atual = new Date(primeiroDia);
-
-  const diaDaSemana = atual.getDay();
-
-  if (diaDaSemana === 0) { 
-    atual.setDate(atual.getDate() - 6);
-  } else if (diaDaSemana > 1) {
-    atual.setDate(atual.getDate() - (diaDaSemana - 1));
-  }
-
-  const formatar = (d: Date) =>
-    `${String(d.getDate()).padStart(2, "0")}/${String(
-      d.getMonth() + 1
-    ).padStart(2, "0")}`;
-
-  while (atual <= ultimoDia) {
-    const inicio = new Date(atual);
-    inicio.setHours(0, 0, 0, 0);
-
-    const fimSemana = new Date(inicio);
-    fimSemana.setDate(fimSemana.getDate() + 6);
-    fimSemana.setHours(23, 59, 59, 999);
-
-    if (fimSemana > ultimoDia) {
-      fimSemana.setTime(ultimoDia.getTime());
-    } 
-
-    const eventosDaSemana = eventos.filter((event) => {
-      if (!isCultoEvent(event.category)) return false;
-
-      const dataEvento = new Date(event.start);
-      dataEvento.setHours(0, 0, 0, 0);
-
-      return dataEvento >= inicio && dataEvento <= fimSemana;
-    });
-
-    if (eventosDaSemana.length === 0) {
-      atual.setDate(atual.getDate() + 7);
-      continue;
-    }
-
-    const cultos = eventosDaSemana
-    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-    .map(convertEventToCulto);
-
-    const conjuntoDaSemana = cultos[0].conjunto || "Conjunto de Jovens";
-
-    const cultosComConjunto = cultos.map((c) => ({
-      ...c,
-      conjunto: c.conjunto || conjuntoDaSemana,
-    }));
-
-    /* const cultos: CultoEntry[] =
-      eventosDaSemana.length > 0
-        ? eventosDaSemana
-            .sort(
-              (a, b) =>
-                new Date(a.start).getTime() -
-                new Date(b.start).getTime()
-            )
-            .map(convertEventToCulto)
-        : [createEmptyCulto()]; */
-
-    semanas.push({
-      id: crypto.randomUUID(),
-      inicio: formatar(inicio),
-      fim: formatar(fimSemana),
-      conjunto: "",
-      cultos: cultosComConjunto,
-    });
-
-    atual.setDate(atual.getDate() + 7);
-  }
-
-  return semanas;
-}
-
-function isCultoEvent(category: EventCategory): boolean {
-  const cultosValidos: EventCategory[] = TIPOS_CULTO
-  return cultosValidos.includes(category);
-}
-
-function convertEventToCulto(event: CalendarEvent): CultoEntry {
-  const data = new Date(event.start);
-  const dataFormatada = `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}`;
-
+function toCulto(event: CalendarEvent, conjuntoPadrao: string): CultoEntry {
+  const fields = pickFields(event);
   return {
+    ...fields,
+    conjunto: fields.conjunto || conjuntoPadrao,
     id: event.id,
     nome: event.title,
-    data: dataFormatada,
+    data: fmt(new Date(event.start)),
     dataISO: event.start,
-    pregador: extractField(event.description || "", "pregador") || "",
-    conjunto: extractField(event.description || "", "conjunto") || "",
-    porteiro1: extractField(event.description || "", "porteiro 1") || extractField(event.description || "", "porteiro") || "",
-    porteiro2: extractField(event.description || "", "porteiro 2") || "",
-    recepcao: extractField(event.description || "", "recepção") || "",
-    professora: extractField(event.description || "", "professora") || "",
-    professoraUp: extractField(event.description || "", "professoraMaiores") || "",
-    professoraDow: extractField(event.description || "", "professoraMenores") || "",
-    acomodadores: extractField(event.acomodadores || "", "acomodadores") || "",
     observacoes: event.description,
     calendarioId: event.id,
     categoriaOriginal: event.category,
-    local: event.location
+    local: event.location,
   };
+}
+
+/** Agrupa os cultos do mês em semanas (segunda a domingo). Semanas sem culto são ignoradas. */
+export function generateWeeksFromMonth(mes: string, ano: number, eventos: CalendarEvent[]): WeekEntry[] {
+  const mesIndex = MESES.indexOf(mes);
+  if (mesIndex === -1) return [];
+
+  const ultimoDia = new Date(ano, mesIndex + 1, 0, 23, 59, 59, 999);
+  const cultos = eventos
+    .filter((e) => isCultoCategory(e.category))
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+  // segunda-feira da semana que contém o dia 1
+  const inicio = new Date(ano, mesIndex, 1);
+  inicio.setDate(inicio.getDate() - ((inicio.getDay() + 6) % 7));
+
+  const semanas: WeekEntry[] = [];
+
+  for (; inicio <= ultimoDia; inicio.setDate(inicio.getDate() + 7)) {
+    const domingo = new Date(inicio);
+    domingo.setDate(domingo.getDate() + 6);
+    domingo.setHours(23, 59, 59, 999);
+    const fim = domingo > ultimoDia ? ultimoDia : domingo;
+
+    const daSemana = cultos.filter((e) => {
+      const t = new Date(e.start);
+      return t >= inicio && t <= fim;
+    });
+    if (daSemana.length === 0) continue;
+
+    const conjuntoDaSemana = daSemana[0].conjunto || CONJUNTO_PADRAO;
+
+    semanas.push({
+      id: crypto.randomUUID(),
+      inicio: fmt(inicio),
+      fim: fmt(fim),
+      conjunto: "",
+      cultos: daSemana.map((e) => toCulto(e, conjuntoDaSemana)),
+    });
+  }
+
+  return semanas;
 }

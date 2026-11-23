@@ -6,6 +6,7 @@ export default function Home() {
   return (
     <DefaultLayout>
     <div className="flex-1 overflow-auto">
+      <Snowfall />
       <div className="relative w-full h-full">
         <Main/>
       </div>

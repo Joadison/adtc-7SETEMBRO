@@ -1,6 +1,9 @@
-// lib/update-calendar.ts
-import type { EscalaData, CultoEntry } from "./escala-types";
-import { CalendarEvent } from "./ics-parser";
+import { pickFields, type EscalaFields } from "./calendar-description";
+import type { CultoEntry, EscalaData } from "./escala-types";
+import { DIA, diaDaSemana } from "./escala-utils";
+import type { CalendarEvent } from "./ics-parser";
+import { findEvent } from "./sync-calendar";
+
 interface UpdateCalendarParams {
   escalaData: EscalaData;
   calendarEvents: CalendarEvent[];
@@ -8,89 +11,50 @@ interface UpdateCalendarParams {
   onError?: (error: Error) => void;
 }
 
+/** Quinta: uma "professora" só (Maiores / Menores). Domingo: separadas. Outros dias: nenhuma. */
+function buildFields(culto: CultoEntry): Partial<EscalaFields> {
+  const { professora, professoraUp, professoraDow, ...rest } = pickFields(culto);
+  const dia = diaDaSemana(culto.dataISO);
+
+  if (dia === DIA.QUINTA) {
+    return { ...rest, professora: [professoraUp, professoraDow].filter(Boolean).join(" / ") };
+  }
+  if (dia === DIA.DOMINGO) return { ...rest, professoraUp, professoraDow };
+  return rest;
+}
+
+async function updateEvent(culto: CultoEntry, event: CalendarEvent) {
+  const response = await fetch("/api/calendar/update", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      eventId: event.id,
+      fields: buildFields(culto),
+      timeMin: event.start,
+      timeMax: event.end,
+    }),
+  });
+  if (!response.ok) throw new Error(`Erro no evento ${event.id}`);
+}
+
 export async function updateCalendarWithEscalaData({
   escalaData,
   calendarEvents,
   onSuccess,
-  onError
+  onError,
 }: UpdateCalendarParams) {
   try {
-    const itemsToUpdate = escalaData.semanas.flatMap(week => 
-      week.cultos.map(culto => {
-        const matchingEvent = findMatchingEvent(culto, calendarEvents);
-        return matchingEvent ? { matchingEvent, culto } : null;
-      })
-    ).filter(Boolean);
-
-    if (itemsToUpdate.length === 0) {
-      onSuccess?.();
-      return;
-    }
-    
-    const updatePromises = itemsToUpdate.map(async (item) => {
-      const { matchingEvent, culto } = item!;
-      const diaSemana = culto.dataISO ? new Date(culto.dataISO).getDay() : -1;
-      const isQuinta = diaSemana === 4;
-      const isDomingo = diaSemana === 0;
-
-      const payload: Record<string, unknown> = {
-        eventId: matchingEvent.id,
-        pregador: culto.pregador,
-        porteiro1: culto.porteiro1,
-        porteiro2: culto.porteiro2,
-        recepcao: culto.recepcao,
-        acomodadores: culto.acomodadores,
-        conjunto: culto.conjunto,
-        timeMin: matchingEvent.start,
-        timeMax: matchingEvent.end,
-      };
-
-      if (isQuinta) {
-        // Quinta: envia só o campo combinado "professora"
-        payload.professora = [culto.professoraUp, culto.professoraDow]
-          .filter((nome) => nome && nome !== "")
-          .join(" / ");
-      } else if (isDomingo) {
-        // Domingo: envia só os campos separados
-        payload.professoraUp = culto.professoraUp;
-        payload.professoraDow = culto.professoraDow;
-      }
-
-      const response = await fetch("/api/calendar/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+    const jobs = escalaData.semanas
+      .flatMap((week) => week.cultos)
+      .flatMap((culto) => {
+        const event = findEvent(culto, calendarEvents);
+        return event ? [{ culto, event }] : [];
       });
 
-      if (!response.ok) throw new Error(`Erro no evento ${matchingEvent.id}`);
-      return response.json(); 
-    });
-
-    await Promise.all(updatePromises);
+    await Promise.all(jobs.map(({ culto, event }) => updateEvent(culto, event)));
     onSuccess?.();
-    
   } catch (error) {
     console.error("Erro na atualização:", error);
     onError?.(error as Error);
   }
-}
-
-function findMatchingEvent(
-  culto: CultoEntry, 
-  calendarEvents: CalendarEvent[]
-): CalendarEvent | undefined {
-  return calendarEvents.find(event => {
-    const eventNormalized = event.start.replace(/\.\d+Z$/, 'Z'); 
-    const cultoNormalized = culto.dataISO?.replace(/\.\d+Z$/, 'Z');
-
-    if (eventNormalized !== cultoNormalized) {
-      return false;
-    }
-    const titleMatch = event.title.toLowerCase().includes(culto.nome.toLowerCase());
-    
-    const descriptionMatch = event.description ? 
-      event.description.toLowerCase().includes(culto.nome.toLowerCase()) : false;
-    
-    return titleMatch || descriptionMatch;
-  });
 }

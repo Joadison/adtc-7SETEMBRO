@@ -2,150 +2,39 @@
 
 import { forwardRef } from "react";
 import type { EscalaData } from "@/lib/escala-types";
+import { DIA, diaDaSemana, sortCultos } from "@/lib/escala-utils";
+import { Divisor, Linha, PreviewFrame, TituloCulto } from "./preview-parts";
 
-interface EscalaPreviewProps {
-  data: EscalaData;
-}
+export const EscalaPreviewKids = forwardRef<HTMLDivElement, { data: EscalaData }>(function EscalaPreviewKids(
+  { data },
+  ref,
+) {
+  return (
+    <PreviewFrame ref={ref} titulo={`Escala – ${data.mes.join(" / ")}`}>
+      <div style={{ display: "grid", justifyContent: "left", gap: "12px 24px", padding: "0 12px" }}>
+        {data.semanas
+          .flatMap((week) => sortCultos(week.cultos))
+          .map((culto) => {
+            const dia = diaDaSemana(culto.dataISO);
+            if (dia !== DIA.DOMINGO && dia !== DIA.QUINTA) return null;
 
-export const EscalaPreviewKids = forwardRef<HTMLDivElement, EscalaPreviewProps>(
-  function EscalaPreview({ data }, ref) {
-    const isDomingo = (dataISO?: string) => {
-      if (!dataISO) return false;
-      const d = new Date(dataISO);
-      if (isNaN(d.getTime())) return false;
-      return d.getDay() === 0;
-    };
-    const isQuinta = (dataISO?: string): boolean => {
-      if (!dataISO) return false;
-      try {
-        const data = new Date(dataISO);
-        if (isNaN(data.getTime())) return false;
-        return data.getDay() === 4;
-      } catch (error) {
-        console.error("Erro ao processar data:", error);
-        return false;
-      }
-    }
-
-    return (
-      <div
-        ref={ref}
-        className="w-[700px] bg-white color-[#1a1a1a] px-10 py-9"
-        style={{
-          fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif",
-        }}
-      >
-        {/* Title */}
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 800,
-            textAlign: "center",
-            letterSpacing: "0.02em",
-            margin: 0,
-            paddingBottom: 12,
-          }}
-        >
-          {"Escala \u2013 " + data.mes?.join(" / ")}
-        </h1>
-
-        {/* Orange divider */}
-        <div
-          style={{
-            height: 1,
-            backgroundColor: "#EA580C",
-            borderRadius: 2,
-            margin: "0 0 14px 0",
-          }}
-        />
-
-        {/* Weeks */}
-        {data.semanas.map((week) => (
-          <div key={week.id} style={{ marginBottom: 5 }}>
-            <div
-              style={{
-                display: "grid",
-                justifyContent:"left",
-                gap: "12px 24px",
-                padding: "0 12px",
-              }}
-            >              
-              {week.cultos.map((culto) => {
-                const ehDomingo = isDomingo(culto.dataISO);
-                const ehQuinta = isQuinta(culto.dataISO);
-
-                if (!ehDomingo && !ehQuinta) return null;
-
-                return (
-                  <div key={culto.id} style={{ paddingBottom: 4 }}>
-                    <p
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 800,
-                        margin: "0 0 2px 0",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {culto.nome + " – " + culto.data}
-                    </p>
-
-                    {ehDomingo && (
-                      <>
-                        <p
-                          style={{
-                            fontSize: 14,
-                            margin: "0 0 1px 0",
-                            color: "#333",
-                            lineHeight: 1.5,
-                          }}
-                        >
-                          {"Professoras dos Maiores: " + culto.professoraUp}
-                        </p>
-
-                        <p
-                          style={{
-                            fontSize: 14,
-                            margin: "0 0 1px 0",
-                            color: "#333",
-                            lineHeight: 1.5,
-                          }}
-                        >
-                          {"Professoras dos Menores: " + culto.professoraDow}
-                        </p>
-                      </>
-                    )}
-
-                    {ehQuinta && (
-                      <p
-                        style={{
-                          fontSize: 14,
-                          margin: "0 0 1px 0",
-                          color: "#333",
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {"Professora: " +
-                          culto.professoraUp +
-                          " / " +
-                          culto.professoraDow}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-
-        <div
-          style={{
-            height: 1,
-            backgroundColor: "#EA580C",
-            borderRadius: 2,
-            margin: "0 0 14px 0",
-          }}
-        />       
+            return (
+              <div key={culto.id} style={{ paddingBottom: 4 }}>
+                <TituloCulto culto={culto} />
+                {dia === DIA.DOMINGO ? (
+                  <>
+                    <Linha>{`Professoras dos Maiores: ${culto.professoraUp}`}</Linha>
+                    <Linha>{`Professoras dos Menores: ${culto.professoraDow}`}</Linha>
+                  </>
+                ) : (
+                  <Linha>{`Professora: ${[culto.professoraUp, culto.professoraDow].filter(Boolean).join(" / ")}`}</Linha>
+                )}
+              </div>
+            );
+          })}
       </div>
-    );
-  },
-);
+
+      <Divisor margem="14px 0 0 0" />
+    </PreviewFrame>
+  );
+});

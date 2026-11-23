@@ -7,10 +7,8 @@ import {
   MapPin,
   Mail,
   Calendar,
-  Instagram,
-  Facebook,
-  Youtube,
 } from "lucide-react";
+import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
@@ -86,7 +84,7 @@ const Contato = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Card className="mx-auto w-full max-w-2xl bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl overflow-hidden border border-orange-200 mb-8">
+            <Card className="mx-auto w-full max-w-2xl bg-linear-to-br from-orange-50 to-orange-100 rounded-xl overflow-hidden border border-orange-200 mb-8">
               <CardContent className="p-6">
                 <h2 className="text-2xl font-bold mb-3 text-gray-900">
                   Informações de Contato
@@ -130,7 +128,7 @@ const Contato = () => {
                       rel="noopener noreferrer"
                       className="bg-white p-2 rounded-full text-orange-600 hover:bg-orange-600 hover:text-white transition-colors"
                     >
-                      <Instagram className="h-5 w-5" />
+                      <FaInstagram className="h-5 w-5" />
                     </Link>
                     <Link
                       href="https://www.facebook.com/adtc.7setembro1"
@@ -138,7 +136,7 @@ const Contato = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Facebook className="h-5 w-5" />
+                      <FaFacebook className="h-5 w-5" />
                     </Link>
                     <Link
                       href="https://www.youtube.com/@ADTC7deSetembro1"
@@ -146,7 +144,7 @@ const Contato = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Youtube className="h-5 w-5" />
+                      <FaYoutube className="h-5 w-5" />
                     </Link>
                   </div>
                 </div>
@@ -384,7 +382,7 @@ const Contato = () => {
           className="mt-12"
         >
           <h2 className="text-2xl font-bold mb-6 text-gray-900">Como Chegar</h2>
-          <div className="rounded-xl overflow-hidden border border-gray-200 h-[400px] w-full">
+          <div className="rounded-xl overflow-hidden border border-gray-200 h-100 w-full">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7962.09302267817!2d-38.6250463!3d-3.8000145!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7c74d9f2177a227%3A0x6c627ce0d77446b4!2sAD%20Templo%20Central%20-%207%20de%20Setembro%201!5e0!3m2!1spt-BR!2sbr!4v1753909465319!5m2!1spt-BR!2sbr"
               width="100%"

@@ -1,30 +1,30 @@
-import { EventCategory } from "./ics-parser";
+import { emptyFields, type EscalaFields } from "./calendar-description";
+import type { EventCategory } from "./ics-parser";
 
-export type TipoCulto = 
-  | "Culto de Doutrina"
-  | "Culto de Missão"
-  | "Culto da Família"
-  | "Culto de Santa Ceia"
-  | "Culto de Louvor e Adoração"
-  | "Culto de Mulheres"
-  | "Culto de Crianças"
-  | "Culto de Jovens"
-  | "Culto Natalício"
-  | "Festa"
-export interface CultoEntry {
+export const TIPOS_CULTO = [
+  "Culto de Doutrina",
+  "Culto de Missão",
+  "Culto da Família",
+  "Culto de Santa Ceia",
+  "Culto de Louvor e Adoração",
+  "Culto de Mulheres",
+  "Culto de Crianças",
+  "Culto de Jovens",
+  "Culto Natalício",
+  "Festa",
+] as const satisfies readonly EventCategory[];
+
+export type TipoCulto = (typeof TIPOS_CULTO)[number];
+
+export const isCultoCategory = (category: EventCategory): category is TipoCulto =>
+  (TIPOS_CULTO as readonly string[]).includes(category);
+
+/** Os campos da escala (pregador, porteiros...) vêm de EscalaFields. */
+export interface CultoEntry extends EscalaFields {
   id: string;
   nome: string;
   data: string;
   dataISO?: string;
-  pregador: string;
-  conjunto: string;
-  porteiro1: string;
-  porteiro2: string;
-  recepcao: string;
-  professora: string;
-  professoraUp: string;
-  professoraDow: string;
-  acomodadores: string;
   observacoes?: string;
   calendarioId?: string;
   categoriaOriginal?: EventCategory;
@@ -49,71 +49,30 @@ export interface EscalaData {
 }
 
 export const MESES = [
-  "JANEIRO",
-  "FEVEREIRO",
-  "MARCO",
-  "ABRIL",
-  "MAIO",
-  "JUNHO",
-  "JULHO",
-  "AGOSTO",
-  "SETEMBRO",
-  "OUTUBRO",
-  "NOVEMBRO",
-  "DEZEMBRO",
+  "JANEIRO", "FEVEREIRO", "MARCO", "ABRIL", "MAIO", "JUNHO",
+  "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO",
 ];
 
-export const TIPOS_CULTO: TipoCulto[] = [
-  "Culto de Doutrina",
-  "Culto de Missão",
-  "Culto da Família", 
-  "Culto de Santa Ceia",
-  "Culto de Louvor e Adoração",
-  "Culto de Mulheres",
-  "Culto de Crianças",
-  "Culto de Jovens",
-  "Culto Natalício",
-  "Festa"
-];
+export const createEmptyCulto = (): CultoEntry => ({
+  id: crypto.randomUUID(),
+  nome: "",
+  data: "",
+  ...emptyFields(),
+});
 
-export function createEmptyCulto(): CultoEntry {
-  return {
-    id: crypto.randomUUID(),
-    nome: "",
-    data: "",
-    pregador: "",
-    conjunto: "",
-    porteiro1: "",
-    porteiro2: "",
-    recepcao: "",
-    professora: "",
-    professoraUp: "",
-    professoraDow: "",
-    acomodadores: ""
-  };
-}
+export const createEmptyWeek = (): WeekEntry => ({
+  id: crypto.randomUUID(),
+  inicio: "",
+  fim: "",
+  conjunto: "",
+  cultos: [],
+});
 
-export function createEmptyWeek(): WeekEntry {
-  return {
-    id: crypto.randomUUID(),
-    inicio: "",
-    fim: "",
-    conjunto: "",
-    cultos: [],
-    //cultos: [createEmptyCulto(), createEmptyCulto()],
-  };
-} 
-
-export function createDefaultEscala(): EscalaData {
-  return {
-    mes: [],
-    versiculoTopo:
-      '"Nao se esquecam da hospitalidade; foi praticando-a que, sem o saber, alguns acolheram anjos."',
-    referenciaTopo: "Hebreus 13:2",
-    versiculoRodape:
-      '"Tudo quanto fizerdes, fazei-o de todo o coracao, como para o Senhor e nao para homens."',
-    referenciaRodape: "Colossenses 3:23",
-    semanas: [],
-  };
-}
- 
+export const createDefaultEscala = (): EscalaData => ({
+  mes: [],
+  versiculoTopo: '"Nao se esquecam da hospitalidade; foi praticando-a que, sem o saber, alguns acolheram anjos."',
+  referenciaTopo: "Hebreus 13:2",
+  versiculoRodape: '"Tudo quanto fizerdes, fazei-o de todo o coracao, como para o Senhor e nao para homens."',
+  referenciaRodape: "Colossenses 3:23",
+  semanas: [],
+});

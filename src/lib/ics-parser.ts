@@ -1,3 +1,5 @@
+import type { calendar_v3 } from "googleapis";
+import { parseDescription, type EscalaFields } from "./calendar-description";
 
 export type EventCategory =
   | "SEDE"
@@ -19,132 +21,78 @@ export type EventCategory =
   | "Festa"
   | "Reunião de Liderança";
 
-export interface CalendarEvent {
+export interface CalendarEvent extends EscalaFields {
   id: string;
-  recurringEventId: string;
+  recurringEventId?: string;
   title: string;
+  /** Só as anotações livres (os campos da escala já vêm separados acima). */
   description: string;
   start: string;
   end: string;
   location: string;
   allDay: boolean;
-  conjunto?: string;
-  porteiro1?: string;
-  porteiro2?: string;
-  recepcao?: string;
-  pregador?: string;
-  professora?: string;
-  professoraUp?: string;
-  professoraDow?: string;
-  acomodadores?: string;
   category: EventCategory;
 }
 
-export function extractField(description: string, field: string): string | undefined {
-  if (!description) return undefined;
-  const normalized = description.replace(/<br\s*\/?>/gi, "\n");
-  const escapedField = field.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(
-    `^\\s*${escapedField}\\s*[:\\-]\\s*([^\\n]+)`,
-    "im"
+// ---------- categorização (ordem importa: a 1ª regra que casar vence) ----------
+
+interface Rule {
+  category: EventCategory;
+  keywords: string[]; // sem acento e minúsculas
+  inAnyField?: boolean; // true = procura também na descrição e no local
+}
+
+const RULES: Rule[] = [
+  { category: "Aniversário", keywords: ["aniversario", "niver"] },
+  { category: "SEDE", keywords: ["sede"], inAnyField: true },
+  { category: "Festa", keywords: ["festa"], inAnyField: true },
+  { category: "Culto Natalício", keywords: ["natalicio"] },
+  { category: "Culto de Doutrina", keywords: ["doutrina"] },
+  { category: "Bazar", keywords: ["bazar"] },
+  { category: "Culto de Missão", keywords: ["missao"] },
+  { category: "Culto da Família", keywords: ["familia", "gv de casais", "gv dos casais"] },
+  { category: "Culto de Santa Ceia", keywords: ["santa ceia"] },
+  { category: "Culto de Mulheres", keywords: ["mulheres"] },
+  { category: "Culto de Louvor e Adoração", keywords: ["louvor", "adoracao"] },
+  { category: "EBD", keywords: ["ebd", "escola biblica"] },
+  { category: "Círculo de Oração", keywords: ["circulo"] },
+  { category: "Consagração", keywords: ["consagracao"] },
+  { category: "Culto de Jovens", keywords: ["jovens"] },
+  { category: "Culto de Crianças", keywords: ["criancas"] },
+  { category: "Reunião de Liderança", keywords: ["lideranca"] },
+];
+
+const simplify = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+function categorizeEvent(title: string, notes: string, location: string): EventCategory {
+  const t = simplify(title);
+  const all = `${t} ${simplify(notes)} ${simplify(location)}`;
+  const rule = RULES.find(({ keywords, inAnyField }) =>
+    keywords.some((k) => (inAnyField ? all : t).includes(k)),
   );
-  const match = normalized.match(pattern);
-  return match?.[1]?.trim();
+  return rule?.category ?? "SEDE";
 }
 
-function categorizeEvent(
-  title: string,
-  description: string,
-  location: string,
-): EventCategory {
-  const t = title.toLowerCase();
-  const d = description.toLowerCase();
-  const l = location.toLowerCase();
+// ---------- Google Calendar → CalendarEvent ----------
 
-  // 🎂 Aniversário
-  if (
-    t.includes("aniversario") ||
-    t.includes("aniversário") ||
-    t.includes("niver")
-  ) {
-    return "Aniversário";
-  }
-
-  // 🏛 SEDE
-  if (t.includes("sede") || d.includes("sede") || l.includes("sede")) {
-    return "SEDE";
-  }
-
-  if (t.includes("festa") || d.includes("festa") || l.includes("festa")) {
-    return "Festa";
-  }
-  // Culto Natalício
-  if (
-    t.includes("culto natalício") ||
-    t.includes("culto natalicio") ||
-    t.includes("natalício") ||
-    t.includes("natalicio")
-  ) {
-    return "Culto Natalício";
-  }
-
-
-  // ⛪ Cultos específicos
-  if (t.includes("doutrina")) return "Culto de Doutrina";
-  if (t.includes("bazar")) return "Bazar";
-  if (t.includes("missão") || t.includes("missao")) return "Culto de Missão";
-  if (t.includes("família") || t.includes("familia") || t.includes("gv de casais") || t.includes("gv dos casais")) return "Culto da Família";
-  if (t.includes("santa ceia")) return "Culto de Santa Ceia";
-  if (t.includes("mulheres")) return "Culto de Mulheres";
-  if (t.includes("louvor") || t.includes("adoração") || t.includes("adoracao"))
-    return "Culto de Louvor e Adoração";
-  if (t.includes("ebd") || t.includes("escola bíblica") || t.includes("escola biblica"))
-    return "EBD";
-  if (t.includes("círculo") || t.includes("circulo"))
-    return "Círculo de Oração";
-  if (t.includes("consagração") || t.includes("consagracao"))
-    return "Consagração";
-  if (t.includes("jovens") || t.includes("gv de jovens")) return "Culto de Jovens";
-  if (t.includes("crianças") || t.includes("criancas"))
-    return "Culto de Crianças";
-  if (t.includes("liderança") || t.includes("lideranca"))
-    return "Reunião de Liderança";
-
-  // ⛪ fallback genérico
-  if (t.includes("culto de doutrina")) {
-    return "Culto de Doutrina"; // ou escolha um padrão
-  }
-
-  // fallback obrigatório
-  return "SEDE";
-}
-
-export function parseGoogleEvents(data: any[]): CalendarEvent[] {
-  return data.map((event) => {
-    const description = event.description || "";
-    const title = event.summary || "Sem titulo";
-    const location = event.location || "";
-    const isAllDay = !!event.start?.date; 
+export function parseGoogleEvents(items: calendar_v3.Schema$Event[]): CalendarEvent[] {
+  return items.map((item) => {
+    const title = item.summary || "Sem titulo";
+    const location = item.location || "";
+    const { fields, notes } = parseDescription(item.description);
 
     return {
-      id: event.id,
+      ...fields,
+      id: item.id ?? "",
+      recurringEventId: item.recurringEventId ?? undefined,
       title,
-      description,
-      start: event.start?.dateTime || event.start?.date || "",
-      end: event.end?.dateTime || event.end?.date || "",
+      description: notes,
+      start: item.start?.dateTime || item.start?.date || "",
+      end: item.end?.dateTime || item.end?.date || "",
       location,
-      conjunto: extractField(event.description || "", "conjunto") || "",
-      porteiro1: extractField(event.description || "", "porteiro 1") || extractField(event.description || "", "porteiro") || "",
-      porteiro2: extractField(event.description || "", "porteiro 2") || "",
-      recepcao: extractField(event.description || "", "recepção") || "",
-      pregador: extractField(event.description || "", "pregador") || "",
-      professora: extractField(event.description || "", "professora") || "",
-      professoraUp: extractField(event.description || "", "professoraMaiores") || "",
-      professoraDow: extractField(event.description || "", "professoraMenores") || "",
-      acomodadores: extractField(event.description || "", "acomodadores") || "",
-      allDay: isAllDay,
-      category: categorizeEvent(title, description, location),
-      recurringEventId: event.recurringEventId,
+      allDay: !!item.start?.date,
+      category: categorizeEvent(title, notes, location),
     };
   });
 }

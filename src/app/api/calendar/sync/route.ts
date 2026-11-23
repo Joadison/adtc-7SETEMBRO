@@ -1,156 +1,80 @@
-// app/api/calendar/sync/route.ts
 import { NextResponse } from "next/server";
-import { google } from "googleapis";
-import { cookies } from "next/headers";
+import type { calendar_v3 } from "googleapis";
+import { normalizeDescription } from "@/lib/calendar-description";
+import { apiRoute, getCalendar, requireAuth } from "@/lib/google-calendar";
+import type { SyncPayload, SyncResult } from "@/lib/sync-calendar";
 
-type CreateItem = {
-  summary: string;
-  description?: string;
-  start: string; // ISO
-  end: string;   // ISO
-  timeZone?: string;
-  recurrence?: string[];
-  clientId?: string; // opcional: id local (culto.id) para mapear de volta
-};
+export const POST = apiRoute(async (request) => {
+  await requireAuth();
 
-type UpdateItem = {
-  eventId: string;
-  summary?: string;
-  description?: string;
-  start?: string;
-  end?: string;
-  timeZone?: string;
-};
+  const {
+    toCreate = [],
+    toUpdate = [],
+    toDelete = [],
+    defaultTimeZone = "America/Sao_Paulo",
+  } = (await request.json()) as Partial<SyncPayload>;
 
-type DeleteItem = {
-  eventId: string;
-};
+  const { calendar, calendarId } = getCalendar("write");
+  const results: SyncResult = { deleted: [], updated: [], created: [], errors: [] };
 
-export async function POST(request: Request) {
-  try {
-    // ---------- auth ----------
-    const cookieStore = await cookies();
-    if (cookieStore.get("auth")?.value !== "true") {
-      return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  // uma operação com falha não derruba as outras (resposta 207)
+  const attempt = async (op: string, target: string, fn: () => Promise<void>) => {
+    try {
+      await fn();
+    } catch (e: any) {
+      results.errors.push({ op, target, error: e.message });
     }
+  };
+  const when = (dateTime: string, timeZone?: string) => ({ dateTime, timeZone: timeZone || defaultTimeZone });
 
-    // ---------- payload ----------
-    const {
-      toCreate = [] as CreateItem[],
-      toUpdate = [] as UpdateItem[],
-      toDelete = [] as DeleteItem[],
-      defaultTimeZone = "America/Sao_Paulo",
-    } = await request.json();
-
-    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-    const calendarId = process.env.GOOGLE_CALENDAR_ID;
-
-    if (!clientEmail || !privateKey || !calendarId) {
-      return NextResponse.json({ error: "Configuração incompleta" }, { status: 500 });
-    }
-
-    const auth = new google.auth.JWT({
-      email: clientEmail,
-      key: privateKey,
-      scopes: ["https://www.googleapis.com/auth/calendar"],
+  // 1) DELETE — 404/410 = já não existe, conta como sucesso
+  for (const { eventId } of toDelete) {
+    if (!eventId) continue;
+    await attempt("delete", eventId, async () => {
+      try {
+        await calendar.events.delete({ calendarId, eventId });
+      } catch (e: any) {
+        if (e.code !== 404 && e.code !== 410) throw e;
+      }
+      results.deleted.push(eventId);
     });
-    const calendar = google.calendar({ version: "v3", auth });
-
-    const results = {
-      deleted: [] as string[],
-      updated: [] as { eventId: string; id: string }[],
-      created: [] as { id: string; clientId?: string }[],
-      errors: [] as { op: string; target: string; error: string }[],
-    };
-
-    // ---------- 1) DELETE primeiro ----------
-    for (const item of toDelete) {
-      if (!item?.eventId) continue;
-      try {
-        await calendar.events.delete({ calendarId, eventId: item.eventId });
-        results.deleted.push(item.eventId);
-      } catch (e: any) {
-        // 404/410 = já não existe → idempotente
-        if (e.code === 404 || e.code === 410) {
-          results.deleted.push(item.eventId);
-        } else {
-          results.errors.push({
-            op: "delete",
-            target: item.eventId,
-            error: e.message,
-          });
-        }
-      }
-    }
-
-    // ---------- 2) UPDATE (título, descrição, dia/hora) ----------
-    for (const item of toUpdate) {
-      if (!item?.eventId) continue;
-      try {
-        const tz = item.timeZone || defaultTimeZone;
-        const requestBody: Record<string, unknown> = {};
-
-        if (item.summary !== undefined) requestBody.summary = item.summary;
-        if (item.description !== undefined) requestBody.description = item.description;
-
-        // Mudança de dia/hora
-        if (item.start) requestBody.start = { dateTime: item.start, timeZone: tz };
-        if (item.end) requestBody.end = { dateTime: item.end, timeZone: tz };
-
-        if (Object.keys(requestBody).length === 0) continue;
-
-        const { data } = await calendar.events.patch({
-          calendarId,
-          eventId: item.eventId,
-          requestBody,
-        });
-
-        results.updated.push({ eventId: item.eventId, id: data.id! });
-      } catch (e: any) {
-        results.errors.push({
-          op: "update",
-          target: item.eventId,
-          error: e.message,
-        });
-      }
-    }
-
-    // ---------- 3) CREATE ----------
-    for (const item of toCreate) {
-      try {
-        const tz = item.timeZone || defaultTimeZone;
-        const { data } = await calendar.events.insert({
-          calendarId,
-          requestBody: {
-            summary: item.summary || "Culto",
-            description: item.description ?? "",
-            start: { dateTime: item.start, timeZone: tz },
-            end: { dateTime: item.end, timeZone: tz },
-            ...(item.recurrence ? { recurrence: item.recurrence } : {}),
-          },
-        });
-        results.created.push({ id: data.id!, clientId: item.clientId });
-      } catch (e: any) {
-        results.errors.push({
-          op: "create",
-          target: item.summary || "(sem título)",
-          error: e.message,
-        });
-      }
-    }
-
-    const httpStatus = results.errors.length ? 207 : 200; // 207 = multi-status
-    return NextResponse.json({ success: results.errors.length === 0, results }, { status: httpStatus });
-  } catch (error: any) {
-    console.error("Erro sync:", error);
-    if (error.code === 403 || error.code === 429) {
-      await new Promise((r) => setTimeout(r, 5000));
-      return NextResponse.json(
-        { error: "Limite de requisições excedido. Tente novamente em 5 segundos." },
-        { status: 429 },
-      );
-    }
-    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+
+  // 2) UPDATE — só os campos enviados; description sempre gravada como JSON canônico
+  for (const { eventId, summary, description, start, end, timeZone } of toUpdate) {
+    if (!eventId) continue;
+
+    const requestBody: calendar_v3.Schema$Event = {};
+    if (summary !== undefined) requestBody.summary = summary;
+    if (description !== undefined) requestBody.description = normalizeDescription(description);
+    if (start) requestBody.start = when(start, timeZone);
+    if (end) requestBody.end = when(end, timeZone);
+    if (!Object.keys(requestBody).length) continue;
+
+    await attempt("update", eventId, async () => {
+      const { data } = await calendar.events.patch({ calendarId, eventId, requestBody });
+      results.updated.push({ eventId, id: data.id! });
+    });
+  }
+
+  // 3) CREATE
+  for (const item of toCreate) {
+    await attempt("create", item.summary || "(sem título)", async () => {
+      const { data } = await calendar.events.insert({
+        calendarId,
+        requestBody: {
+          summary: item.summary || "Culto",
+          description: normalizeDescription(item.description),
+          start: when(item.start, item.timeZone),
+          end: when(item.end, item.timeZone),
+        },
+      });
+      results.created.push({ id: data.id!, clientId: item.clientId });
+    });
+  }
+
+  return NextResponse.json(
+    { success: !results.errors.length, results },
+    { status: results.errors.length ? 207 : 200 },
+  );
+});

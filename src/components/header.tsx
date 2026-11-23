@@ -50,7 +50,7 @@ const Header = () => {
   return (
     <>
       {/* <AudioPlayer /> */}
-      <header className="sm:flex sticky hidden top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="sm:flex sticky hidden top-9 z-50 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
         <div className="hidden md:grid container mx-auto px-4 h-20 md:grid-cols-[1fr_auto_1fr] items-center">
           <Link href="/" className="items-center gap-4 justify-self-start">
             <div className="w-auto h-12 cursor-pointer">

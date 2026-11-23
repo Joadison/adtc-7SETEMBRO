@@ -19,7 +19,7 @@ export function Documents() {
       textAlign: 'left', // 👈 Muda de justify para left
     }}>
       <div className="flex justify-start" style={{ marginBottom: '15px' }}>
-        <img
+        <Image
           src="https://iiisjlgwrr.ufs.sh/f/c281d545-e49e-478e-ac64-7aa1327160e2-fqjls5.png"
           alt="ADTC 7 de Setembro"
           style={{

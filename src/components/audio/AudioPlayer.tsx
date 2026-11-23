@@ -47,7 +47,7 @@ const AudioPlayer = () => {
   return (
     <div className="fixed top-0 z-50 w-full bg-gray-900 shadow-lg">
       <div className="flex items-center sm:justify-center justify-between w-full px-4 py-2 space-x-16">
-        <div className="flex-shrink-0 text-white text-sm font-semibold">
+        <div className="shrink-0 text-white text-sm font-semibold">
           FM 102,3
         </div>
 

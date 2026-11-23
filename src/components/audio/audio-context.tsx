@@ -1,4 +1,5 @@
-'use client';
+
+"use client";
 
 import React, {
   createContext,
@@ -6,11 +7,19 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   ReactNode,
-} from 'react';
+  RefObject,
+} from "react";
+
+interface AudioState {
+  isPlaying: boolean;
+  isMuted: boolean;
+  volume: number;
+}
 
 interface AudioContextType {
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: RefObject<HTMLAudioElement | null>;
   isPlaying: boolean;
   isMuted: boolean;
   volume: number;
@@ -19,49 +28,145 @@ interface AudioContextType {
   handleVolumeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const DEFAULT_AUDIO_STATE: AudioState = {
+  isPlaying: false,
+  isMuted: false,
+  volume: 1,
+};
+
+const STORAGE_KEY = "audioState";
+const AUDIO_EVENT = "audioStateChange";
+
+// ================= STORAGE =================
+
+function readAudioState(): AudioState {
+  if (typeof window === "undefined") {
+    return DEFAULT_AUDIO_STATE;
+  }
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+      return DEFAULT_AUDIO_STATE;
+    }
+
+    const parsed = JSON.parse(saved);
+
+    return {
+      isPlaying: parsed.isPlaying ?? false,
+      isMuted: parsed.isMuted ?? false,
+      volume: typeof parsed.volume === "number"
+        ? Math.min(1, Math.max(0, parsed.volume))
+        : 1,
+    };
+  } catch {
+    return DEFAULT_AUDIO_STATE;
+  }
+}
+
+function writeAudioState(state: AudioState) {
+  if (typeof window === "undefined") return;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+    // Notifica os subscribers dentro da mesma aba
+    window.dispatchEvent(new Event(AUDIO_EVENT));
+  } catch {
+    // localStorage pode estar indisponível
+  }
+}
+
+function subscribe(callback: () => void) {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  window.addEventListener(AUDIO_EVENT, callback);
+  window.addEventListener("storage", callback);
+
+  return () => {
+    window.removeEventListener(AUDIO_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+// ================= SNAPSHOTS =================
+
+function getIsPlayingSnapshot() {
+  return readAudioState().isPlaying;
+}
+
+function getIsMutedSnapshot() {
+  return readAudioState().isMuted;
+}
+
+function getVolumeSnapshot() {
+  return readAudioState().volume;
+}
+
+// Snapshot do servidor para evitar divergência na hidratação
+function getServerIsPlayingSnapshot() {
+  return DEFAULT_AUDIO_STATE.isPlaying;
+}
+
+function getServerIsMutedSnapshot() {
+  return DEFAULT_AUDIO_STATE.isMuted;
+}
+
+function getServerVolumeSnapshot() {
+  return DEFAULT_AUDIO_STATE.volume;
+}
+
+// ================= CONTEXT =================
+
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
 export const useAudio = () => {
   const context = useContext(AudioContext);
+
   if (!context) {
-    throw new Error('useAudio must be used dentro do AudioProvider');
+    throw new Error("useAudio must be used dentro do AudioProvider");
   }
+
   return context;
 };
+
+// ================= PROVIDER =================
 
 interface AudioProviderProps {
   children: ReactNode;
 }
 
-export const AudioProvider = ({ children }: AudioProviderProps) => {
+export const AudioProvider = ({
+  children,
+}: AudioProviderProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
+  const isPlaying = useSyncExternalStore(
+    subscribe,
+    getIsPlayingSnapshot,
+    getServerIsPlayingSnapshot
+  );
 
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isMuted = useSyncExternalStore(
+    subscribe,
+    getIsMutedSnapshot,
+    getServerIsMutedSnapshot
+  );
 
-  // ✅ 1️⃣ Ler localStorage UMA vez
+  const volume = useSyncExternalStore(
+    subscribe,
+    getVolumeSnapshot,
+    getServerVolumeSnapshot
+  );
+
+  // ================= SINCRONIZAR ÁUDIO =================
+
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const saved = localStorage.getItem('audioState');
-    if (saved) {
-      const state = JSON.parse(saved);
-      setIsPlaying(state.isPlaying ?? false);
-      setIsMuted(state.isMuted ?? false);
-      setVolume(state.volume ?? 1);
-    }
-
-    setIsHydrated(true);
-  }, []);
-
-  // ✅ 2️⃣ Aplicar estado ao áudio
-  useEffect(() => {
-    if (!isHydrated) return;
-
     const audio = audioRef.current;
+
     if (!audio) return;
 
     audio.volume = volume;
@@ -69,38 +174,47 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
 
     if (isPlaying) {
       audio.play().catch(() => {
-        // autoplay pode ser bloqueado
+        // O navegador pode bloquear autoplay.
       });
     } else {
       audio.pause();
     }
-  }, [isPlaying, isMuted, volume, isHydrated]);
+  }, [isPlaying, isMuted, volume]);
 
-  // ✅ 3️⃣ Persistir SOMENTE depois de hidratado
-  useEffect(() => {
-    if (!isHydrated) return;
+  // ================= ATUALIZAR STORAGE =================
 
-    localStorage.setItem(
-      'audioState',
-      JSON.stringify({
-        isPlaying,
-        isMuted,
-        volume,
-      })
-    );
-  }, [isPlaying, isMuted, volume, isHydrated]);
+  const atualizarAudioState = (updates: Partial<AudioState>) => {
+    const atual = readAudioState();
+
+    writeAudioState({
+      ...atual,
+      ...updates,
+    });
+  };
+
+  // ================= CONTROLES =================
 
   const togglePlayPause = () => {
-    setIsPlaying(prev => !prev);
+    atualizarAudioState({
+      isPlaying: !isPlaying,
+    });
   };
 
   const toggleMute = () => {
-    setIsMuted(prev => !prev);
+    atualizarAudioState({
+      isMuted: !isMuted,
+    });
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolume(parseFloat(e.target.value));
+  const handleVolumeChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    atualizarAudioState({
+      volume: Math.min(1, Math.max(0, parseFloat(e.target.value))),
+    });
   };
+
+  // ================= RENDER =================
 
   return (
     <AudioContext.Provider
@@ -120,6 +234,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
         preload="none"
         className="hidden"
       />
+
       {children}
     </AudioContext.Provider>
   );

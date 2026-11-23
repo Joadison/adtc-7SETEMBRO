@@ -6,6 +6,7 @@ import SignaturePad from './SignaturePad';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import html2canvas from "html2canvas";
+import Image from "next/image";
 
 interface SignatureData {
     full: string;
@@ -119,10 +120,10 @@ export function Forms() {
                             <div>
                                 <p className="text-base font-semibold mb-2">Assinatura:</p>
                                 {formData.signature && (
-                                    <img 
+                                    <Image
                                         src={formData.signature.full} 
                                         alt="Assinatura"
-                                        className="max-w-[500px] max-h-[120px] object-contain"
+                                        className="max-w-125 max-h-30 object-contain"
                                     />
                                 )}
                             </div>
@@ -132,7 +133,7 @@ export function Forms() {
 
                 <div 
                     ref={contentRef} 
-                    className="fixed -left-[99999px] top-0 bg-white"
+                    className="fixed left-[-99999px] top-0 bg-white"
                     style={{
                         width: "794px",
                         minHeight: "1123px",
@@ -167,10 +168,10 @@ export function Forms() {
                             <div>
                                 <p className="text-base font-semibold mb-2">Assinatura:</p>
                                 {formData.signature && (
-                                    <img 
+                                    <Image 
                                         src={formData.signature.full} 
                                         alt="Assinatura"
-                                        className="max-w-[500px] max-h-[120px] object-contain"
+                                        className="max-w-125 max-h-30 object-contain"
                                     />
                                 )}
                             </div>

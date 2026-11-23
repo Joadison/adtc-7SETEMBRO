@@ -33,7 +33,7 @@ export function CalendarSkeleton() {
           {Array.from({ length: 35 }).map((_, i) => (
             <div
               key={i}
-              className="flex min-h-[100px] flex-col gap-1 border-b border-r border-border p-2"
+              className="flex min-h-25 flex-col gap-1 border-b border-r border-border p-2"
             >
               <Skeleton className="h-7 w-7 rounded-full" />
               {i % 4 === 0 && <Skeleton className="mt-1 h-4 w-full" />}

@@ -1,163 +1,45 @@
 "use client";
 
-import React from "react";
-
 import {
+  ArrowDown,
+  ArrowUp,
+  Cake,
+  CalendarDays,
+  Clock,
   DoorOpen,
   HandHelping,
-  Mic2,
   MapPin,
-  Clock,
-  CalendarDays,
-  X,
-  Cake,
-  Church,
-  ArrowUp,
-  ArrowDown,
+  Mic2,
   MicVocal,
+  X,
+  BookOpen,
+  Camera,
+  Monitor,
+  Volume2,
+  type LucideIcon,
 } from "lucide-react";
+import { format, isSameDay } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { format, isSameDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import type { CalendarEvent, EventCategory } from "@/lib/ics-parser";
+import { getEnd, getStart } from "@/lib/calendar-dates";
+import { getCategory } from "@/lib/category-config";
+import { isCultoCategory } from "@/lib/escala-types";
+import type { CalendarEvent } from "@/lib/ics-parser";
 import { cn } from "@/lib/utils";
-import { TIPOS_CULTO } from "@/lib/escala-types";
-import { TipoCulto } from '../../lib/escala-types';
-import { parseLocalDate } from "./calendar-grid";
 
-interface EventDetailPanelProps {
-  event: CalendarEvent | null;
-  onClose: () => void;
-}
-
-function getCategoryHeaderStyle(title: EventCategory) {
-  switch (title) {
-    case "Aniversário":
-      return "bg-orange-400 text-white border-orange-500";
-
-    case "SEDE":
-      return "bg-slate-900 text-white border-slate-800";
-
-    case "Culto de Missão":
-      return "bg-green-700 text-white border-green-800";
-
-    case "Culto da Família":
-      return "bg-rose-700 text-white border-rose-800";
-
-    case "Culto de Santa Ceia":
-      return "bg-red-800 text-white border-red-900";
-
-    case "Culto de Louvor e Adoração":
-    case "Culto Natalício":
-    case "Festa":
-      return "bg-indigo-700 text-white border-indigo-800";
-
-    case "Culto de Mulheres":
-      return "bg-pink-700 text-white border-pink-800";
-
-    case "Culto de Doutrina":
-      return "bg-purple-700 text-white border-purple-800";
-
-    case "Círculo de Oração":
-      return "bg-amber-400 text-amber-950 border-amber-500";
-
-    case "Consagração":
-      return "bg-emerald-500 text-white border-emerald-600";
-
-    case "Culto de Jovens":
-      return "bg-cyan-700 text-white border-cyan-800";
-
-    case "Culto de Crianças":
-      return "bg-lime-400 text-lime-950 border-lime-500";
-
-    case "Reunião de Liderança":
-      return "bg-violet-700 text-white border-violet-800";
-
-    default:
-      return "bg-zinc-700 text-zinc-800 border-zinc-200";
-  }
-}
-
-function getCategoryIcon(title: EventCategory) {
-  switch (title) {
-    case "Aniversário":
-      return Cake;
-    case "SEDE":
-      return Church;
-    case "EBD":
-      return MapPin;
-    default:
-      return CalendarDays;
-  }
-}
-
-function getCategoryLabel(title: EventCategory) {
-  switch (title) {
-    case "Aniversário":
-      return "Aniversário";
-    case "SEDE":
-      return "Culto na Sede";
-    case "EBD":
-      return "Escola Bíblica";
-    case "Culto da Família":
-      return "Culto da Família";
-    case "Círculo de Oração":
-      return "Círculo de Oração";
-    case "Consagração":
-      return "Consagração";
-    case "Culto de Jovens":
-      return "Culto de Jovens";
-    case "Culto de Crianças":
-      return "Culto de Crianças";
-    case "Reunião de Liderança":
-      return "Reunião de Liderança";
-    case "Culto de Santa Ceia":
-      return "Culto de Santa Ceia";
-    case "Culto de Louvor e Adoração":
-    case "Culto Natalício":
-    case "Festa":
-      return "Culto de Louvor e Adoração";
-    case "Culto de Doutrina":
-      return "Culto de Doutrina";
-    case "Culto de Missão":
-      return "Culto de Missão";
-    default:
-      return "Evento";
-  }
-}
-
-export function cleanEventDescription(description: string): string {
-  if (!description) return "";
-
-  return description
-    .replace(/<br\s*\/?>/gi, "\n")
-    .split(/\r?\n/)
-    .filter(line => !/^\s*(Porteiro|Porteiro 1|Porteiro 2|Conjunto|Recepção|Pregador|professora|professoraMaiores|professoraMenores)\s*[:\-]/i.test(line))
-    .join("<br />")
-    .trim();
-}
-
-function RoleCard({
-  icon: Icon,
-  label,
-  name,
-  colorClass,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
+interface Role {
+  icon: LucideIcon;
   label: string;
-  name: string;
-  colorClass: string;
-}) {
+  name?: string;
+  color: string;
+}
+
+function RoleCard({ icon: Icon, label, name, color }: Role & { name: string }) {
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
-      <div
-        className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-          colorClass,
-        )}
-      >
+      <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", color)}>
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0">
@@ -168,44 +50,51 @@ function RoleCard({
   );
 }
 
-export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
+function Section({ title, generic, roles }: { title: string; generic: boolean; roles: Role[] }) {
+  const filled = roles.filter((r) => r.name);
+  return (
+    <>
+      <Separator className="my-4" />
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
+      {generic ? (
+        <p className="text-sm text-foreground">Consulte a escala completa no grupo de WhatsApp.</p>
+      ) : filled.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {filled.map((r) => (
+            <RoleCard key={r.label} {...r} name={r.name!} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs italic text-muted-foreground">Nenhuma escala definida na descricao.</p>
+      )}
+    </>
+  );
+}
+
+export function EventDetailPanel({ event, onClose }: { event: CalendarEvent | null; onClose: () => void }) {
   if (!event) return null;
 
-  const startDate = event.allDay ? parseLocalDate(event.start) : new Date(event.start);
-  const endDate = event.allDay ? parseLocalDate(event.end) : new Date(event.end);
+  const { solid, label, icon } = getCategory(event.category);
+  const CategoryIcon = icon ?? CalendarDays;
+  const startDate = getStart(event);
+  const endDate = getEnd(event);
   const sameDay = isSameDay(startDate, endDate);
-  const CategoryIcon = getCategoryIcon(event.category);
 
-  const isCultoRegular = event.title === "culto";
-
-  const rawDescription = event.description || "";
-  const cleanDescription = cleanEventDescription(rawDescription);
-  const hasMeaningfulContent = cleanDescription.trim().length > 0;
+  const isCulto = isCultoCategory(event.category);
+  const isGeneric = event.title.trim().toLowerCase() === "culto";
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg">
-      <div
-        className={cn(
-          "flex items-start justify-between gap-2 p-4",
-          getCategoryHeaderStyle(event.category),
-        )}
-      >
+      <div className={cn("flex items-start justify-between gap-2 p-4", solid)}>
         <div className="min-w-0">
           <div className="mb-1.5 flex items-center gap-2">
             <CategoryIcon className="h-4 w-4 text-white/80" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/70">
-              {getCategoryLabel(event.category)}
-            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-white/70">{label}</span>
           </div>
-          <h2 className="text-balance font-serif text-lg font-bold text-white">
-            {event.title === "aniversario" && "🎂 "}
-            {event.title}
-          </h2>
-          <div className="mt-1.5 flex items-center gap-1.5 text-sm text-white/80">
-            <span className="capitalize">
-              {format(startDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
-            </span>
-          </div>
+          <h2 className="text-balance font-serif text-lg font-bold">{event.title}</h2>
+          <p className="mt-1.5 text-sm capitalize opacity-80">
+            {format(startDate, "EEEE, d 'de' MMMM", { locale: ptBR })}
+          </p>
         </div>
         <Button
           size="icon"
@@ -217,200 +106,93 @@ export function EventDetailPanel({ event, onClose }: EventDetailPanelProps) {
         </Button>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {/* Time & Location */}
-        <div className="flex flex-col gap-2">
-          {!event.allDay && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4 shrink-0" />
-              <span>
-                {format(startDate, "HH:mm", { locale: ptBR })}
-                {" - "}
-                {sameDay
-                  ? format(endDate, "HH:mm", { locale: ptBR })
-                  : format(endDate, "HH:mm '('d MMM')'", { locale: ptBR })}
-              </span>
-            </div>
-          )}
-          {event.allDay && (
+        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          {event.allDay ? (
             <Badge variant="secondary" className="w-fit">
               Dia inteiro
             </Badge>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 shrink-0" />
+              <span>
+                {format(startDate, "HH:mm")} - {format(endDate, sameDay ? "HH:mm" : "HH:mm '('d MMM')'", { locale: ptBR })}
+              </span>
+            </div>
           )}
           {event.location && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4 shrink-0" />
               <span>{event.location}</span>
             </div>
           )}
         </div>
 
-        {TIPOS_CULTO.includes(event.category as TipoCulto) && (
+        {isCulto && (
           <>
-            <Separator className="my-4" />
-            <div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Escala de Pregação
-              </h3>
-              {isCultoRegular ? (
-                <p className="text-sm text-foreground">
-                  Consulte a escala completa no grupo de WhatsApp.
-                </p>
-              ) : event.pregador ? (
-                <div className="flex gap-2">                 
-                  {event.pregador && (
-                    <RoleCard
-                      icon={Mic2}
-                      label="Pregador(a)"
-                      name={event.pregador}
-                      colorClass="bg-emerald-100 text-emerald-700"
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className="text-xs text-muted-foreground italic">
-                  Nenhuma escala definida na descricao.
-                </p>
-              )}
-            </div>
+            <Section
+              title="Escala de Pregação"
+              generic={isGeneric}
+              roles={[{ icon: Mic2, label: "Pregador(a)", name: event.pregador, color: "bg-emerald-100 text-emerald-700" }]}
+            />
+            <Section
+              title="Escala do Dia"
+              generic={isGeneric}
+              roles={[
+                { icon: MicVocal, label: "Conjunto", name: event.conjunto, color: "bg-violet-100 text-violet-700" },
+                { icon: DoorOpen, label: "Porteiro Externo", name: event.porteiro1, color: "bg-primary/10 text-primary" },
+                { icon: DoorOpen, label: "Porteiro Interno", name: event.porteiro2, color: "bg-primary/10 text-primary" },
+                { icon: HandHelping, label: "Recepção", name: event.recepcao, color: "bg-amber-100 text-amber-700" },
+              ]}
+            />
+            <Section
+              title="Escala Infantil do Dia"
+              generic={isGeneric}
+              roles={[
+                { icon: ArrowDown, label: "Professora", name: event.professora, color: "bg-blue-100 text-blue-700" },
+                { icon: ArrowDown, label: "Professora Menores", name: event.professoraDow, color: "bg-blue-100 text-blue-700" },
+                { icon: ArrowUp, label: "Professora Maiores", name: event.professoraUp, color: "bg-blue-100 text-blue-700" },
+              ]}
+            />
+            <Section
+              title="Escala de Mídia"
+              generic={isGeneric}
+              roles={[
+                { icon: Camera, label: "Fotos", name: event.fotos, color: "bg-rose-100 text-rose-700" },
+                { icon: Monitor, label: "Computador", name: event.computador, color: "bg-slate-200 text-slate-700" },
+                { icon: Volume2, label: "Som", name: event.som, color: "bg-sky-100 text-sky-700" },
+              ]}
+            />
           </>
         )}
 
-        {/* Roles section: show for all cultos */}
-        {TIPOS_CULTO.includes(event.category as TipoCulto) && (
-          <>
-            <Separator className="my-4" />
-            <div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Escala do Dia
-              </h3>
-              {isCultoRegular ? (
-                <p className="text-sm text-foreground">
-                  Consulte a escala completa no grupo de WhatsApp.
-                </p>
-              ) : event.conjunto || event.porteiro1 || event.porteiro2 || event.recepcao ? (
-                <>
-                <div className="flex gap-2 w-full">
-                  {event.conjunto && (
-                    <RoleCard
-                      icon={MicVocal}
-                      label="Conjunto"
-                      name={event.conjunto}
-                      colorClass="bg-violet-100 text-violet-700"
-                    />
-                  )}
-                </div>
-
-                <div className="flex gap-2 my-2">
-                  {event.porteiro1 && (
-                    <RoleCard
-                      icon={DoorOpen}
-                      label="Porteiro Externo"
-                      name={event.porteiro1}
-                      colorClass="bg-primary/10 text-primary"
-                    />
-                  )}
-                  {event.porteiro2 && (
-                    <RoleCard
-                      icon={DoorOpen}
-                      label="Porteiro Interno"
-                      name={event.porteiro2}
-                      colorClass="bg-primary/10 text-primary"
-                    />
-                  )}
-                </div>
-                <div className="flex gap-2 mb-2 w-full">
-                  {event.recepcao && (
-                    <RoleCard
-                      icon={HandHelping}
-                      label="Recepção"
-                      name={event.recepcao}
-                      colorClass="bg-amber-100 text-amber-700"
-                    />
-                  )}
-                </div>
-                </>
-              ) : (
-                <p className="text-xs text-muted-foreground italic">
-                  Nenhuma escala definida na descricao.
-                </p>
-              )}
-            </div>
-          </>
+        {event.category === "EBD" && (
+          <Section
+            title="Escala da EBD"
+            generic={false}
+            roles={[
+              { icon: BookOpen, label: "Professor(a) 1", name: event.ebd1, color: "bg-sky-100 text-sky-700" },
+              { icon: BookOpen, label: "Professor(a) 2", name: event.ebd2, color: "bg-sky-100 text-sky-700" },
+            ]}
+          />
         )}
 
-        {TIPOS_CULTO.includes(event.category as TipoCulto) && (
-          <>
-            <Separator className="my-4" />
-            <div>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Escala Infantil do Dia
-              </h3>
-              {isCultoRegular ? (
-                <p className="text-sm text-foreground">
-                  Consulte a escala completa no grupo de WhatsApp.
-                </p>
-              ) : event.professoraDow || event.professoraUp || event.professora? (
-                <div className="flex gap-2">
-                   {event.professora && (
-                    <RoleCard
-                      icon={ArrowDown}
-                      label="Professora"
-                      name={event.professora}
-                      colorClass="bg-blue-100 text-blue-700"
-                    />
-                  )}
-                  {event.professoraDow && (
-                    <RoleCard
-                      icon={ArrowDown}
-                      label="Professora Menores"
-                      name={event.professoraDow}
-                      colorClass="bg-blue-100 text-blue-700"
-                    />
-                  )}
-                  {event.professoraUp && (
-                    <RoleCard
-                      icon={ArrowUp}
-                      label="Professora Maiores"
-                      name={event.professoraUp}
-                      colorClass="bg-blue-100 text-blue-700"
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className="text-xs text-muted-foreground italic">
-                  Nenhuma escala definida na descricao.
-                </p>
-              )}
-            </div>
-          </>
-        )}
-
-        {/* Birthday special message */}
-        {event.title.startsWith("Aniversário") && (
+        {event.category === "Aniversário" && (
           <>
             <Separator className="my-4" />
             <div className="rounded-lg bg-orange-50 p-4 text-center">
-              <Cake className="mx-auto h-8 w-8  text-orange-600" />
-              <p className="mt-2 font-serif text-sm font-bold text-orange-800">
-                Feliz Aniversario!
-              </p>
-              <p className="mt-0.5 text-xs text-orange-600">
-                Que Deus abencoe mais este ano de vida.
-              </p>
+              <Cake className="mx-auto h-8 w-8 text-orange-600" />
+              <p className="mt-2 font-serif text-sm font-bold text-orange-800">Feliz Aniversario!</p>
+              <p className="mt-0.5 text-xs text-orange-600">Que Deus abencoe mais este ano de vida.</p>
             </div>
           </>
         )}
 
-        {/* Description */}
-        {hasMeaningfulContent && (
+        {/* já vem sem os campos da escala; renderizado como texto (sem dangerouslySetInnerHTML) */}
+        {event.description && (
           <>
             <Separator className="my-4" />
-            <div
-              className="prose prose-sm max-w-none text-foreground"
-              dangerouslySetInnerHTML={{ __html: cleanDescription }}
-            />
+            <p className="whitespace-pre-line text-sm text-foreground">{event.description}</p>
           </>
         )}
       </div>

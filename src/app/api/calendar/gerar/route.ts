@@ -1,349 +1,207 @@
-
-
-import { NextRequest, NextResponse } from "next/server";
-import { google } from "googleapis";
+import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { parseDescription, type EscalaFields, type FieldKey } from "@/lib/calendar-description";
+import { CONJUNTOS_IA, PESSOAS_IA } from "@/lib/escala-people";
+import { MESES } from "@/lib/escala-types";
+import { DIA, diaDaSemana, type AtribuicoesIA } from "@/lib/escala-utils";
+import { apiRoute, getCalendar, HttpError, requireAuth, startOfMonthBR } from "@/lib/google-calendar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const PORTEIROS = [
-  "Dc. Cleiton",
-  "Aux. Wagner",
-  "Aux. Viana",
-  "Aux. Joadison",
-  "Aux. Davi",
-  "Aux. Paulo",
-  "Aux. Antonilson",
-  "Aux. Vitor",
-];
+// ---------- entrada ----------
 
-const RECEPCOES = [
-  "Ir. Natalia",
-  "Ir. Victoria",
-  "Ir. Daniele",
-  "Ir. Rebeca",
-  "Ir. Iris",
-  "Ir. Ruthe",
-  "Ir. Eloisa",
-];
-
-const PROFESSORAS = [
-  "Ir. Monica",
-  "Ir. Victoria",
-  "Ir. Daniele",
-  "Ir. Rebeca",
-  "Ir. Val",
-  "Ir. Cleuma",
-  "Ir. Marilia",
-  "Ir. Ruthe",
-  "Ir. Raryane",
-];
-
-const CONJUNTOS = [
-  "Conjunto de Jovens",
-  "Conjunto de Senhoras",
-];
-
-function montarPrompt(params: {
+interface Body {
   mes: string;
   ano: number;
-  eventos: any[];
-  escalaMesAnterior: string;
-  diasComCulto: string[];
-}) {
-  const {
-    mes,
-    ano,
-    eventos,
-    escalaMesAnterior,
-    diasComCulto,
-  } = params;
+  /** estrutura atual do formulário: a IA só devolve atribuições, nunca recria cultos */
+  semanas: { id: string; cultos: { id: string; data: string; dataISO?: string; nome: string; pregador?: string }[] }[];
+  /** true = devolve só o prompt (para depurar), sem chamar a IA */
+  debug?: boolean;
+}
 
-  return `
-Você é um assistente! Monte a escala COMPLETA para TODOS os dias listados em DIAS COM CULTO.
-Não pule nenhum dia. Não invente datas. Retorne APENAS JSON puro (sem markdown, sem comentários).
+const NOMES_DIA = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
 
-REGRAS OBRIGATÓRIAS:
-1. NÃO repetir a mesma pessoa em funções iguais no mesmo mês, a menos que seja inevitável.
-2. NÃO repetir pessoas que já serviram no mês anterior na MESMA função.
-3. Distribuir as funções de forma equilibrada.
-4. Ninguém deve servir mais de 4 vezes no mês, quando houver pessoas suficientes.
-5. Cultos de quinta-feira NÃO têm "Porteiro 2".
-6. Cultos de quinta-feira NÃO têm professoras.
-7. Cultos de domingo TÊM professoras:
-   - professoraUp = Maiores
-   - professoraDow = Menores
-8. Se faltar pessoa disponível para alguma função, use "LIVRE".
-9. Não invente nomes fora das listas disponíveis.
-10. Utilize os eventos do Google Calendar para identificar o nome do culto/pregador quando essas informações estiverem disponíveis.
+/** Quinta: sem porteiro 2 e sem professoras. Domingo: com professoras (Up = Maiores, Dow = Menores). */
+function camposDoDia(dia: number): FieldKey[] {
+  if (dia === DIA.QUINTA) return ["porteiro1", "recepcao"];
+  if (dia === DIA.DOMINGO) return ["porteiro1", "porteiro2", "recepcao", "professoraUp", "professoraDow"];
+  return ["porteiro1", "porteiro2", "recepcao"];
+}
 
-LISTAS DISPONÍVEIS:
-Porteiros:${PORTEIROS.join(", ")}
-Recepção:${RECEPCOES.join(", ")}
-Professoras:${PROFESSORAS.join(", ")}
-Conjuntos:${CONJUNTOS.join(", ")}
-MÊS A MONTAR:${mes}/${ano}
+const permitidos = (campo: FieldKey): readonly string[] =>
+  campo === "recepcao" ? PESSOAS_IA.recepcao
+  : campo === "professoraUp" || campo === "professoraDow" ? PESSOAS_IA.professoras
+  : PESSOAS_IA.porteiros;
 
-DIAS COM CULTO:
-${diasComCulto.join(", ") || "(não informado)"}
+// ---------- histórico (lido do JSON do description) ----------
 
-EVENTOS DO GOOGLE CALENDAR PARA SER PREENCHIDO PELO O AGENTE:
-${JSON.stringify(eventos, null, 2)}
+const FUNCOES: [FieldKey, "porteiro" | "recepcao" | "professora"][] = [
+  ["porteiro1", "porteiro"],
+  ["porteiro2", "porteiro"],
+  ["recepcao", "recepcao"],
+  ["professora", "professora"],
+  ["professoraUp", "professora"],
+  ["professoraDow", "professora"],
+];
 
-ESCALA DO MÊS ANTERIOR:
-${JSON.stringify(escalaMesAnterior ?? {}, null, 2)}
+const nomesDe = (valor: string) =>
+  valor.split("/").map((n) => n.trim()).filter((n) => n && n !== "LIVRE");
 
-FORMATO DE SAÍDA (JSON puro, sem markdown):
-{
-  "semanas": [
-    {
-      "id": "w1",
-      "conjunto": "<um dos Conjuntos disponíveis>",
-      "cultos": [
-        {
-          "id": "c1",
-          "data": "DD/MM",
-          "dataISO": "YYYY-MM-DD",
-          "nome": "<nome do culto>",
-          "pregador": "<nome ou vazio>",
-          "porteiro1": "<Porteiro ou LIVRE>",
-          "porteiro2": "<Porteiro, LIVRE, ou vazio se quinta>",
-          "recepcao": "<Recepção ou LIVRE>",
-          "professoraUp": "<Professora, LIVRE, ou vazio se não-domingo>",
-          "professoraDow": "<Professora, LIVRE, ou vazio se não-domingo>"
-        }
-      ]
+async function carregarHistorico(ano: number, mesIndex: number) {
+  const { calendar, calendarId } = getCalendar("read");
+  const { data } = await calendar.events.list({
+    calendarId,
+    timeMin: startOfMonthBR(ano, mesIndex - 12),
+    timeMax: startOfMonthBR(ano, mesIndex),
+    singleEvents: true,
+    orderBy: "startTime",
+    maxResults: 2500,
+  });
+
+  const chaveMesAnterior = new Date(Date.UTC(ano, mesIndex - 1, 1)).toISOString().slice(0, 7);
+  const carga: Record<string, Record<string, number>> = {}; // pessoa → função → vezes
+  const mesAnterior: Record<string, string>[] = [];
+
+  for (const e of data.items ?? []) {
+    if (!(e.summary ?? "").toLowerCase().startsWith("culto")) continue;
+
+    const inicio = e.start?.dateTime ?? e.start?.date ?? "";
+    const { fields } = parseDescription(e.description);
+    const registro: Record<string, string> = { data: inicio.slice(0, 10) };
+
+    for (const [campo, funcao] of FUNCOES) {
+      const nomes = nomesDe(fields[campo]);
+      if (!nomes.length) continue;
+      registro[campo] = fields[campo];
+      for (const nome of nomes) {
+        carga[nome] ??= {};
+        carga[nome][funcao] = (carga[nome][funcao] ?? 0) + 1;
+      }
     }
-  ]
+
+    if (Object.keys(registro).length > 1 && inicio.startsWith(chaveMesAnterior)) mesAnterior.push(registro);
+  }
+
+  return { mesAnterior, carga };
+}
+
+// ---------- prompt ----------
+
+type Historico = Awaited<ReturnType<typeof carregarHistorico>>;
+
+function montarPrompt(mes: string, ano: number, cultos: object[], { mesAnterior, carga }: Historico) {
+  return `
+Você monta a escala de serviço de uma igreja. Retorne APENAS JSON puro (sem markdown, sem comentários).
+
+REGRAS:
+1. Preencha SOMENTE os campos listados em "preencher" de cada culto, para TODOS os cultos. Não invente cultos nem ids.
+2. Use apenas nomes das LISTAS. Se não houver pessoa disponível para uma função, use "LIVRE".
+3. Não repetir a mesma pessoa na mesma função dentro do mês, a menos que seja inevitável.
+4. Não repetir quem serviu na mesma função no mês anterior ("mesAnterior").
+5. Equilibre pela "cargaUltimos12Meses": prefira quem serviu menos. Ninguém serve mais de 4 vezes no mês, havendo pessoas suficientes.
+6. A mesma pessoa não ocupa duas funções no mesmo culto.
+7. professoraUp = Maiores, professoraDow = Menores.
+8. Para cada semana escolha um conjunto das LISTAS.
+
+LISTAS:
+${JSON.stringify({ ...PESSOAS_IA, conjuntos: CONJUNTOS_IA })}
+
+MÊS A MONTAR: ${mes}/${ano}
+
+CULTOS:
+${JSON.stringify(cultos)}
+
+HISTÓRICO:
+${JSON.stringify({ mesAnterior, cargaUltimos12Meses: carga })}
+
+FORMATO DE SAÍDA:
+{
+  "conjuntos": { "<id da semana>": "<conjunto>" },
+  "cultos": { "<id do culto>": { "porteiro1": "...", "recepcao": "..." } }
 }`.trim();
+}
+
+// ---------- IA ----------
+
+function extrairJson(text: string) {
+  const ini = text.indexOf("{");
+  const fim = text.lastIndexOf("}");
+  if (ini === -1 || fim < ini) throw new HttpError(502, "A IA não retornou JSON");
+  try {
+    return JSON.parse(text.slice(ini, fim + 1));
+  } catch {
+    throw new HttpError(502, "A IA retornou um JSON inválido. Tente novamente.");
+  }
 }
 
 async function chamarGemini(prompt: string) {
   const apiKey = process.env.GEMINI_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY ausente");
-  }
-  
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  if (!apiKey) throw new HttpError(500, "GEMINI_API_KEY ausente");
 
-  try {
-    const interaction = await ai.interactions.create({
-      model: "gemini-3.8-flash",
-      input: prompt,
-    });
-    console.log(interaction.output_text);
-    const text = interaction.output_text;
-    if (!text) throw new Error("Gemini não retornou conteúdo");
-    let limpo = text.replace(/^```json\s*|\s*```$/g, "").trim();
-    let parsed: any = JSON.parse(limpo);
-    if (typeof parsed === "string") {
-      parsed = JSON.parse(parsed);
-    }
-    if (!parsed || !Array.isArray(parsed.semanas)) {
-      throw new Error(
-        "Gemini retornou JSON sem o campo 'semanas' esperado: " +
-        JSON.stringify(parsed).slice(0, 200)
-      );
-    }
-    return parsed;
-  } catch (error: any) {
-    console.error(`[Gemini]:`, error);
-  }
+  const ai = new GoogleGenAI({ apiKey });
+  const interaction = await ai.interactions.create({
+    model: process.env.GEMINI_MODEL ?? "gemini-3.8-flash",
+    input: prompt,
+  });
+  if (!interaction.output_text) throw new HttpError(502, "Gemini não retornou conteúdo");
+  return extrairJson(interaction.output_text);
 }
 
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
+/** Só passa o que é válido: ids/campos esperados e nomes das listas (nome inventado vira "LIVRE"). */
+function sanitizar(raw: any, cultos: { id: string; preencher: FieldKey[] }[], semanas: Body["semanas"]): AtribuicoesIA {
+  const out: AtribuicoesIA = { cultos: {}, conjuntos: {} };
 
-    const {
-      mes,
-      ano,
-      diasComCulto,
-    } = body as {
-      mes: string;
-      ano: number;
-      diasComCulto: string[];
-    };
+  for (const { id, preencher } of cultos) {
+    const bruto = raw?.cultos?.[id];
+    if (!bruto) continue;
 
-    if (!mes || !ano) {
-      return NextResponse.json(
-        {error: "mes e ano são obrigatórios"},
-        {status: 400}
-      );
+    const campos: Partial<EscalaFields> = {};
+    for (const campo of preencher) {
+      const valor = bruto[campo];
+      if (typeof valor !== "string") continue;
+      campos[campo] = valor === "LIVRE" || permitidos(campo).includes(valor) ? valor : "LIVRE";
     }
-
-    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace( /\\n/g, "\n" );
-    const calendarId = process.env.GOOGLE_CALENDAR_ID;
-
-    if (!clientEmail || !privateKey || !calendarId) {
-      return NextResponse.json(
-        {error:"Configuração do Google Calendar incompleta"},
-        {status: 500}
-      );
-    }
-
-    const auth = new google.auth.JWT({
-      email: clientEmail,
-      key: privateKey,
-      scopes: [
-        "https://www.googleapis.com/auth/calendar.readonly",
-      ],
-    });
-
-    const calendar = google.calendar({ version: "v3", auth});
-
-    const MESES = [
-      "JANEIRO",
-      "FEVEREIRO",
-      "MARÇO",
-      "ABRIL",
-      "MAIO",
-      "JUNHO",
-      "JULHO",
-      "AGOSTO",
-      "SETEMBRO",
-      "OUTUBRO",
-      "NOVEMBRO",
-      "DEZEMBRO",
-    ];
-
-    const mesIndex = MESES.indexOf(
-      mes.toUpperCase()
-    );
-
-    if (mesIndex === -1) {
-      return NextResponse.json(
-        {error: "Mês inválido"},
-        {status: 400}
-      );
-    }
-
-    const inicioHistorico = new Date(Date.UTC(ano, mesIndex - 12, 1, 0, 0, 0));
-    const fimHistorico = new Date(Date.UTC(ano, mesIndex, 1, 0, 0, 0));
-
-    const inicio = new Date(Date.UTC(ano,mesIndex,1,0,0,0));
-    const fim = new Date(Date.UTC(ano, mesIndex + 1, 1,0,0,0));
-    const response = await calendar.events.list({
-      calendarId,
-      timeMin: inicio.toISOString(),
-      timeMax: fim.toISOString(),
-      singleEvents: true,
-      orderBy: "startTime",
-      maxResults: 2500,
-    });
-
-    const eventosDoMes = response.data.items ?? [];
-    const eventos = eventosDoMes
-    .filter((e) => {
-      const nome = (e.summary ?? "").toLowerCase();
-      return nome.startsWith("culto");
-    })
-    .map(
-      (evento) => ({
-        id: evento.id,
-        nome: evento.summary ?? "",
-        descricao: evento.description ?? "",
-        inicio: evento.start?.dateTime ??evento.start?.date ?? "",
-        fim: evento.end?.dateTime ?? evento.end?.date ?? "",
-        local: evento.location ?? "",
-        criador: evento.creator?.email ?? "",
-        organizador: evento.organizer?.email ?? "",
-      })
-    );
-    
-    const historicoResponse = await calendar.events.list({
-      calendarId,
-      timeMin: inicioHistorico.toISOString(),
-      timeMax: fimHistorico.toISOString(),
-      singleEvents: true,
-      orderBy: "startTime",
-      maxResults: 2500,
-    });
-   const eventosHistorico = historicoResponse.data.items ?? [];
-   let escalaMesAnterior: string = "";
-    for (const e of eventosHistorico) {
-      const nome = (e.summary ?? "").toLowerCase();
-
-      if (!nome.startsWith("culto")) {
-        continue;
-      }
-
-      const desc = (e.description ?? "")
-        .replace(/&nbsp;/g, " ")
-        .replace(/<br\s*\/?>/gi, "\n")
-        .replace(/<[^>]+>/g, "")
-        .trim();
-
-      if (!desc) continue;
-
-      const iso = e.start?.dateTime ?? e.start?.date ?? "";
-
-      const campos: string[] = [];
-
-      const porteiro = desc.match(/Porteiro\s*\d?\s*:\s*([^\n]+)/i);
-      const recepcao = desc.match(/Recep(?:ç|c)(?:ão|ao)\s*:\s*([^\n]+)/i);
-      const prof = desc.match(/professora\s*:\s*([^\n]+)/i);
-      const profUp = desc.match(/professoraMaiores\s*:\s*([^\n]+)/i);
-      const profDown = desc.match(/professoraMenores\s*:\s*([^\n]+)/i);
-
-      if (porteiro) campos.push(`Porteiro: ${porteiro[1].trim()}`);
-      if (recepcao) campos.push(`Recepcao: ${recepcao[1].trim()}`);
-      if (prof) campos.push(`Professora ${prof[1].trim()}`);
-      if (profUp) campos.push(`professoraMaiores: ${profUp[1].trim()}`);
-      if (profDown) campos.push(`professoraMenores: ${profDown[1].trim()}`);
-
-      if (campos.length === 0) continue;
-
-      const data = new Date(iso).toLocaleDateString("pt-BR");
-
-      escalaMesAnterior += `${data}: ${campos.join(" | ")}\n`;
-    }
-
-   const prompt = montarPrompt({
-      mes,
-      ano,
-      eventos,
-      escalaMesAnterior,
-      diasComCulto,
-    });
-    console.log(prompt)
-
-    //const escalaGerada = await chamarGemini(prompt);
-
-    return NextResponse.json({
-      prompt: prompt,
-      //escala: escalaGerada,
-      eventosEncontrados:
-        eventos.length,
-    });
-  } catch (err: any) {
-    console.error(
-      "[gerar escala]",
-      err
-    );
-
-    return NextResponse.json(
-      { error: err?.message ?? "Erro ao gerar escala"},
-      {status: 500}
-    );
+    out.cultos[id] = campos;
   }
+
+  for (const { id } of semanas) {
+    const conjunto = raw?.conjuntos?.[id];
+    if (CONJUNTOS_IA.includes(conjunto)) out.conjuntos[id] = conjunto;
+  }
+  return out;
 }
 
-function extrairEscala(desc: string): string | null {
-  const campos: string[] = [];
+// ---------- rota ----------
 
-  const porteiro = desc.match(/Porteiro\s*\d?\s*:\s*([^\n]+)/i);
-  const recepcao = desc.match(/Recep(?:ç|c)(?:ão|ao)\s*:\s*([^\n]+)/i);
-  const profUp = desc.match(/professoraMaiores\s*:\s*([^\n]+)/i);
-  const profDown = desc.match(/professoraMenores\s*:\s*([^\n]+)/i);
+export const POST = apiRoute(async (req) => {
+  await requireAuth();
 
-  if (porteiro) campos.push(`P: ${porteiro[1].trim()}`);
-  if (recepcao) campos.push(`R: ${recepcao[1].trim()}`);
-  if (profUp) campos.push(`PMa: ${profUp[1].trim()}`);
-  if (profDown) campos.push(`PMe: ${profDown[1].trim()}`);
+  const { mes, ano, semanas, debug } = (await req.json()) as Body;
+  const mesSemAcento = (mes ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  const mesIndex = MESES.indexOf(mesSemAcento); // "MARÇO" e "MARCO" funcionam
+  if (mesIndex === -1 || !ano || !Array.isArray(semanas)) {
+    throw new HttpError(400, "mes, ano e semanas são obrigatórios");
+  }
 
-  return campos.length > 0 ? campos.join(" | ") : null;
-}
+  const cultos = semanas.flatMap((w) =>
+    w.cultos.map((c) => {
+      const dia = diaDaSemana(c.dataISO);
+      return {
+        id: c.id,
+        semana: w.id,
+        data: c.data,
+        dia: NOMES_DIA[dia] ?? "indefinido",
+        nome: c.nome,
+        pregador: c.pregador || undefined,
+        preencher: camposDoDia(dia),
+      };
+    }),
+  );
+
+  const prompt = montarPrompt(mes, ano, cultos, await carregarHistorico(ano, mesIndex));
+  if (debug) return NextResponse.json({ prompt });
+
+  const atribuicoes = sanitizar(await chamarGemini(prompt), cultos, semanas);
+  return NextResponse.json({ atribuicoes });
+});

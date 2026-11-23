@@ -71,7 +71,7 @@ export function FrameSelector({ onSelectFrame }: { onSelectFrame: (f: Frame) => 
         touch-pan-x
         select-none
         [-ms-overflow-style:none]
-        [scrollbar-width:none]
+        scrollbar:none
       "
       style={{ WebkitOverflowScrolling: "touch" }}
     >
@@ -79,7 +79,7 @@ export function FrameSelector({ onSelectFrame }: { onSelectFrame: (f: Frame) => 
         <div
           key={frame.id}
           data-id={frame.id}
-          className="snap-center flex-shrink-0"
+          className="snap-center shrink-0"
         >
           <div className="relative w-14 h-14 rounded-full border border-white/40 overflow-hidden">
             {frame.id !== "frame-0" && (

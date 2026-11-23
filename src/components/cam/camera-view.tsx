@@ -1,65 +1,76 @@
+
 "use client"
 
 import { useRef, useEffect, useCallback, useState } from "react"
 import { ArrowLeft, Camera, SwitchCamera } from "lucide-react"
-import { FrameSelector, type Frame } from "@/components/cam/frame-selector"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { FrameSelector, type Frame } from "@/components/cam/frame-selector"
 
 interface CameraViewProps {
   onCapture: (imageDataUrl: string) => void
 }
 
-// Extended types for iOS-specific camera constraints
 interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
-  focusMode?: string[];
-  pointsOfInterest?: boolean;
+  focusMode?: string[]
+  pointsOfInterest?: boolean
 }
 
 interface ExtendedMediaTrackConstraintSet extends MediaTrackConstraintSet {
-  focusMode?: string;
-  pointsOfInterest?: Array<{ x: number; y: number }>;
+  focusMode?: string
+  pointsOfInterest?: Array<{ x: number; y: number }>
 }
 
 export function CameraView({ onCapture }: CameraViewProps) {
-  const router = useRouter();
+  const router = useRouter()
+
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  
+
   const [isReady, setIsReady] = useState(false)
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user")
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null)
-  
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) && "ontouchend" in document
 
-  const handleSelectFrame = (frame: Frame) => {setSelectedFrame(frame.id === "frame-0" ? null : frame)}
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null
+    }
+  }, [])
 
   const startCamera = useCallback(async (facing: "user" | "environment") => {
+    setIsReady(false)
+
     try {
-      // ✅ VERIFICAÇÃO CRÍTICA PARA CELULAR
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Seu navegador não suporta acesso à câmera ou a página não está em HTTPS")
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          "Seu navegador não suporta acesso à câmera. Verifique se a página está em HTTPS."
+        )
       }
 
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
+      stopCamera()
 
-      // Simplified video constraints - focusMode is not standard
-      const videoConstraints = isIOS
-        ? { 
-            facingMode: facing, 
-            width: { ideal: 1920 }, 
-            height: { ideal: 1080 }, 
-            frameRate: { ideal: 60 }
+      const isIOS =
+        /iPhone|iPad|iPod/i.test(navigator.userAgent) &&
+        "ontouchend" in document
+
+      const videoConstraints: MediaTrackConstraints = isIOS
+        ? {
+            facingMode: facing,
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            frameRate: { ideal: 60 },
           }
-        : { 
-            facingMode: facing, 
-            aspectRatio: 9/16, 
-            frameRate: { ideal: 60 }
-          };
-
-      alert(`Iniciando câmera com resolução ${isIOS ? '1920x1080' : '9:16'} a 60fps`)
+        : {
+            facingMode: facing,
+            aspectRatio: { ideal: 9 / 16 },
+            frameRate: { ideal: 60 },
+          }
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: videoConstraints,
@@ -67,98 +78,141 @@ export function CameraView({ onCapture }: CameraViewProps) {
       })
 
       streamRef.current = stream
-      const track = stream.getVideoTracks()[0];
 
-      // Try to set focus mode if supported (iOS only feature)
-      if (track.getCapabilities) {
-        const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
-        
-        // Check if focusMode is supported (iOS feature)
-        if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+      const track = stream.getVideoTracks()[0]
+
+      if (track?.getCapabilities) {
+        const capabilities =
+          track.getCapabilities() as ExtendedMediaTrackCapabilities
+
+        if (capabilities.focusMode?.includes("continuous")) {
           try {
             await track.applyConstraints({
-              advanced: [{ focusMode: "continuous" }] as ExtendedMediaTrackConstraintSet[]
-            });
-            console.log('Continuous focus enabled');
-          } catch (e) {
-            console.log('Focus mode not supported');
+              advanced: [
+                {
+                  focusMode: "continuous",
+                } as ExtendedMediaTrackConstraintSet,
+              ],
+            })
+          } catch {
+            console.info("Foco contínuo não suportado.")
           }
         }
       }
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        videoRef.current.onloadedmetadata = () => {
+      const video = videoRef.current
+
+      if (video) {
+        video.srcObject = stream
+
+        await video.play().catch(() => {
+          console.warn("Não foi possível iniciar o vídeo automaticamente.")
+        })
+
+        if (video.videoWidth > 0) {
           setIsReady(true)
+        } else {
+          video.onloadedmetadata = () => {
+            setIsReady(true)
+          }
         }
       }
     } catch (error) {
-      console.error("Erro ao acessar a camera:", error)
-      // ✅ Mostra erro amigável no UI
-      alert(`Erro ao acessar câmera: ${error || "Verifique se a página está em HTTPS"}`)
+      console.error("Erro ao acessar a câmera:", error)
+
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Verifique as permissões e se a página está em HTTPS."
+
+      alert(`Erro ao acessar câmera: ${message}`)
     }
-  }, [isIOS])
+  }, [stopCamera])
 
   useEffect(() => {
     startCamera(facingMode)
 
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
+      stopCamera()
     }
-  }, [facingMode, startCamera])
+  }, [facingMode, startCamera, stopCamera])
+
+  const handleSelectFrame = (frame: Frame) => {
+    setSelectedFrame(frame.id === "frame-0" ? null : frame)
+  }
 
   const handleFlipCamera = () => {
-    setFacingMode((prev) => (prev === "user" ? "environment" : "user"))
+    setIsReady(false)
+    setFacingMode((prev) =>
+      prev === "user" ? "environment" : "user"
+    )
   }
 
-  const handleFocus = async (event: React.TouchEvent | React.MouseEvent) => {
-    if (!streamRef.current) return
+  const handleFocus = async (event: React.TouchEvent<HTMLVideoElement> | React.MouseEvent<HTMLVideoElement>) => {
+    const stream = streamRef.current
+    const video = videoRef.current
 
-    const track = streamRef.current.getVideoTracks()[0]
-    if (!track.getCapabilities) return
+    if (!stream || !video) return
 
-    const rect = (event.target as HTMLElement).getBoundingClientRect()
+    const track = stream.getVideoTracks()[0]
 
-    const x =
-      ("touches" in event ? event.touches[0].clientX : event.clientX) - rect.left
-    const y =
-      ("touches" in event ? event.touches[0].clientY : event.clientY) - rect.top
+    if (!track?.getCapabilities) return
 
-    const focusX = x / rect.width
-    const focusY = y / rect.height
+    const capabilities =
+      track.getCapabilities() as ExtendedMediaTrackCapabilities
 
-    const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
-    
-    // Check if pointsOfInterest is supported (iOS feature)
-    if (capabilities.pointsOfInterest) {
-      try {
-        await track.applyConstraints({
-          advanced: [
-            {
-              pointsOfInterest: [{ x: focusX, y: focusY }],
-              focusMode: "continuous",
-            },
-          ] as ExtendedMediaTrackConstraintSet[],
-        });
-        console.log('Focus point set');
-      } catch (e) {
-        console.log('Points of interest not supported');
-      }
+    if (!capabilities.pointsOfInterest) return
+
+    const rect = video.getBoundingClientRect()
+
+    const clientX =
+      "touches" in event
+        ? event.touches[0]?.clientX
+        : event.clientX
+
+    const clientY =
+      "touches" in event
+        ? event.touches[0]?.clientY
+        : event.clientY
+
+    if (clientX === undefined || clientY === undefined) return
+
+    const focusX = Math.max(
+      0,
+      Math.min(1, (clientX - rect.left) / rect.width)
+    )
+
+    const focusY = Math.max(
+      0,
+      Math.min(1, (clientY - rect.top) / rect.height)
+    )
+
+    try {
+      await track.applyConstraints({
+        advanced: [
+          {
+            pointsOfInterest: [{ x: focusX, y: focusY }],
+            focusMode: "continuous",
+          } as ExtendedMediaTrackConstraintSet,
+        ],
+      })
+    } catch {
+      console.info("Foco por toque não suportado.")
     }
   }
 
-  const handleCapture = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) return
-
+  const handleCapture = () => {
     const video = videoRef.current
     const canvas = canvasRef.current
+
+    if (!video || !canvas || !isReady) return
 
     const videoW = video.videoWidth
     const videoH = video.videoHeight
 
-    // Instagram ratio 9:16
+    if (!videoW || !videoH) return
+
+    // Proporção de Stories: 9:16
     const targetRatio = 9 / 16
 
     let cropW = videoW
@@ -176,9 +230,10 @@ export function CameraView({ onCapture }: CameraViewProps) {
     canvas.height = cropH
 
     const ctx = canvas.getContext("2d")
+
     if (!ctx) return
 
-    // Mirror front camera (igual Instagram)
+    // Espelhamento da câmera frontal
     if (facingMode === "user") {
       ctx.translate(cropW, 0)
       ctx.scale(-1, 1)
@@ -198,98 +253,123 @@ export function CameraView({ onCapture }: CameraViewProps) {
 
     ctx.setTransform(1, 0, 0, 1, 0, 0)
 
-    if (selectedFrame) {
-      const frameImg = new Image()
-      frameImg.crossOrigin = "anonymous"
-      frameImg.onload = () => {
-        ctx.drawImage(frameImg, 0, 0, cropW, cropH)
-        onCapture(canvas.toDataURL("image/png"))
-      }
-      frameImg.src = selectedFrame.src
-    } else {
+    const finalizeCapture = () => {
       onCapture(canvas.toDataURL("image/png"))
     }
-  }, [selectedFrame, onCapture, facingMode])
+
+    if (selectedFrame) {
+      const frameImg = new window.Image()
+
+      frameImg.onload = () => {
+        ctx.drawImage(frameImg, 0, 0, cropW, cropH)
+        finalizeCapture()
+      }
+
+      frameImg.onerror = () => {
+        console.error("Erro ao carregar a moldura.")
+        finalizeCapture()
+      }
+
+      frameImg.src = selectedFrame.src
+    } else {
+      finalizeCapture()
+    }
+  }
 
   const handleGoBack = () => {
-    router.push("/");
+    stopCamera()
+    router.push("/")
   }
 
   return (
-    <div className="">
-      {/* Camera viewfinder - 9:16 story format */}
-      <div className="relative w-full flex-1 overflow-hidden rounded-2xl bg-muted" style={{  aspectRatio: "9 / 16", height: "100%" }}>
+    <div>
+      <div
+        className="relative w-full flex-1 overflow-hidden rounded-2xl bg-muted"
+        style={{
+          aspectRatio: "9 / 16",
+          height: "100%",
+        }}
+      >
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
-          webkit-playsInline
           disablePictureInPicture
           controls={false}
           preload="auto"
           onClick={handleFocus}
           onTouchStart={handleFocus}
-          className={`absolute inset-0 w-full h-full object-contain ${facingMode === "user" ? "scale-x-[-1]" : ""}`}
+          className={`absolute inset-0 w-full h-full object-contain ${
+            facingMode === "user" ? "scale-x-[-1]" : ""
+          }`}
         />
 
-        {/* Frame overlay - using native img to preserve PNG transparency */}
-        {!selectedFrame || selectedFrame.id === 'frame-0' ? (
-           <></>
-        ) : (
+        {/* Moldura sobre a câmera */}
+        {selectedFrame && selectedFrame.id !== "frame-0" && (
           <div className="absolute inset-0 z-10 pointer-events-none">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={selectedFrame.src}
               alt="Moldura selecionada"
-              className="absolute inset-0 w-full h-full object-cover"
+              fill
+              sizes="100vw"
+              className="object-cover"
             />
           </div>
         )}
 
+        {/* Carregamento da câmera */}
         {!isReady && (
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-background">
             <div className="flex flex-col items-center gap-3">
               <Camera className="w-10 h-10 text-muted-foreground animate-pulse" />
-              <p className="text-sm text-muted-foreground">Abrindo camera...</p>
+              <p className="text-sm text-muted-foreground">
+                Abrindo câmera...
+              </p>
             </div>
           </div>
         )}
 
+        {/* Voltar */}
         <button
           onClick={handleGoBack}
           className="absolute top-3 left-3 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-black/60"
-          aria-label="Trocar camera"
+          aria-label="Voltar"
         >
           <ArrowLeft className="w-5 h-5 text-white" />
         </button>
 
+        {/* Trocar câmera */}
         <button
           onClick={handleFlipCamera}
           className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-black/60"
-          aria-label="Trocar camera"
+          aria-label="Trocar câmera"
         >
           <SwitchCamera className="w-5 h-5 text-white" />
         </button>
 
+        {/* Controles de captura */}
         <div className="absolute bottom-4 left-0 right-0 z-20 flex flex-col items-center gap-4">
-          
           <div className="relative w-full">
-            <div className="absolute -bottom-[94px] px-4 left-[0.2px] right-0">
+            <div className="absolute -bottom-23.5 px-4 left-[0.2px] right-0">
               <FrameSelector onSelectFrame={handleSelectFrame} />
             </div>
           </div>
-             
+
+          {/* Botão de captura */}
           <button
             onClick={handleCapture}
             disabled={!isReady}
-            className="snap-center flex-shrink-0 flex flex-col relative w-[74px] h-[74px] rounded-full border-4 border-white items-center justify-center transition-all duration-200 active:scale-95 shadow-xl overflow-hidden"
+            aria-label="Capturar foto"
+            className="snap-center shrink-0 flex flex-col relative w-18.5 h-18.5 rounded-full border-4 border-white items-center justify-center transition-all duration-200 active:scale-95 shadow-xl overflow-hidden disabled:opacity-50"
           >
-           
-          {selectedFrame && selectedFrame.id !== "frame-0" ? (
-              <img
+            {selectedFrame && selectedFrame.id !== "frame-0" ? (
+              <Image
+                alt=""
                 src={selectedFrame.src}
-                className="absolute inset-0 w-full h-full object-cover rounded-full"
+                fill
+                sizes="80px"
+                className="object-cover rounded-full"
               />
             ) : (
               <div className="w-14 h-14 rounded-full bg-white/40" />
@@ -297,10 +377,9 @@ export function CameraView({ onCapture }: CameraViewProps) {
           </button>
 
           <span>
-            {selectedFrame ? `${selectedFrame.label}` : "."}
+            {selectedFrame ? selectedFrame.label : ""}
           </span>
         </div>
-
       </div>
 
       <canvas ref={canvasRef} className="hidden" />

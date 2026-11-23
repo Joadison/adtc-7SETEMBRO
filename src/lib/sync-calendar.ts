@@ -1,4 +1,6 @@
-import type { EscalaData, CultoEntry } from "./escala-types";
+import { CAMPOS_CULTO, emptyFields, pickFields, serializeDescription, type EscalaFields } from "./calendar-description";
+import type { CultoEntry, EscalaData } from "./escala-types";
+import { calendarDate, horarioPadrao } from "./escala-utils";
 import type { CalendarEvent } from "./ics-parser";
 
 export interface SyncPayload {
@@ -22,76 +24,52 @@ export interface SyncPayload {
   defaultTimeZone?: string;
 }
 
+export interface SyncResult {
+  deleted: string[];
+  updated: { eventId: string; id: string }[];
+  created: { id: string; clientId?: string }[];
+  errors: { op: string; target: string; error: string }[];
+}
+
 const DEFAULT_TZ = "America/Sao_Paulo";
 
-// ---------- helpers ----------
+// ---------- helpers (também usados por update-calendar.ts) ----------
 
-function norm(d?: string) {
-  return (d || "").replace(/\.\d+Z$/, "Z");
-}
-
-/** Monta a descrição a partir do culto (mesmo formato do seu updateFieldInDescription) */
-export function buildDescription(culto: CultoEntry): string {
-  const lines: string[] = [];
-  if (culto.pregador) lines.push(`Pregador: ${culto.pregador}`);
-  if (culto.conjunto) lines.push(`Conjunto: ${culto.conjunto}`);
-  if (culto.porteiro1) lines.push(`Porteiro 1: ${culto.porteiro1}`);
-  if (culto.porteiro2) lines.push(`Porteiro 2: ${culto.porteiro2}`);
-  if (culto.recepcao) lines.push(`Recepção: ${culto.recepcao}`);
-  if (culto.acomodadores) lines.push(`Acomodadores: ${culto.acomodadores}`);
-  if (culto.professoraUp) lines.push(`professoraMaiores: ${culto.professoraUp}`);
-  if (culto.professoraDow) lines.push(`professoraMenores: ${culto.professoraDow}`);
-  return lines.join("\n");
-}
-
-/** Deriva start/end a partir do dataISO. Se o culto já tiver `start`/`end`, use-os. */
-function resolveStartEnd(culto: CultoEntry): { start: string; end: string } | null {
-  // Se culto tem campos explícitos, use
-  const anyCulto = culto as any;
-  if (anyCulto.startISO && anyCulto.endISO) {
-    return { start: anyCulto.startISO, end: anyCulto.endISO };
-  }
-  if (!culto.dataISO) return null;
-
-  const startDate = new Date(culto.dataISO);
-  if (isNaN(startDate.getTime())) return null;
-
-  // horário padrão: quinta 19:30, domingo 18:00 (ajuste como quiser)
-  const isQuinta = startDate.getDay() === 4;
-  const hour = isQuinta ? 19 : 18;
-  const minute = isQuinta ? 30 : 0;
-
-  startDate.setHours(hour, minute, 0, 0);
-  const endDate = new Date(startDate);
-  endDate.setHours(startDate.getHours() + 1, startDate.getMinutes() + 30);
-
-  return { start: startDate.toISOString(), end: endDate.toISOString() };
-}
+/** Compara pelo instante, então "…Z" e "…-03:00" são tratados como iguais. */
+const sameInstant = (a?: string, b?: string) =>
+  !!a && !!b && new Date(a).getTime() === new Date(b).getTime();
 
 /**
- * Localiza o evento correspondente a um culto.
- * Match por: mesmo dia (start ISO) + título/descrição contém o nome do culto.
+ * Descrição do evento = JSON. Só os campos da escala principal vêm do culto;
+ * os de outras escalas (Mídia, EBD) são mantidos como estão no evento do Calendar.
  */
-function findEvent(culto: CultoEntry, events: CalendarEvent[]): CalendarEvent | undefined {
-  const cultoDate = norm(culto.dataISO);
-  if (!cultoDate) return undefined;
+export function buildDescription(culto: CultoEntry, existing?: CalendarEvent): string {
+  const preservados = existing ? pickFields(existing) : emptyFields();
+  const meus = Object.fromEntries(CAMPOS_CULTO.map((k) => [k, culto[k]])) as Partial<EscalaFields>;
+  return serializeDescription({ ...preservados, ...meus }, culto.observacoes ?? existing?.description);
+}
 
+/** Acha o evento do Calendar que corresponde ao culto (mesmo horário + nome parecido). */
+export function findEvent(culto: CultoEntry, events: CalendarEvent[]): CalendarEvent | undefined {
+  if (!culto.dataISO) return undefined;
+
+  const sameStart = events.filter((e) => sameInstant(e.start, culto.dataISO));
   const nome = (culto.nome || "").toLowerCase().trim();
 
-  // 1ª tentativa: match exato por dia + nome
-  let match = events.find((e) => {
-    if (norm(e.start) !== cultoDate) return false;
-    const t = (e.title || "").toLowerCase();
-    const d = (e.description || "").toLowerCase();
-    return nome ? t.includes(nome) || d.includes(nome) : false;
-  });
-  if (match) return match;
+  return (
+    sameStart.find((e) => nome && e.title.toLowerCase().includes(nome)) ??
+    (sameStart.length === 1 ? sameStart[0] : undefined)
+  );
+}
 
-  // 2ª tentativa: mesmo dia (se não houver ambiguidade)
-  const sameDay = events.filter((e) => norm(e.start) === cultoDate);
-  if (sameDay.length === 1) return sameDay[0];
+/** Cultos novos: horário padrão (ver horarioPadrao) e duração de 1h30. */
+function defaultTimes(dataISO: string) {
+  const base = calendarDate(dataISO);
+  if (!base) return null;
 
-  return undefined;
+  const start = horarioPadrao(base);
+  const end = new Date(start.getTime() + 90 * 60 * 1000);
+  return { start: start.toISOString(), end: end.toISOString() };
 }
 
 // ---------- diff ----------
@@ -101,82 +79,49 @@ export function calculateSyncDiff(
   calendarEvents: CalendarEvent[],
   options?: { scopeFilter?: (e: CalendarEvent) => boolean },
 ): SyncPayload {
-  const toCreate: SyncPayload["toCreate"] = [];
-  const toUpdate: SyncPayload["toUpdate"] = [];
-  const toDelete: SyncPayload["toDelete"] = [];
+  const payload: SyncPayload = { toCreate: [], toUpdate: [], toDelete: [], defaultTimeZone: DEFAULT_TZ };
+  const inScope = calendarEvents.filter(options?.scopeFilter ?? (() => true));
+  const matched = new Set<string>();
 
-  const filter = options?.scopeFilter ?? (() => true);
-  const eventsInScope = calendarEvents.filter(filter);
+  for (const culto of escalaData.semanas.flatMap((w) => w.cultos)) {
+    if (!culto.dataISO) continue;
 
-  const matchedIds = new Set<string>();
+    const existing = findEvent(culto, inScope);
 
-  for (const week of escalaData.semanas ?? []) {
-    for (const culto of week.cultos ?? []) {
-      if (!culto.dataISO) continue;
+    if (existing) {
+      matched.add(existing.id);
 
-      const existing = findEvent(culto, eventsInScope);
-      const description = buildDescription(culto);
-
-      if (existing) {
-        matchedIds.add(existing.id);
-
-        // ---- UPDATE ----
-        const update: SyncPayload["toUpdate"][number] = {
-          eventId: existing.id,
-          description,
-        };
-
-        // título: só altera se mudou
-        if ((culto.nome || "") !== (existing.title || "")) {
-          update.summary = culto.nome || existing.title;
-        }
-
-        // dia/hora: se dataISO mudou de horário em relação ao evento → patch start/end
-        const resolved = resolveStartEnd(culto);
-        if (resolved) {
-          const evStart = norm(existing.start);
-          const newStart = norm(resolved.start);
-          if (evStart !== newStart) {
-            update.start = resolved.start;
-            update.end = resolved.end;
-          }
-        }
-
-        toUpdate.push(update);
-      } else {
-        // ---- CREATE ----
-        const resolved = resolveStartEnd(culto);
-        if (!resolved) continue; // sem data válida → não cria
-
-        toCreate.push({
-          summary: culto.nome || "Culto",
-          description,
-          start: resolved.start,
-          end: resolved.end,
-          clientId: culto.id,
-        });
+      const update: SyncPayload["toUpdate"][number] = { eventId: existing.id };
+      if (culto.nome && culto.nome !== existing.title) update.summary = culto.nome;
+      if (CAMPOS_CULTO.some((k) => (culto[k] || "") !== (existing[k] || ""))) {
+        update.description = buildDescription(culto, existing);
       }
+
+      // só envia se mudou alguma coisa além do eventId
+      if (Object.keys(update).length > 1) payload.toUpdate.push(update);
+      continue;
     }
+
+    const times = defaultTimes(culto.dataISO);
+    if (!times) continue;
+
+    payload.toCreate.push({
+      summary: culto.nome || "Culto",
+      description: buildDescription(culto),
+      ...times,
+      clientId: culto.id,
+    });
   }
 
-  // ---- DELETE: eventos do escopo que não foram casados ----
-  for (const ev of eventsInScope) {
-    if (!matchedIds.has(ev.id)) {
-      toDelete.push({ eventId: ev.id });
-    }
+  // eventos do escopo que não estão na escala são removidos
+  for (const event of inScope) {
+    if (!matched.has(event.id)) payload.toDelete.push({ eventId: event.id });
   }
 
-  return { toCreate, toUpdate, toDelete, defaultTimeZone: DEFAULT_TZ };
+  return payload;
 }
 
 // ---------- chamada ----------
-
-export interface SyncResult {
-  deleted: string[];
-  updated: { eventId: string; id: string }[];
-  created: { id: string; clientId?: string }[];
-  errors: { op: string; target: string; error: string }[];
-}
 
 export async function syncCalendar(
   escalaData: EscalaData,

@@ -3,14 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 import {
-  Instagram,
   MapPin,
   Mail,
   Calendar,
-  Clock,
-  Facebook,
-  Youtube,
+  Clock
 } from "lucide-react";
 
 const Footer = () => {
@@ -47,7 +45,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Instagram className="h-4 w-4" />
+                <FaInstagram className="h-4 w-4" />
                 <span className="sr-only">Instagram</span>
               </Link>
               <Link
@@ -56,7 +54,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Facebook className="h-4 w-4" />
+                <FaFacebook className="h-4 w-4" />
                 <span className="sr-only">Facebook</span>
               </Link>
               <Link
@@ -65,7 +63,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Youtube className="h-4 w-4" />
+                <FaYoutube className="h-4 w-4" />
                 <span className="sr-only">Youtube</span>
               </Link>
             </div>
@@ -164,7 +162,7 @@ const Footer = () => {
                   )
                 }
               >
-                <Instagram className="mr-2 h-4 w-4" />
+                <FaInstagram className="mr-2 h-4 w-4" />
                 Siga a nossa Rede Social
               </Button>
             </div>
